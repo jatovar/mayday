@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorWhite">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Contactos"
+        android:id="@+id/textView2"
+        android:textColor="@color/colorPrimaryMayday"
+        android:textSize="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="#d7d7d7"
+        android:gravity="center"
+        android:height="80dp"
+        android:textStyle="bold" />
+
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/srlMySwipeContacts"
+        android:layout_width="match_parent"
+        android:layout_height="420dp"
+        android:layout_below="@+id/textView2">
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/lv_contactList"
+            android:layout_marginTop="80dp" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+"
+        android:id="@+id/bt_add"
+        android:layout_below="@+id/srlMySwipeContacts"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:onClick="clickContactAdd"/>
+
+
+
+</RelativeLayout>
