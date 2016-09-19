@@ -165,18 +165,18 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     //CRUDO
     //Table: message
 
-    public long messageAdd(MyMessage myMessage){
-        Log.v(log_v, "messageAdd -> body: "+ myMessage.get_message());
+    public long messageAdd(ChatMessage chatMessage){
+        Log.v(log_v, "messageAdd -> body: "+ chatMessage.getMessage());
         long newMessageID;
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(COLUMN_CONTACT_MAYDAYID, myMessage.get_contact_MayDayID());
-        values.put(COLUMN_MESSAGE, myMessage.get_message());
-        values.put(COLUMN_DATETIME, myMessage.get_datetime());
-        values.put(COLUMN_STATUS, myMessage.get_status().toString());
-        values.put(COLUMN_DIRECTION, myMessage.get_direction().toString());
-        values.put(COLUMN_TYPE, myMessage.get_type().toString());
+        values.put(COLUMN_CONTACT_MAYDAYID, chatMessage.getContactMayDayID());
+        values.put(COLUMN_MESSAGE, chatMessage.getMessage());
+        values.put(COLUMN_DATETIME, chatMessage.getDatetime());
+        values.put(COLUMN_STATUS, chatMessage.getStatus().toString());
+        values.put(COLUMN_DIRECTION, chatMessage.getDirection().toString());
+        values.put(COLUMN_TYPE, chatMessage.getType().toString());
 
 
         try {
@@ -194,8 +194,8 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     /*Returns the last @counter messages where contact_MayDayID=@contact_MayDayID
     Staring from message number @start_index.
     * */
-    public ArrayList<MyMessage> getMessages(String contact_MayDayID, int start_index, int counter) {
-        ArrayList<MyMessage> myMessageList = new ArrayList<MyMessage>();
+    public ArrayList<ChatMessage> getMessages(String contact_MayDayID, int start_index, int counter) {
+        ArrayList<ChatMessage> chatMessageList = new ArrayList<ChatMessage>();
         SQLiteDatabase db = getReadableDatabase();
         /*TODO:
             - add logic for start_index
@@ -207,21 +207,21 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         Cursor c = db.rawQuery(query, new String[]{contact_MayDayID});
         if(c != null && c.moveToFirst()){
             do{
-                MyMessage newMyMessage = new MyMessage();
-                newMyMessage.setContactMayDayId(contact_MayDayID);
-                newMyMessage.setMessage(c.getString(c.getColumnIndex(COLUMN_MESSAGE)));
-                newMyMessage.setDatetime(c.getString(c.getColumnIndex(COLUMN_DATETIME)));
-                newMyMessage.set_status(c.getString(c.getColumnIndex(COLUMN_STATUS)));
-                newMyMessage.setDirection(c.getString(c.getColumnIndex(COLUMN_DIRECTION)));
-                newMyMessage.setType(c.getString(c.getColumnIndex(COLUMN_TYPE)));
+                ChatMessage newChatMessage = new ChatMessage();
+                newChatMessage.setContactMayDayId(contact_MayDayID);
+                newChatMessage.setMessage(c.getString(c.getColumnIndex(COLUMN_MESSAGE)));
+                newChatMessage.setDatetime(c.getString(c.getColumnIndex(COLUMN_DATETIME)));
+                newChatMessage.set_status(c.getString(c.getColumnIndex(COLUMN_STATUS)));
+                newChatMessage.setDirection(c.getString(c.getColumnIndex(COLUMN_DIRECTION)));
+                newChatMessage.setType(c.getString(c.getColumnIndex(COLUMN_TYPE)));
 
-                myMessageList.add(newMyMessage);
+                chatMessageList.add(newChatMessage);
 
             }while(c.moveToNext());
             c.close();
         }
 
-        return myMessageList;
+        return chatMessageList;
     }
 
     //Erase conversation(s)

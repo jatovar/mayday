@@ -30,7 +30,7 @@ public class ConversationActivity extends AppCompatActivity {
 
     //used for the contactList
     ListView messageListView;
-    MyMessageAdapter messageListAdapter;
+    ChatAdapter messageListAdapter;
 
 
     @Override
@@ -75,7 +75,7 @@ public class ConversationActivity extends AppCompatActivity {
     private void loadMessages() {
         Log.v(log_v, "loadMessages");
         DataBaseHelper db = new DataBaseHelper(this);
-        ArrayList<MyMessage> array_list = db.getMessages(contact_MayDayID, 0, 5);
+        ArrayList<ChatMessage> array_list = db.getMessages(contact_MayDayID, 0, 5);
 
         if(array_list.isEmpty()){
             Log.v(log_v, "Empty conversation");
@@ -83,11 +83,11 @@ public class ConversationActivity extends AppCompatActivity {
         }
         else {
             //Debug
-            for (MyMessage myMessage : array_list) {
-                System.out.println(myMessage.get_direction().toString() + " : " + myMessage.get_message());
+            for (ChatMessage chatMessage : array_list) {
+                System.out.println(chatMessage.getDirection().toString() + " : " + chatMessage.getMessage());
             }
             messageListView = (ListView) findViewById(R.id.lv_messageList);
-            messageListAdapter = new MyMessageAdapter(getApplicationContext(), array_list);
+            messageListAdapter = new ChatAdapter(getApplicationContext(), array_list);
             messageListView.setAdapter(messageListAdapter);
         }
         db.close();
@@ -121,7 +121,7 @@ public class ConversationActivity extends AppCompatActivity {
                                     @Override
                                     public void run() {
                                         /*TODO:
-                                            -Can we modify direct through the MyMessageAdapter
+                                            -Can we modify direct through the ChatAdapter
                                          */
                                         //update conversation
                                         loadMessages();
@@ -160,8 +160,8 @@ public class ConversationActivity extends AppCompatActivity {
         //Use the connection defined previously within @app, to send the message
         app.sendMessage(str_message);
 
-        //Create an object "MyMessage" and use it to save it in the DB.
-        MyMessage msg = new MyMessage();
+        //Create an object "ChatMessage" and use it to save it in the DB.
+        ChatMessage msg = new ChatMessage();
         msg.setContactMayDayId(contact_MayDayID);
         msg.setMessage(str_message);
         /*TODO:
@@ -170,9 +170,9 @@ public class ConversationActivity extends AppCompatActivity {
                 https://ramzandroidarchive.wordpress.com/2016/03/14/add-custum-tags-in-message-using-smack-4-1/
          */
         msg.setDatetime(String.valueOf(System.currentTimeMillis()));
-        msg.setStatus(MyMessageStatus.SENDING);
-        msg.setDirection(MyMessageDirection.OUTGOING);
-        msg.setType(MyMessageType.NORMAL);
+        msg.setStatus(ChatMessageStatus.SENDING);
+        msg.setDirection(ChatMessageDirection.OUTGOING);
+        msg.setType(ChatMessageType.NORMAL);
 
         db.getWritableDatabase();
         db.messageAdd(msg);

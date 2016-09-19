@@ -104,7 +104,7 @@ public class MyApplication extends Application {
                         try {
 
                             Message message = (Message) packet;
-                            MyMessage myMessage = new MyMessage();
+                            ChatMessage chatMessage = new ChatMessage();
                             String body = message.getBody();
 
                             if(body == null){
@@ -121,16 +121,16 @@ public class MyApplication extends Application {
                                     -Extract the datetime from incoming message
                                     -Extract TYPE from incoming message
                                 */
-                                myMessage.setContactMayDayId(from);
-                                myMessage.setMessage(body);
+                                chatMessage.setContactMayDayId(from);
+                                chatMessage.setMessage(body);
                                 //Change this to incoming info
-                                myMessage.setDatetime(String.valueOf(System.currentTimeMillis()));
-                                myMessage.setStatus(MyMessageStatus.UNREAD);
-                                myMessage.setDirection(MyMessageDirection.INCOMING);
+                                chatMessage.setDatetime(String.valueOf(System.currentTimeMillis()));
+                                chatMessage.setStatus(ChatMessageStatus.UNREAD);
+                                chatMessage.setDirection(ChatMessageDirection.INCOMING);
                                 //Change this to incoming info
-                                myMessage.setType(MyMessageType.NORMAL);
+                                chatMessage.setType(ChatMessageType.NORMAL);
 
-                                insertMessageInDb(myMessage);
+                                insertMessageInDb(chatMessage);
                             }
 
                         }
@@ -147,13 +147,13 @@ public class MyApplication extends Application {
         }
     }
 
-    private void insertMessageInDb(MyMessage myMessage){
+    private void insertMessageInDb(ChatMessage chatMessage){
 
         Log.v(log_v, "insertMessageInDb");
 
         DataBaseHelper db = new DataBaseHelper(this);
         db.getWritableDatabase();
-        db.messageAdd(myMessage);
+        db.messageAdd(chatMessage);
         db.close();
     }
 
