@@ -17,7 +17,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 
     private String log_v="DataBaseHelper";
 
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 7;
 
     // Database Name
     private static final String DATABASE_NAME = "mayDay";
@@ -32,6 +32,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 
 
     // Columns from table: "contact"
+    private static final String COLUMN_CONTACTID = "contactID";
     private static final String COLUMN_MAYDAYID = "mayDayID";
     private static final String COLUMN_NAME = "name";
 
@@ -56,8 +57,9 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     //Table "contact"
     private static final String CREATE_TABLE_CONTACT=
             "CREATE TABLE " + TABLE_CONTACT + "("
-                    + COLUMN_MAYDAYID   + " TEXT PRIMARY KEY,"
-                    + COLUMN_STATUS     + " TEXT ,"
+                    + COLUMN_CONTACTID  + " INTEGER PRIMARY KEY,"
+                    + COLUMN_MAYDAYID   + " TEXT,"
+                    + COLUMN_STATUS     + " TEXT,"
                     + COLUMN_NAME       + " TEXT)";
 
 
@@ -117,7 +119,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
             newContactID = db.insert(TABLE_CONTACT, null, values);
         }
         catch (SQLiteConstraintException e){
-            newContactID=-1;
+            newContactID = -1;
         }
 
         return newContactID;
@@ -131,8 +133,9 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, contact.getName());
         values.put(COLUMN_STATUS, contact.getStatus().toString());
+        values.put(COLUMN_MAYDAYID, contact.getMayDayId());
 
-        db.update(TABLE_CONTACT, values, COLUMN_MAYDAYID+"=? ", new String[]{contact.getMayDayId()});
+        db.update(TABLE_CONTACT, values, COLUMN_CONTACTID+"=? ", new String[]{contact.getIdAsString()});
 
     }
 
@@ -143,15 +146,19 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         String query = "SELECT * FROM "+TABLE_CONTACT;
 
         Cursor c = db.rawQuery(query, null);
+
         if(c != null && c.moveToFirst()){
 
             do{
                 Contact newContact = new Contact();
+
+                newContact.setIdAsString(c.getString(c.getColumnIndex(COLUMN_CONTACTID)));
                 newContact.setMayDayId(c.getString(c.getColumnIndex(COLUMN_MAYDAYID)));
                 newContact.setName(c.getString(c.getColumnIndex(COLUMN_NAME)));
                 newContact.setStatus(c.getString(c.getColumnIndex(COLUMN_STATUS)));
 
                 contactList.add(newContact);
+
 
             }while(c.moveToNext());
             c.close();
@@ -211,7 +218,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
                 newChatMessage.setContactMayDayId(contact_MayDayID);
                 newChatMessage.setMessage(c.getString(c.getColumnIndex(COLUMN_MESSAGE)));
                 newChatMessage.setDatetime(c.getString(c.getColumnIndex(COLUMN_DATETIME)));
-                newChatMessage.set_status(c.getString(c.getColumnIndex(COLUMN_STATUS)));
+                newChatMessage.setStatus(c.getString(c.getColumnIndex(COLUMN_STATUS)));
                 newChatMessage.setDirection(c.getString(c.getColumnIndex(COLUMN_DIRECTION)));
                 newChatMessage.setType(c.getString(c.getColumnIndex(COLUMN_TYPE)));
 
@@ -238,7 +245,19 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 
     }
 
+    //Erase contact(s)
+    public void contactTruncate(String contactId){
 
+        Log.v(log_v, "contact");
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        if (contactId == null) {
+            db.execSQL("DELETE FROM " + TABLE_CONTACT);
+        } else {
+            db.execSQL("DELETE FROM " + TABLE_CONTACT + " WHERE " + COLUMN_CONTACTID + " =?", new String[]{contactId});
+        }
+
+    }
 
 
 }

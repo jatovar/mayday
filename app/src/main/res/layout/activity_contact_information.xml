@@ -82,7 +82,8 @@
                 android:layout_height="wrap_content"
                 android:text="ABC-12345"
                 android:onClick="clickEditContactId"
-                android:layout_gravity="center_vertical"/>
+                android:layout_gravity="center_vertical"
+                android:clickable="true"/>
 
             <EditText
                 android:id="@+id/hidden_tvMid"
@@ -105,12 +106,13 @@
             android:layout_height="wrap_content"
             android:id="@+id/btn_action"
             android:onClick="clickActionButton"
-            android:text="Cancelar"
+            android:text="Atrás"
             android:theme="@style/buttonStyle"/>
         <Button
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:id="@+id/btn_delete"
+            android:onClick="clickRemoveContactButton"
             android:text="Eliminar"
             android:layout_marginLeft="20dp"
             android:theme="@style/buttonStyle"/>

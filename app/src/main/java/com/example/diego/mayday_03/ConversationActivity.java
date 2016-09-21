@@ -87,7 +87,7 @@ public class ConversationActivity extends AppCompatActivity {
                 System.out.println(chatMessage.getDirection().toString() + " : " + chatMessage.getMessage());
             }
             messageListView = (ListView) findViewById(R.id.lv_messageList);
-            messageListAdapter = new ChatAdapter(getApplicationContext(), array_list);
+            messageListAdapter = new ChatAdapter(this, array_list);
             messageListView.setAdapter(messageListAdapter);
         }
         db.close();
@@ -136,7 +136,7 @@ public class ConversationActivity extends AppCompatActivity {
                         }
                     }
                     catch(ClassCastException e) {
-                        Log.v(log_v, "Exception in startListening: "+ e.getMessage().toString());
+                        Log.v(log_v, "Exception in startListening: " + e.getMessage());
                     }
 
 
@@ -184,12 +184,12 @@ public class ConversationActivity extends AppCompatActivity {
 
     //Called when the Send button is pressed in a ConversationActivity
     public void click_erase_conversation(View view) {
-        Log.v(log_v, "click_erase_conversation");
+        /*Log.v(log_v, "click_erase_conversation");
         DataBaseHelper db = new DataBaseHelper(this);
         db.messageTruncate(null);
         db.close();
         messageListAdapter.clear();
-
+        */
     }
 
 

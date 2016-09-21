@@ -2,7 +2,7 @@ package com.example.diego.mayday_03;
 
 public class Contact {
 
-    private int id;
+    private String id;
     private ContactStatus status;
 
     private String name     = "";
@@ -13,8 +13,9 @@ public class Contact {
 
     }
 
-    public Contact(String name, String mayDayID, ContactStatus status){
+    public Contact(String id, String name, String mayDayID, ContactStatus status){
 
+        this.id = id;
         this.mayDayID = mayDayID;
         this.name     = name;
         this.status   = status;
@@ -26,6 +27,11 @@ public class Contact {
         this.status   = ContactStatus.UNKNOWN;
     }
 
+    public Contact(String name, String mayDayID, ContactStatus status){
+        this.mayDayID = mayDayID;
+        this.name     = name;
+        this.status   = status;
+    }
     public void setMayDayId(String mayDayID){
 
         this.mayDayID = mayDayID;
@@ -53,9 +59,13 @@ public class Contact {
 
     public String getIdAsString(){
 
-        return String.valueOf(this.id);
+        return this.id;
     }
 
+    public void setIdAsString(String id){
+
+        this.id = id;
+    }
 
     public String getName(){
 

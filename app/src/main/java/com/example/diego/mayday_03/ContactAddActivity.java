@@ -25,11 +25,15 @@ public class ContactAddActivity extends AppCompatActivity {
 
     public void click_ok(View view){
 
-        EditText contactName =(EditText) findViewById(R.id.et_mayDayID);
-        EditText mayDayID =(EditText) findViewById(R.id.et_contactName);
-        Contact contact = new Contact(mayDayID.getText().toString(),
-                contactName.getText().toString(), ContactStatus.NORMAL);
-        DataBaseHelper db = new DataBaseHelper(this);
+        EditText contactName =  (EditText) findViewById(R.id.et_mayDayID);
+        EditText mayDayID    =  (EditText) findViewById(R.id.et_contactName);
+        Contact contact      =  new Contact(
+                                                mayDayID.getText().toString(),
+                                                contactName.getText().toString(),
+                                                ContactStatus.NORMAL
+                                            );
+
+        DataBaseHelper db    = new DataBaseHelper(this);
         db.getWritableDatabase();
 
         Log.v(log_v, "Adding contact: " + contact.getName() + ", " +contact.getMayDayId());
@@ -39,7 +43,9 @@ public class ContactAddActivity extends AppCompatActivity {
          */
 
         //If mayDayID is already in the DB.
-        if(db.contactAdd(contact) == -1){
+        long contactId = db.contactAdd(contact);
+
+        if(contactId == -1){
             Context context = getApplicationContext();
             CharSequence text = "MayDayID in use";
             int duration = Toast.LENGTH_SHORT;
@@ -48,10 +54,11 @@ public class ContactAddActivity extends AppCompatActivity {
             toast.show();
         }
         else {
-
+            contact.setIdAsString(String.valueOf(contactId));
             Intent returnIntent = new Intent();
-            returnIntent.putExtra("contact_name", contact.getName());
-            returnIntent.putExtra("contact_id", contact.getMayDayId());
+            returnIntent.putExtra("new_contact_name", contact.getName());
+            returnIntent.putExtra("new_contact_MaydayId", contact.getMayDayId());
+            returnIntent.putExtra("new_contact_id", contact.getIdAsString());
             setResult(RESULT_OK, returnIntent);
             finish();
         }

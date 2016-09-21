@@ -29,7 +29,7 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
 
     private String log_v="ContactAdapter";
     //private Context mContext;
-    static final int EDIT_CONTACT_REQUEST = 2;
+    static final int VIEW_CONTACT_REQUEST = 2;
 
     public  ContactAdapter(Context context, ArrayList<Contact> contactList){
         super(context, 0, contactList);
@@ -67,19 +67,23 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
                  );
 
                 Intent intent = new Intent( parent.getContext(), ContactInformationActivity.class);
-            //    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra("contact_MayDayID", c.getMayDayId());
-                intent.putExtra("contact_name", c.getName());
-                intent.putExtra("contact_status", c.getStatus());
-                ((Activity) parent.getContext()).startActivityForResult(intent, EDIT_CONTACT_REQUEST);
+                intent.putExtra("editing_contact_MayDayID", c.getMayDayId());
+                intent.putExtra("editing_contact_name", c.getName());
+                intent.putExtra("editing_contact_status", c.getStatus());
+                intent.putExtra("editing_contact_id", c.getIdAsString());
+                ((Activity) parent.getContext()).startActivityForResult(intent, VIEW_CONTACT_REQUEST);
 
             }
         });
+
+
 
         startConv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.v(log_v,"onCLick SHOW CONVERSATION");
+                Intent intent = new Intent( parent.getContext(), ChatActivity.class);
+                parent.getContext().startActivity(intent);
             }
         });
 

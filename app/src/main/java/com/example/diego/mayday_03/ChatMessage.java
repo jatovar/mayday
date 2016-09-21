@@ -41,7 +41,7 @@ public class ChatMessage {
 
     }
 
-    public void set_id(int id){
+    public void setId(int id){
         this.id = id;
     }
 
@@ -50,19 +50,19 @@ public class ChatMessage {
     }
 
     public void setMessage(String message){
-        this.message=message;
+        this.message = message;
     }
 
     public void setDatetime(String datetime){
-        this.datetime=datetime;
+        this.datetime = datetime;
     }
 
-    public void set_status(String status){
+    public void setStatus(String status){
         this.status = ChatMessageStatus.valueOf(status);
     }
 
     public void setStatus(ChatMessageStatus status){
-        this.status=status;
+        this.status = status;
     }
 
     public void setDirection(String direction){
@@ -70,7 +70,7 @@ public class ChatMessage {
     }
 
     public void setDirection(ChatMessageDirection direction){
-        this.direction=direction;
+        this.direction = direction;
     }
 
     public void setType(String type){
@@ -78,7 +78,7 @@ public class ChatMessage {
     }
 
     public void setType(ChatMessageType type){
-        this.type=type;
+        this.type = type;
     }
 
     public int getId(){
