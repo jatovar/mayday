@@ -6,20 +6,57 @@
 
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="New Text"
-         android:id="@+id/tv_name" />
+        android:text="Jorge"
+        android:textColor="@color/colorBlack"
+        android:textSize="30dp"
+        android:gravity="center"
+        android:id="@+id/tv_name" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="New Text"
+        android:text="jatovar"
+        android:textColor="@color/colorBlack"
+        android:textSize="20dp"
+        android:gravity="center"
         android:id="@+id/tv_mayDayID" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""
+        android:textColor="@color/colorBlack"
         android:id="@+id/tv_status" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_showcontacts"
+            android:layout_weight="2"
+            android:src="@drawable/user"
+            android:padding="2dp"
+            android:layout_margin="5dp"
+            android:background="#ff0000" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_startconversation"
+            android:layout_weight="2"
+            android:src="@drawable/chat"
+            android:padding="2dp"
+            android:layout_margin="5dp"
+            android:background="#ff0000" />
+
+    </LinearLayout>
+
+
 </LinearLayout>

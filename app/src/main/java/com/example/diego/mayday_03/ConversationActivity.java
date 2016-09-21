@@ -22,7 +22,7 @@ public class ConversationActivity extends AppCompatActivity {
 
 
     private String log_v = "Conversation: ";
-    private String contact_MayDayID = "";
+    private String contact_MayDayID;
     MyApplication app;
 
     //Only used to Listen for incoming messages
@@ -40,15 +40,15 @@ public class ConversationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation);
 
-        Bundle params = getIntent().getExtras();
-        contact_MayDayID = params.getString("contact_MayDayID");
+        contact_MayDayID  = getIntent().getExtras().getString("contact_MayDayID");
+
         Log.v(log_v, "Start a chat with MayDayID: " + contact_MayDayID);
 
         app = (MyApplication) getApplication();
 
         //Testing
-        //app.createChat(contact_MayDayID);
-        app.createChat("jorge_spa@jorge-latitude-e5440");
+        app.createChat(contact_MayDayID);
+        //app.createChat("jorge_spa@jorge-latitude-e5440");
         connection = app.getConnection();
 
         loadMessages();

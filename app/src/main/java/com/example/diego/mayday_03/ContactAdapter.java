@@ -1,10 +1,15 @@
 package com.example.diego.mayday_03;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -22,13 +27,18 @@ import java.util.ArrayList;
  */
 public class ContactAdapter extends ArrayAdapter<Contact> {
 
+    private String log_v="ContactAdapter";
+    //private Context mContext;
+    static final int EDIT_CONTACT_REQUEST = 2;
+
     public  ContactAdapter(Context context, ArrayList<Contact> contactList){
         super(context, 0, contactList);
+      //  mContext = context;
     }
 
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, final ViewGroup parent) {
         // Obtener inflater.
         LayoutInflater inflater = (LayoutInflater) getContext()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -44,6 +54,35 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
                 http://www.hermosaprogramacion.com/2014/10/android-listas-adaptadores/
         */
 
+        ImageButton showContact = (ImageButton) convertView.findViewById(R.id.btn_showcontacts);
+        ImageButton startConv   = (ImageButton) convertView.findViewById(R.id.btn_startconversation);
+
+        showContact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.v(log_v, "onCLick SHOW CONTACT");
+                Contact c = getItem(position);
+                Log.v(log_v, "Contact name = "      +  c.getName() + "\n" +
+                             "Contact Mayday ID = " + c.getMayDayId() + "\n"
+                 );
+
+                Intent intent = new Intent( parent.getContext(), ContactInformationActivity.class);
+            //    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("contact_MayDayID", c.getMayDayId());
+                intent.putExtra("contact_name", c.getName());
+                intent.putExtra("contact_status", c.getStatus());
+                ((Activity) parent.getContext()).startActivityForResult(intent, EDIT_CONTACT_REQUEST);
+
+            }
+        });
+
+        startConv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.v(log_v,"onCLick SHOW CONVERSATION");
+            }
+        });
+
         TextView mayDayID = (TextView) convertView.findViewById(R.id.tv_mayDayID);
         TextView name     = (TextView) convertView.findViewById(R.id.tv_name);
         TextView status   = (TextView) convertView.findViewById(R.id.tv_status);
@@ -56,20 +95,25 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
 
             case BLOCKED:
                 name.setText(contact.getName());
-                status.setText("blocked");
+               // status.setText("blocked");
                 break;
             case UNKNOWN:
                 name.setText("");
-                status.setText("unknown");
+               // status.setText("unknown");
                 break;
             case NORMAL:
                 name.setText(contact.getName());
-                status.setText("normal");
+               // status.setText("normal");
                 break;
         }
 
 
+
         return convertView;
     }
+
+
+
+
 }
 

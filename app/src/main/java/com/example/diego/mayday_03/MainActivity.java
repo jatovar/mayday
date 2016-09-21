@@ -13,10 +13,15 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 
 public class MainActivity extends AppCompatActivity {
 
+    static final int ADD_CONTACT_REQUEST    = 1;  // The request code
+    static final int EDIT_CONTACT_REQUEST   = 2;
+    static final int REMOVE_CONTACT_REQUEST = 3;
     private String log_v="MainActivity";
 
     //used for the contactList
@@ -27,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     String password = "";
     private DataBaseHelper db;
     MyApplication app;
-
+    ArrayList<Contact> dbContacts;
 
 
 
@@ -56,13 +61,15 @@ public class MainActivity extends AppCompatActivity {
 
         Log.v(log_v, "loadContacts");
         DataBaseHelper db = new DataBaseHelper(this);
-        ArrayList<Contact> dbContacts = db.getContacts();
+        dbContacts = db.getContacts();
 
         if(dbContacts.isEmpty()){
             Log.v(log_v, "Empty contacts");
         }
         else {
-            //Debug
+
+            sortContacts();
+
             for (Contact contact : dbContacts) {
                 System.out.println("Contact: " + contact.getName() + ", " + contact.getMayDayId());
             }
@@ -79,20 +86,66 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), ConversationActivity.class);
                     intent.putExtra("contact_MayDayID", contact.getMayDayId());
                     startActivity(intent);
+
                 }
             });
+
 
         }
     }
 
+    private void sortContacts() {
+        Collections.sort(dbContacts, new Comparator<Contact>() {
+            @Override
+            public int compare(Contact c1, Contact c2) {
+                return c1.getName().compareToIgnoreCase(c2.getName());
+            }
+        });
+    }
 
 
     //Button action in "activity_main" to add new contact
     public void clickContactAdd(View view){
         Log.v(log_v,"clickContactAdd");
         Intent intent = new Intent(getApplicationContext(), ContactAddActivity.class);
-        startActivity(intent);
+        //startActivity(intent);
+        startActivityForResult(intent, ADD_CONTACT_REQUEST);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.v(log_v,"Result callback");
+        // Make sure the request was successful
+        if (resultCode == RESULT_OK) {
+            Log.v(log_v,"RESULT OK, REFRESH CONTACT LIST DEPENDING THE CASE");
+            // Check which request we're responding to
+            switch (requestCode){
+                case ADD_CONTACT_REQUEST:
+
+                        Log.v(log_v, "ADD_CONTACT_REQUEST");
+
+                        dbContacts.add(
+                                new Contact(data.getStringExtra("contact_name"),
+                                        data.getStringExtra("contact_id"), ContactStatus.NORMAL)
+                        );
+
+                        sortContacts();
+                        contactListAdapter.notifyDataSetChanged();
+                    break;
+                case EDIT_CONTACT_REQUEST:
+
+                    Log.v(log_v, "EDIT_CONTACT_REQUEST");
+                    // TODO: We need to know which element in the set is going to be updated so we need the old value of PK, find it, and update it if thats the case
+                    // and
+                    //dbContacts.contains()
+                    break;
+                case REMOVE_CONTACT_REQUEST:
+                    break;
+            }
+
+        }
+    }
+
 
 
 }

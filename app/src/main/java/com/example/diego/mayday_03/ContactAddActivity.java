@@ -1,6 +1,7 @@
 package com.example.diego.mayday_03;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -13,7 +14,8 @@ import android.widget.Toast;
  */
 public class ContactAddActivity extends AppCompatActivity {
 
-    private String log_v="ContactAddActivity:";
+    private String log_v = "ContactAddActivity:";
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,11 +27,12 @@ public class ContactAddActivity extends AppCompatActivity {
 
         EditText contactName =(EditText) findViewById(R.id.et_mayDayID);
         EditText mayDayID =(EditText) findViewById(R.id.et_contactName);
-        Contact contact = new Contact(mayDayID.getText().toString(), contactName.getText().toString(), ContactStatus.NORMAL);
+        Contact contact = new Contact(mayDayID.getText().toString(),
+                contactName.getText().toString(), ContactStatus.NORMAL);
         DataBaseHelper db = new DataBaseHelper(this);
         db.getWritableDatabase();
 
-        Log.v(log_v, "Adding contact: " + contact.getName()+", " +contact.getMayDayId());
+        Log.v(log_v, "Adding contact: " + contact.getName() + ", " +contact.getMayDayId());
 
         /*TODO:
             -Change to finishActivity(param);
@@ -45,6 +48,11 @@ public class ContactAddActivity extends AppCompatActivity {
             toast.show();
         }
         else {
+
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("contact_name", contact.getName());
+            returnIntent.putExtra("contact_id", contact.getMayDayId());
+            setResult(RESULT_OK, returnIntent);
             finish();
         }
 
@@ -52,9 +60,8 @@ public class ContactAddActivity extends AppCompatActivity {
     }
 
     public void click_cancel(View view){
-        /*TODO:
-            Change to finishActivity(param);
-         */
+
+        setResult(RESULT_CANCELED);
         finish();
     }
 
