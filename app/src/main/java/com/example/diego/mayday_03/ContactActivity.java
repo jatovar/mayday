@@ -18,13 +18,13 @@ import java.util.Collections;
 import java.util.Comparator;
 
 
-public class MainActivity extends AppCompatActivity {
+public class ContactActivity extends AppCompatActivity {
 
     static final int ADD_CONTACT_REQUEST    = 1;  // The request code
     static final int VIEW_CONTACT_REQUEST   = 2;
     static final int START_CONVERSATION_REQUEST   = 3;
 
-    private String log_v="MainActivity";
+    private String log_v="ContactActivity";
 
     //used for the contactList
     ListView contactListView;
