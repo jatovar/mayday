@@ -11,7 +11,8 @@
         android:text="Jorge"
         android:textColor="@color/colorBlack"
         android:textSize="30dp"
-        android:gravity="center"
+        android:gravity="left"
+        android:paddingLeft="30dp"
         android:id="@+id/tv_name" />
 
     <TextView

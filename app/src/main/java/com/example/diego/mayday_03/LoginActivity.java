@@ -5,13 +5,16 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 
 /**
  * Created by diego on 9/09/16.
  */
 public class LoginActivity extends AppCompatActivity {
+
     private String log_v="Android:";
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,7 +33,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if(attemptLogin(mayDayId, password)){
 
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            Intent intent = new Intent(getApplicationContext(), ContactActivity.class);
             intent.putExtra("mayDayID", mayDayId);
             intent.putExtra("password", password);
 
@@ -39,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         else{
+
             /* TODO:
                 -Code unsuccessful login
             */

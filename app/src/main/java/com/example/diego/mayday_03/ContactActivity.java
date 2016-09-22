@@ -4,7 +4,6 @@ package com.example.diego.mayday_03;
 
 import android.content.Intent;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -38,7 +37,7 @@ public class ContactActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_contact);
         Log.v(log_v,"onCreate");
         Bundle params = getIntent().getExtras();
         mayDayID= params.getString("mayDayID");
@@ -104,7 +103,7 @@ public class ContactActivity extends AppCompatActivity {
     }
 
 
-    /* Button action in "activity_main" to add new contact */
+    /* Button action in "activity_contact" to add new contact */
     public void clickContactAdd(View view){
         Log.v(log_v,"clickContactAdd");
         Intent intent = new Intent(getApplicationContext(), ContactAddActivity.class);
