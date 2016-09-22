@@ -17,6 +17,8 @@ import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.util.Date;
 
 /**
  * Created by diego on 12/09/16.
@@ -124,7 +126,9 @@ public class MyApplication extends Application {
                                 chatMessage.setContactMayDayId(from);
                                 chatMessage.setMessage(body);
                                 //Change this to incoming info
-                                chatMessage.setDatetime(String.valueOf(System.currentTimeMillis()));
+                                chatMessage.setDatetime(DateFormat.getDateTimeInstance()
+                                        .format(new Date()));
+                                //**The status should change if the user is in ChatActivity**//
                                 chatMessage.setStatus(ChatMessageStatus.UNREAD);
                                 chatMessage.setDirection(ChatMessageDirection.INCOMING);
                                 //Change this to incoming info
@@ -157,7 +161,7 @@ public class MyApplication extends Application {
         db.close();
     }
 
-    public AbstractXMPPConnection getConnection(){
+    public AbstractXMPPConnection getXMPPConnection(){
 
         return connection;
 

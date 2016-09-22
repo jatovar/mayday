@@ -49,7 +49,7 @@ public class ConversationActivity extends AppCompatActivity {
         //Testing
         app.createChat(contact_MayDayID);
         //app.createChat("jorge_spa@jorge-latitude-e5440");
-        connection = app.getConnection();
+        connection = app.getXMPPConnection();
 
         loadMessages();
         startListening();
