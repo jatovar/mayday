@@ -18,24 +18,24 @@ public class PagerAdapter extends FragmentStatePagerAdapter{
     @Override
     public Fragment getItem(int position) {
 
-        /*switch (position) {
+      switch (position) {
             case 0:
-                TabFragment1 tab1 = new TabFragment1();
+                ContactsFragment tab1 = new ContactsFragment();
                 System.out.println("T0");
                 return tab1;
             case 1:
-                TabFragment2 tab2 = new TabFragment2();
+                ContactsFragment tab2 = new ContactsFragment();
                 System.out.println("T1");
                 return tab2;
             case 2:
-                TabFragment3 tab3 = new TabFragment3();
+                ContactsFragment tab3 = new ContactsFragment();
                 System.out.println("T2");
                 return tab3;
             default:
                 return null;
         }
-        */
-        return null;
+
+
     }
 
     @Override

@@ -25,12 +25,12 @@ public class ContactAddActivity extends AppCompatActivity {
 
     public void click_ok(View view){
 
-        EditText contactName =  (EditText) findViewById(R.id.et_mayDayID);
-        EditText mayDayID    =  (EditText) findViewById(R.id.et_contactName);
-        Contact contact      =  new Contact(
-                                                mayDayID.getText().toString(),
-                                                contactName.getText().toString(),
-                                                ContactStatus.NORMAL
+        EditText contactName = (EditText) findViewById(R.id.et_mayDayID);
+        EditText mayDayID    = (EditText) findViewById(R.id.et_contactName);
+        Contact contact      = new Contact(
+                                            mayDayID.getText().toString(),
+                                            contactName.getText().toString(),
+                                            ContactStatus.NORMAL
                                             );
 
         DataBaseHelper db    = new DataBaseHelper(this);
@@ -38,9 +38,6 @@ public class ContactAddActivity extends AppCompatActivity {
 
         Log.v(log_v, "Adding contact: " + contact.getName() + ", " +contact.getMayDayId());
 
-        /*TODO:
-            -Change to finishActivity(param);
-         */
 
         //If mayDayID is already in the DB.
         long contactId = db.contactAdd(contact);

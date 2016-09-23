@@ -53,7 +53,7 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
                 ImageView avatar = (ImageView) convertView.findViewById(R.id.iv_avatar);
                 http://www.hermosaprogramacion.com/2014/10/android-listas-adaptadores/
         */
-
+        /*
         ImageButton showContact = (ImageButton) convertView.findViewById(R.id.btn_showcontacts);
         ImageButton startConv   = (ImageButton) convertView.findViewById(R.id.btn_startconversation);
 
@@ -86,7 +86,7 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
                 parent.getContext().startActivity(intent);
             }
         });
-
+        */
         TextView mayDayID = (TextView) convertView.findViewById(R.id.tv_mayDayID);
         TextView name     = (TextView) convertView.findViewById(R.id.tv_name);
         TextView status   = (TextView) convertView.findViewById(R.id.tv_status);

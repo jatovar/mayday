@@ -18,12 +18,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ContactActivity"></activity>
         <activity android:name=".ContactAddActivity"></activity>
-        <activity android:name=".ConversationActivity"></activity>
         <activity android:name=".ContactInformationActivity"></activity>
         <activity android:name=".ChatActivity"></activity>
         <activity android:name=".LoginActivity"></activity>
+        <activity android:name=".TabberActivity"></activity>
     </application>
 
 </manifest>

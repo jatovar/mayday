@@ -33,7 +33,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if(attemptLogin(mayDayId, password)){
 
-            Intent intent = new Intent(getApplicationContext(), ContactActivity.class);
+            Intent intent = new Intent(getApplicationContext(), TabberActivity.class);
             intent.putExtra("mayDayID", mayDayId);
             intent.putExtra("password", password);
 
