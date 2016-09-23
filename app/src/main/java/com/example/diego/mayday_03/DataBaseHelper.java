@@ -197,12 +197,32 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 
         return newMessageID;
     }
+    public ArrayList<ChatMessage> getConversationsLastestMessage(){
+        ArrayList<ChatMessage> chatMessageList = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
 
+        String query = "SELECT " + COLUMN_CONTACT_MAYDAYID + ", LAST(" + COLUMN_MESSAGE +") " +
+                "AS last_message FROM " + TABLE_MESSAGE;
+        Cursor c = db.rawQuery(query, null);
+
+        db.close();
+
+        if (c != null && c.moveToFirst()){
+            do{
+                ChatMessage msg = new ChatMessage();
+                msg.setMessage(c.getString(c.getColumnIndex(COLUMN_CONTACT_MAYDAYID)));
+                msg.setAuthor(c.getString(c.getColumnIndex("last_message")));
+                chatMessageList.add(msg);
+            }while (c.moveToNext());
+            c.close();
+        }
+        return chatMessageList;
+    }
     /*Returns the last @counter messages where contact_MayDayID=@contact_MayDayID
     Staring from message number @start_index.
     * */
     public ArrayList<ChatMessage> getMessages(String contact_MayDayID, int start_index, int counter) {
-        ArrayList<ChatMessage> chatMessageList = new ArrayList<ChatMessage>();
+        ArrayList<ChatMessage> chatMessageList = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
         /*TODO:
             - add logic for start_index

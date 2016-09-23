@@ -9,7 +9,7 @@ public class ChatMessage {
     private String message         = "";
     private String datetime        = "";
     private int id                 = -1;
-
+    private String author          = "";
 
     private ChatMessageStatus status;
     private ChatMessageDirection direction;
@@ -81,6 +81,10 @@ public class ChatMessage {
         this.type = type;
     }
 
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
     public int getId(){
         return this.id;
     }
@@ -109,4 +113,7 @@ public class ChatMessage {
         return this.type;
     }
 
+    public String getAuthor(){
+        return this.author;
+    }
 }

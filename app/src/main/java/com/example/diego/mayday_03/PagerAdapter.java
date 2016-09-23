@@ -24,7 +24,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter{
                 System.out.println("T0");
                 return tab1;
             case 1:
-                ContactsFragment tab2 = new ContactsFragment();
+                ConversationsFragment tab2 = new ConversationsFragment();
                 System.out.println("T1");
                 return tab2;
             case 2:
