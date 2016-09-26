@@ -197,24 +197,49 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 
         return newMessageID;
     }
+    public void updateRead(String mayDayId){
+        // (UNREAD/READ) for incoming for TABLE "message"
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        values.put(COLUMN_STATUS, "READ");
+
+        db.update(TABLE_CONTACT, values, COLUMN_MAYDAYID+"=? AND " + COLUMN_DIRECTION+"= OUTGOING", new String[]{mayDayId});
+    }
+
+    /**This method returns the last message of each conversation leaving author if it exists in
+     * contacts DB otherwise is a unknown message received**/
     public ArrayList<ChatMessage> getConversationsLastestMessage(){
-        ArrayList<ChatMessage> chatMessageList = new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
 
-        String query = "SELECT " + COLUMN_CONTACT_MAYDAYID + ", LAST(" + COLUMN_MESSAGE +") " +
-                "AS last_message FROM " + TABLE_MESSAGE;
+        ArrayList<Contact> contacts             = this.getContacts();
+        ArrayList<ChatMessage> chatMessageList  = new ArrayList<>();
+        SQLiteDatabase db                       = getReadableDatabase();
+
+        String query = "SELECT tbl.* FROM ( SELECT * FROM " + TABLE_MESSAGE + " ORDER BY " + COLUMN_ID +
+                " ASC ) AS tbl GROUP BY tbl." + COLUMN_CONTACT_MAYDAYID + " ORDER BY " + COLUMN_ID + " DESC";
+
         Cursor c = db.rawQuery(query, null);
-
-        db.close();
 
         if (c != null && c.moveToFirst()){
             do{
                 ChatMessage msg = new ChatMessage();
-                msg.setMessage(c.getString(c.getColumnIndex(COLUMN_CONTACT_MAYDAYID)));
-                msg.setAuthor(c.getString(c.getColumnIndex("last_message")));
+                msg.setContactMayDayId(c.getString(c.getColumnIndex(COLUMN_CONTACT_MAYDAYID)));
+                msg.setStatus(c.getString(c.getColumnIndex(COLUMN_STATUS)));
+                msg.setType(c.getString(c.getColumnIndex(COLUMN_TYPE)));
+                msg.setMessage(c.getString(c.getColumnIndex(COLUMN_MESSAGE)));
+                msg.setDatetime(c.getString(c.getColumnIndex(COLUMN_DATETIME)));
+                msg.setDirection(c.getString(c.getColumnIndex(COLUMN_DIRECTION)));
                 chatMessageList.add(msg);
             }while (c.moveToNext());
             c.close();
+        }
+         //TODO: OPTIMIZATION - This should not be done, maybe a FK necessary message-contact?? Perhaps not because not every message has a contact saved in DB
+        for (ChatMessage message : chatMessageList){
+            for(Contact contact : contacts){
+                if(contact.getMayDayId().equals(message.getContactMayDayID()))
+                    message.setAuthor(contact.getName());
+            }
         }
         return chatMessageList;
     }
@@ -241,7 +266,6 @@ public class DataBaseHelper extends SQLiteOpenHelper{
                 newChatMessage.setStatus(c.getString(c.getColumnIndex(COLUMN_STATUS)));
                 newChatMessage.setDirection(c.getString(c.getColumnIndex(COLUMN_DIRECTION)));
                 newChatMessage.setType(c.getString(c.getColumnIndex(COLUMN_TYPE)));
-
                 chatMessageList.add(newChatMessage);
 
             }while(c.moveToNext());

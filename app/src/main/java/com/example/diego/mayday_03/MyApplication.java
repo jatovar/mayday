@@ -46,6 +46,8 @@ public class MyApplication extends Application {
     AbstractXMPPConnection connection;
     Chat chat;
 
+    private ConversationsFragment conversationsFragment;
+    private ChatActivity chatActivity;
 
     @Override
     public void onCreate(){
@@ -64,6 +66,14 @@ public class MyApplication extends Application {
         createConnection();
         connectAndLogin();
 
+    }
+
+    public void setConversationsFragment(ConversationsFragment conversationsFragment){
+        this.conversationsFragment = conversationsFragment;
+    }
+
+    public void setChatActivity(ChatActivity chatActivity){
+        this.chatActivity = chatActivity;
     }
 
     public Boolean isConnected(){
@@ -99,33 +109,29 @@ public class MyApplication extends Application {
             this.connection.addAsyncStanzaListener(new StanzaListener() {
                 @Override
                 public void processPacket(Stanza packet) throws SmackException.NotConnectedException {
-                    /*TODO:
-                        -Parse timestamp
-                        -Insert message in DB
-                     */
+
                         try {
 
                             Message message = (Message) packet;
-                            ChatMessage chatMessage = new ChatMessage();
+                            final ChatMessage chatMessage = new ChatMessage();
                             String body = message.getBody();
 
                             if(body == null){
                                 //This is a control message like "composing, pause, etc"
                             }
                             else {
-                                //Split MayDayID@DOMAIN/RESOURCE into MayDayID(0) and DOMAIN/RESOURCE(1)
-                                String[] parts = message.getFrom().toString().split("@");
-                                String from = parts[0];
 
+                                //Split MayDayID@DOMAIN/RESOURCE into MayDayID(0) and DOMAIN/RESOURCE(1)
+                                String[] parts = message.getFrom().split("@");
+                                String from = parts[0];
                                 Log.d("DEBUGING: ", "FROM: " + from);
                                 Log.d("DEBUGING: ", "BODY: " + body);
                                 /*TODO:
-                                    -Extract the datetime from incoming message
                                     -Extract TYPE from incoming message
                                 */
+
                                 chatMessage.setContactMayDayId(from);
                                 chatMessage.setMessage(body);
-                                //Change this to incoming info
                                 chatMessage.setDatetime(DateFormat.getDateTimeInstance()
                                         .format(new Date()));
                                 //**The status should change if the user is in ChatActivity**//
@@ -133,8 +139,34 @@ public class MyApplication extends Application {
                                 chatMessage.setDirection(ChatMessageDirection.INCOMING);
                                 //Change this to incoming info
                                 chatMessage.setType(ChatMessageType.NORMAL);
-
                                 insertMessageInDb(chatMessage);
+
+                                if(from.equals(chatActivity.getCurrentConversationId()) &&
+                                        chatActivity.hasWindowFocus())
+                                {
+                                    Log.v(log_v, "LOADING due to INCOMING message");
+
+                                    chatActivity.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            chatActivity.getChatAdapter().add(chatMessage);
+                                            chatActivity.getChatAdapter().notifyDataSetChanged();
+                                            chatActivity.scroll();
+                                        }
+                                    });
+                                }
+
+                                conversationsFragment.getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if(!conversationsFragment.getConversationsAdapter().lookUpOrReplace(chatMessage))
+                                            conversationsFragment.getConversationsAdapter().addFirst(chatMessage);
+                                        conversationsFragment.getConversationsAdapter().notifyDataSetChanged();
+                                    }
+                                });
+
+
+
                             }
 
                         }

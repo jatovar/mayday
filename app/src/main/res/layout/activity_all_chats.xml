@@ -24,7 +24,7 @@
         android:textStyle="bold" />
 
     <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/srlMySwipeMensajes"
+        android:id="@+id/swpMessages"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_below="@+id/textView1"
@@ -33,7 +33,7 @@
         <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/miLista"
+            android:id="@+id/lvMessages"
             android:layout_marginTop="80dp"
             />
 

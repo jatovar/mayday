@@ -1,15 +1,11 @@
 package com.example.diego.mayday_03;
 
-import android.content.Intent;
-import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -19,46 +15,23 @@ import java.util.ArrayList;
  */
 public class ConversationsFragment extends Fragment {
 
-    private SwipeRefreshLayout srlMySwipeMensajes;
-    private DataBaseHelper db;
+    private SwipeRefreshLayout swpMessages;
+    private ListView lvMessages;
     private ArrayList<ChatMessage> messageArrayList;
-
+    private View view;
+    private ConversationItemAdapter adapter;
+    private MyApplication app;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.activity_all_chats, container, false);
+        view = inflater.inflate(R.layout.activity_all_chats, container, false);
 
         loadConversations();
-        /*
-        DbMensaje tblMsn = new DbMensaje(this.getActivity().getApplicationContext());
-        ArrayList<Mensaje> lista = tblMsn.getMensajes();
+        initControls();
+        swpMessages = (SwipeRefreshLayout)view.findViewById(R.id.swpMessages);
 
-        if(lista.size()==0)
-        {
-            tblMsn.insert("Miguel Cruz", "Juan Perez", "Hola  me urge comunicarme contigo, saludos");
-            tblMsn.insert("Miguel Cruz", "Claudio Lopez", "Nos vemos mañana, gracias por la invitacion");
-            tblMsn.insert("Miguel Cruz", "Mario Campos", "Hola  me urge comunicarme contigo, saludos");
-            tblMsn.insert("Miguel Cruz", "Fernando Estrada", "Nos vemos mañana, gracias por la invitacion");
-            tblMsn.insert("Miguel Cruz", "Carlos Trejo", "Hola  me urge comunicarme contigo, saludos");
-            tblMsn.insert("Miguel Cruz", "Cesar Rios", "Nos vemos mañana, gracias por la invitacion");
-            lista = tblMsn.getMensajes();
-        }
-        */
-        srlMySwipeMensajes = (SwipeRefreshLayout)view.findViewById(R.id.srlMySwipeMensajes);
-        String[] columnasBD = new String[] {"_id", "imagen", "textoSuperior", "textoInferior"};
-        MatrixCursor cursor = new MatrixCursor(columnasBD);
-        /*
-        for(int i = 0; i< lista.size(); i++)
-        {
-            cursor.addRow(new Object[] {lista.get(i).getId(), R.drawable.usericon, lista.get(i).getDestino(), lista.get(i).getBody()});
-        }
-        */
-        //Añadimos los datos al Adapter y le indicamos donde dibujar cada dato en la fila del Layout
-        String[] desdeEstasColumnas = {"imagen", "textoSuperior", "textoInferior"};
-        int[] aEstasViews = {R.id.imageView_imagen, R.id.textView_superior, R.id.textView_inferior};
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(view.getContext(), R.layout.item_conversation, cursor, desdeEstasColumnas, aEstasViews, 0);
-        ListView listado = (ListView)view.findViewById(R.id.miLista);
+        //ListView lvMessages = (ListView)view.findViewById(R.id.lvMessages);
 
         /*listado.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
@@ -68,32 +41,47 @@ public class ConversationsFragment extends Fragment {
             }
         });*/
 
-        srlMySwipeMensajes.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
+        swpMessages.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
             @Override
             public void onRefresh(){
 
-                actualizarListView();
+                refreshListView();
 
             }
         });
 
-        listado.setAdapter(adapter);
+        //lvMessages.setAdapter(adapter);
 
-        System.out.println("Tab 1");
+        app = (MyApplication) getActivity().getApplication();
+        app.setConversationsFragment(this);
+
         return view;
     }
 
-    private void loadConversations() {
-        db = new DataBaseHelper(getContext());
-        this.messageArrayList = db.getConversationsLastestMessage();
-        ///
-        // db = new DataBaseHelper(this.getContext());
-
+    private void initControls() {
+        lvMessages = (ListView) view.findViewById(R.id.lvMessages);
+        adapter    = new ConversationItemAdapter(ConversationsFragment.this, new ArrayList<ChatMessage>());
+        adapter.add(this.messageArrayList);
+        lvMessages.setAdapter(adapter);
     }
 
-    public void actualizarListView(){
-        srlMySwipeMensajes.setRefreshing(false);
+    private void loadConversations() {
+        DataBaseHelper db;
+        db = new DataBaseHelper(getContext());
+        this.messageArrayList = db.getConversationsLastestMessage();
+        db.close();
+    }
 
+    private void refreshListView(){
+        swpMessages.setRefreshing(false);
+        loadConversations();
+        lvMessages = (ListView) view.findViewById(R.id.lvMessages);
+        adapter    = new ConversationItemAdapter(ConversationsFragment.this, new ArrayList<ChatMessage>());
+        adapter.add(this.messageArrayList);
+        lvMessages.setAdapter(adapter);
 
+    }
+    public ConversationItemAdapter getConversationsAdapter(){
+        return this.adapter;
     }
 }

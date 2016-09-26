@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by diego on 13/09/16.
+ * Created by jorge on 23/09/16.
  */
 public class ChatAdapter extends BaseAdapter {
 
@@ -55,7 +55,7 @@ public class ChatAdapter extends BaseAdapter {
                 Context.LAYOUT_INFLATER_SERVICE);
         if(convertView == null){
             convertView = vi.inflate(R.layout.item_message, null);
-            holder = createViewHolder(convertView);
+            holder      = createViewHolder(convertView);
             convertView.setTag(holder);
         }else{
             holder = (ViewHolder) convertView.getTag();
