@@ -72,6 +72,10 @@ public class MyApplication extends Application {
         this.conversationsFragment = conversationsFragment;
     }
 
+    public ConversationsFragment getConversationsFragment(){
+        return this.conversationsFragment;
+    }
+
     public void setChatActivity(ChatActivity chatActivity){
         this.chatActivity = chatActivity;
     }
@@ -159,9 +163,7 @@ public class MyApplication extends Application {
                                 conversationsFragment.getActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        if(!conversationsFragment.getConversationsAdapter().lookUpOrReplace(chatMessage))
-                                            conversationsFragment.getConversationsAdapter().addFirst(chatMessage);
-                                        conversationsFragment.getConversationsAdapter().notifyDataSetChanged();
+                                        conversationsFragment.invalidateChatList(chatMessage);
                                     }
                                 });
 

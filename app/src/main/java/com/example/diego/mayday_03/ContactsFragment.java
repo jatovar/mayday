@@ -29,12 +29,10 @@ public class ContactsFragment extends Fragment{
     /** There will be two requests from this view in order to refresh the current data**/
 
     static final int ADD_CONTACT_REQUEST        = 1;
-    static final int START_CONVERSATION_REQUEST = 2;
+
 
     private String log_v = "ContactFragment";
 
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private SimpleCursorAdapter adapter;
     private ListView lvContacts;
 
     private ContactAdapter contactAdapter;
@@ -49,11 +47,11 @@ public class ContactsFragment extends Fragment{
         this.parentActivity  = getActivity();
         this.view = view;
         loadContacts(view);
-        setClickAddListener(view);
+        setClickAddContactListener(view);
         return view;
     }
 
-    private void setClickAddListener(View view) {
+    private void setClickAddContactListener(View view) {
         buttonAddContact = (FloatingActionButton)view.findViewById(R.id.bt_add);
         buttonAddContact.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,7 +83,7 @@ public class ContactsFragment extends Fragment{
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Contact contact = contactAdapter.getItem(position);
-                    Intent intent = new Intent(parentActivity, ChatActivity.class);
+                    Intent intent   = new Intent(parentActivity, ChatActivity.class);
                     intent.putExtra("contact_MayDayID", contact.getMayDayId());
                     startActivity(intent);
                 }
@@ -117,20 +115,8 @@ public class ContactsFragment extends Fragment{
                     addContactToDataSet(data);
                     sortContacts();
                     contactAdapter.notifyDataSetChanged();
-                    break;
+                break;
 
-                /*case VIEW_CONTACT_REQUEST:
-                    Log.v(log_v, "VIEW_CONTACT_REQUEST");
-                    if(data.getBooleanExtra("is_deleting", false) == true)
-                        deleteContactInDataSet(data);
-                    else
-                        modifyContactInDataSet(data);
-                    sortContacts();
-                    contactListAdapter.notifyDataSetChanged();
-                    break;*/
-                case START_CONVERSATION_REQUEST:
-
-                    break;
 
             }
         }

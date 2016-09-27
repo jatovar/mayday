@@ -1,6 +1,5 @@
 package com.example.diego.mayday_03;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -11,13 +10,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import org.jivesoftware.smack.AbstractXMPPConnection;
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.StanzaListener;
-import org.jivesoftware.smack.chat.Chat;
-import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Stanza;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -39,7 +31,7 @@ public class ChatActivity extends AppCompatActivity{
     private Button btnSend;
     private ChatAdapter adapter;
     private ArrayList<ChatMessage> chatHistory;
-
+    private ConversationsFragment conversationsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -53,6 +45,7 @@ public class ChatActivity extends AppCompatActivity{
         app = (MyApplication) getApplication();
         app.createChat("jorge_spa@jorge-latitude-e5440"); //hard coded
         app.setChatActivity(this);
+        conversationsFragment = app.getConversationsFragment();
         initControls();
     }
 
@@ -91,7 +84,7 @@ public class ChatActivity extends AppCompatActivity{
                     db.close();
                     etMessage.setText("");
                     displayMessage(outGoingMessage);
-
+                    conversationsFragment.invalidateChatList(outGoingMessage);
                 }catch (Exception ex){
                     ex.printStackTrace();
                 }

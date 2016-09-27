@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * Created by jorge on 26/09/16.
- * This class handles the Cursor adapter to our needs (it gets the position where an unread message
+ * This class handles the Cursor adapter to our needs (it gets the position of an unread message
  * is and sets the color of the textView)
  */
 public class ConversationItemAdapter extends BaseAdapter {
@@ -80,6 +80,10 @@ public class ConversationItemAdapter extends BaseAdapter {
             tvMessageBody.setTextAppearance(context, android.R.style.TextAppearance_Material_Medium);
             tvMessageBody.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryMayday));
             tvMessageBody.setTypeface(null, Typeface.BOLD);
+        }else{
+            tvMessageBody.setTextAppearance(context, android.R.style.TextAppearance_DeviceDefault_Small);
+            tvMessageBody.setTextColor(ContextCompat.getColor(context, R.color.colorBlack));
+            tvMessageBody.setTypeface(null, Typeface.NORMAL);
         }
 
     }
@@ -95,21 +99,18 @@ public class ConversationItemAdapter extends BaseAdapter {
 
     /**This method looks in our list of latest messages and replaces it when a new message has arrived
      * the author and the mayday_id should not change because it will always be the same**/
-    public boolean lookUpOrReplace(ChatMessage message){
+    public void replaceMessageAndSetFirst(ChatMessage message){
+        this.addFirst(message);
         for (ChatMessage msg : chatMessages) {
             if(msg.getContactMayDayID().equals(message.getContactMayDayID())){
-                msg.setMessage(message.getMessage());
-                msg.setStatus(message.getStatus());
-                msg.setType(message.getType());
-                msg.setDirection(message.getDirection());
-                msg.setId(message.getId());
-                msg.setDatetime(message.getDatetime());
-                return true;
+                chatMessages.remove(msg);
+                return ;
             }
         }
-        return false;
+
     }
 
+    /**This ViewHolder is a helper function for accessing to child controls in the conversation View*/
     private ViewHolder createViewHolder(View v) {
         ViewHolder holder    = new ViewHolder();
 
