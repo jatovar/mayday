@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"></android.support.v7.widget.Toolbar>
 
     <RelativeLayout
         android:id="@+id/container"
@@ -38,10 +48,19 @@
             android:layout_marginBottom="20dp"
             android:layout_above="@+id/messageEdit"
             android:layout_below="@+id/meLbl"
-            android:layout_marginTop="10dp"
             android:listSelector="@android:color/transparent"
             android:transcriptMode="alwaysScroll"
             android:divider="@null" />
+
+
+
+        <TextView
+            android:id="@+id/friendLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="Amigo"
+            android:textSize="20dp" />
 
         <TextView
             android:id="@+id/meLbl"
@@ -52,13 +71,6 @@
             android:singleLine="false"
             android:textSize="20dp" />
 
-        <TextView
-            android:id="@+id/friendLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="Amigo"
-            android:textSize="20dp" />
-
     </RelativeLayout>
-</LinearLayout>
+
+</FrameLayout>

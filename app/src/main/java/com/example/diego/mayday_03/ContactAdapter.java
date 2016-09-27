@@ -2,122 +2,144 @@ package com.example.diego.mayday_03;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
+import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 
 /**
- * Created by diego on 9/09/16.
- * This "Adapter" is used to handle the communication between a listView and
- * a ArrayList<Contact>. It defines how an object "Contact" gets mapped into a
- * layout "item_contact".
- *
- * This adapter is used within the method "load_contacts" which is used to populate
- * The list of contacts.
- *
+ * Created by jorge on 27/09/16.
+ * This class handles the contact adapter to our needs (it refreshes the data when its required)
  */
-public class ContactAdapter extends ArrayAdapter<Contact> {
+public class ContactAdapter extends BaseAdapter{
 
-    private String log_v="ContactAdapter";
-    //private Context mContext;
-    static final int VIEW_CONTACT_REQUEST = 2;
+    private final List<Contact> contactList;
+    private Activity context;
 
-    public  ContactAdapter(Context context, ArrayList<Contact> contactList){
-        super(context, 0, contactList);
-      //  mContext = context;
+    public ContactAdapter(ContactsFragment contactsFragment, ArrayList<Contact> contactList) {
+        this.context     = contactsFragment.getActivity();
+        this.contactList = contactList;
     }
 
+    @Override
+    public int getCount() {
+        if (contactList != null)
+            return  contactList.size();
+        return 0;
+    }
 
     @Override
-    public View getView(final int position, View convertView, final ViewGroup parent) {
-        // Obtener inflater.
-        LayoutInflater inflater = (LayoutInflater) getContext()
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    public Contact getItem(int position) {
+        if (contactList != null)
+            return contactList.get(position);
+        return null;
+    }
 
-        // ¿Existe el view actual?
-        if (convertView == null) {
-            convertView = inflater.inflate(R.layout.item_contact, parent, false);
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
+        Contact contact = getItem(position);
+        LayoutInflater vi = (LayoutInflater) context.getSystemService(
+                Context.LAYOUT_INFLATER_SERVICE);
+        if(convertView == null){
+            convertView = vi.inflate(R.layout.item_contact, null);
+            holder      = createViewHolder(convertView);
+            convertView.setTag(holder);
+        }else{
+            holder = (ViewHolder) convertView.getTag();
         }
 
-        /*TODO:
-            -adding an avatar image
-                ImageView avatar = (ImageView) convertView.findViewById(R.id.iv_avatar);
-                http://www.hermosaprogramacion.com/2014/10/android-listas-adaptadores/
-        */
-        /*
-        ImageButton showContact = (ImageButton) convertView.findViewById(R.id.btn_showcontacts);
-        ImageButton startConv   = (ImageButton) convertView.findViewById(R.id.btn_startconversation);
-
-        showContact.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.v(log_v, "onCLick SHOW CONTACT");
-                Contact c = getItem(position);
-                Log.v(log_v, "Contact name = "      +  c.getName() + "\n" +
-                             "Contact Mayday ID = " + c.getMayDayId() + "\n"
-                 );
-
-                Intent intent = new Intent( parent.getContext(), ContactInformationActivity.class);
-                intent.putExtra("editing_contact_MayDayID", c.getMayDayId());
-                intent.putExtra("editing_contact_name", c.getName());
-                intent.putExtra("editing_contact_status", c.getStatus());
-                intent.putExtra("editing_contact_id", c.getIdAsString());
-                ((Activity) parent.getContext()).startActivityForResult(intent, VIEW_CONTACT_REQUEST);
-
-            }
-        });
-
-
-
-        startConv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.v(log_v,"onCLick SHOW CONVERSATION");
-                Intent intent = new Intent( parent.getContext(), ChatActivity.class);
-                parent.getContext().startActivity(intent);
-            }
-        });
-        */
-        TextView mayDayID = (TextView) convertView.findViewById(R.id.tv_mayDayID);
-        TextView name     = (TextView) convertView.findViewById(R.id.tv_name);
-        TextView status   = (TextView) convertView.findViewById(R.id.tv_status);
-
-        Contact contact   = getItem(position);
-
-        mayDayID.setText(contact.getMayDayId());
+        holder.tvMayDayId.setText(contact.getMayDayId());
 
         switch (contact.getStatus()){
-
             case BLOCKED:
-                name.setText(contact.getName());
-               // status.setText("blocked");
+                holder.tvName.setText(contact.getName());
+                // status.setText("blocked");
                 break;
             case UNKNOWN:
-                name.setText("");
-               // status.setText("unknown");
+                holder.tvName.setText("");
+                // status.setText("unknown");
                 break;
             case NORMAL:
-                name.setText(contact.getName());
-               // status.setText("normal");
+                holder.tvName.setText(contact.getName());
+                // status.setText("normal");
                 break;
         }
-
-
-
         return convertView;
     }
 
+    /** For new contacts **/
+    public void add(Contact contact){
+        contactList.add(contact);
+        sortContacts();
+    }
+    /** For initializing from db set  **/
+    public void add(List<Contact> contactList){
+        this.contactList.addAll(contactList);
+        sortContacts();
+    }
 
+    /**For removing from collection**/
+    public void remove(String idToDelete){
+        for (Contact c : contactList)
+            if(c.getIdAsString().equals(idToDelete)){
+                contactList.remove(c);
+                sortContacts();
+                break;
+            }
+    }
 
+    /**For modifying from collection**/
+    public void modify(Contact newContactInfo){
+        for (Contact c : contactList)
+            if (c.getIdAsString().equals(newContactInfo.getIdAsString())){
+                c.setStatus(newContactInfo.getStatus());
+                c.setName(newContactInfo.getName());
+                c.setMayDayId(newContactInfo.getMayDayId());
+                sortContacts();
+                break;
+            }
+
+    }
+
+    /**We need to sort in evey CRUD operation**/
+    private void sortContacts() {
+        Collections.sort(contactList, new Comparator<Contact>() {
+            @Override
+            public int compare(Contact c1, Contact c2) {
+                return c1.getName().compareToIgnoreCase(c2.getName());
+            }
+        });
+    }
+    private ViewHolder createViewHolder(View v) {
+
+        ViewHolder holder = new ViewHolder();
+
+        holder.tvMayDayId = (TextView) v.findViewById(R.id.tv_mayDayID);
+        holder.tvName     = (TextView) v.findViewById(R.id.tv_name);
+        holder.tvStatus   = (TextView) v.findViewById(R.id.tv_status);
+
+        return holder;
+    }
+
+    private static class ViewHolder {
+        public TextView tvMayDayId;
+        public TextView tvName;
+        public TextView tvStatus;
+    }
 
 }
 

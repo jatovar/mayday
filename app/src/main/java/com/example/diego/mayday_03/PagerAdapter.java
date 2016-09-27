@@ -29,7 +29,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter{
                 System.out.println("T1");
                 return tab2;
             case 2:
-                ContactsFragment tab3 = new ContactsFragment();
+                ConfigFragment tab3 = new ConfigFragment();
                 System.out.println("T2");
                 return tab3;
             default:

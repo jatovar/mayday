@@ -1,15 +1,21 @@
 package com.example.diego.mayday_03;
 
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -19,6 +25,9 @@ import java.util.Date;
  * Created by jorge on 21/09/16.
  */
 public class ChatActivity extends AppCompatActivity{
+
+    static final int ADD_CONTACT_REQUEST = 1;
+    static final int EDIT_CONTACT_REQUEST = 2;
 
     private String log_v = "ChatActivity: ";
     private String contactMaydayId;
@@ -32,7 +41,8 @@ public class ChatActivity extends AppCompatActivity{
     private ChatAdapter adapter;
     private ArrayList<ChatMessage> chatHistory;
     private ConversationsFragment conversationsFragment;
-
+    private Toolbar myToolbar;
+    private Contact contact;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -49,23 +59,95 @@ public class ChatActivity extends AppCompatActivity{
         initControls();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_add_contact, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add_contact:
+                Log.i("ActionBar", "Add contact!");
+                //TODO: Toast if contact already exists, add contact activity? if it doesnt exists
+                return true;
+            case R.id.action_detail_contact:
+                Log.i("ActionBar", "Info!");
+
+                if((contact = app.getContactsFragment().findContactById(contactMaydayId)) != null)
+                {
+                    Intent intent = new Intent(getApplicationContext(), ContactInformationActivity.class);
+                    intent.putExtra("editing_contact_id", contact.getIdAsString());
+                    intent.putExtra("editing_contact_MayDayID", contact.getMayDayId());
+                    intent.putExtra("editing_contact_name", contact.getName());
+                    intent.putExtra("editing_contact_status", contact.getStatus());
+                    startActivityForResult(intent, EDIT_CONTACT_REQUEST);
+                }
+                else
+                {
+                    Toast toast = Toast.makeText(
+                            this.getApplicationContext(),
+                            "Contacto no existe, favor de agregarlo",
+                            Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.v(log_v,"Result callback");
+        // Make sure the request was successful
+        if (resultCode == RESULT_OK) {
+            Log.v(log_v,"RESULT OK, REFRESH CONTACT LIST DEPENDING THE CASE");
+            // Check which request we're responding to
+            switch (requestCode){
+                case ADD_CONTACT_REQUEST:
+
+                    break;
+                case EDIT_CONTACT_REQUEST:
+                    //TODO:We must refresh it all here...... the Contacts View, the Conversations View, and the ChatActivity menu title
+                    Log.v(log_v, "EDIT_CONTACT_REQUEST");
+
+                    if(data.getBooleanExtra("is_deleting", false))
+                        app.getContactsFragment().deleteContactInDataSet(data);
+                    else
+                        app.getContactsFragment().modifyContactInDataSet(data);
+                    break;
+
+            }
+
+        }
+    }
+
     private void initControls() {
         messagesContainer = (ListView) findViewById(R.id.messagesContainer);
         etMessage         = (EditText) findViewById(R.id.messageEdit);
         btnSend           = (Button)   findViewById(R.id.chatSendButton);
+        myToolbar         = (Toolbar) findViewById(R.id.my_toolbar);
 
         TextView meLabel         = (TextView) findViewById(R.id.meLbl);
         TextView companionLabel  = (TextView) findViewById(R.id.friendLabel);
         RelativeLayout container = (RelativeLayout) findViewById(R.id.container);
+        setSupportActionBar(myToolbar);
+        getSupportActionBar().setTitle("Jorge");
+        myToolbar.setTitleTextColor(Color.WHITE);
+        myToolbar.setPadding(100,0,0,0);
+        myToolbar.setSubtitleTextColor(Color.WHITE);
+        myToolbar.setSubtitle(contactMaydayId);
         companionLabel.setText("Jorge SPA"); //Hard coded
         meLabel.setText("Diego SPA");
 
         adapter = new ChatAdapter(ChatActivity.this, new ArrayList<ChatMessage>());
         messagesContainer.setAdapter(adapter);
 
-        //loadDummyHistory();
         loadChatDbHistory();
-        //startAsyncListener();
 
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override

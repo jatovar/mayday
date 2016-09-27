@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SimpleCursorAdapter;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +13,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 /**
  * Created by jorge on 23/09/16.
@@ -38,18 +34,23 @@ public class ContactsFragment extends Fragment{
     private ContactAdapter contactAdapter;
     private Activity parentActivity;
     private ArrayList<Contact> dbContacts;
-    private View view;
+
     private FloatingActionButton buttonAddContact;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_contact, container, false);
         this.parentActivity  = getActivity();
-        this.view = view;
         loadContacts(view);
         setClickAddContactListener(view);
+        //Need to share dbContacts with ChatActivity
+        MyApplication app = (MyApplication) parentActivity.getApplication();
+        app.setContactsFragment(this);
+
         return view;
     }
+
 
     private void setClickAddContactListener(View view) {
         buttonAddContact = (FloatingActionButton)view.findViewById(R.id.bt_add);
@@ -74,10 +75,8 @@ public class ContactsFragment extends Fragment{
         }
         else{
 
-            sortContacts();
-
             lvContacts     = (ListView)currentView.findViewById(R.id.lv_contactList);
-            contactAdapter = new ContactAdapter(currentView.getContext(), dbContacts);
+            contactAdapter = new ContactAdapter(ContactsFragment.this, dbContacts);
             lvContacts.setAdapter(contactAdapter);
             lvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -91,14 +90,7 @@ public class ContactsFragment extends Fragment{
         }
     }
 
-    private void sortContacts() {
-        Collections.sort(dbContacts, new Comparator<Contact>() {
-            @Override
-            public int compare(Contact c1, Contact c2) {
-                return c1.getName().compareToIgnoreCase(c2.getName());
-            }
-        });
-    }
+
 
 
 
@@ -111,10 +103,10 @@ public class ContactsFragment extends Fragment{
             // Check which request we're responding to
             switch (requestCode){
                 case ADD_CONTACT_REQUEST:
+                    //TODO:We must refresh the Contacts View, the Conversations View adapter
+
                     Log.v(log_v, "ADD_CONTACT_REQUEST");
                     addContactToDataSet(data);
-                    sortContacts();
-                    contactAdapter.notifyDataSetChanged();
                 break;
 
 
@@ -122,14 +114,42 @@ public class ContactsFragment extends Fragment{
         }
     }
 
+
+
+    public Contact findContactById(String mayDayId){
+        for (Contact c: dbContacts) {
+            if(c.getMayDayId().equals(mayDayId))
+                return c;
+        }
+        return null;
+    }
+
     private void addContactToDataSet(Intent data) {
-        dbContacts.add(
-            new Contact(
-                    data.getStringExtra("new_contact_id"),
-                    data.getStringExtra("new_contact_name"),
-                    data.getStringExtra("new_contact_MaydayId"),
-                    ContactStatus.NORMAL)
+
+        Contact contact = new Contact(
+                data.getStringExtra("new_contact_id"),
+                data.getStringExtra("new_contact_name"),
+                data.getStringExtra("new_contact_MaydayId"),
+                ContactStatus.NORMAL);
+        contactAdapter.add(contact);
+        contactAdapter.notifyDataSetChanged();
+    }
+
+    public void deleteContactInDataSet(Intent data) {
+        contactAdapter.remove(data.getStringExtra("removed_contact_id"));
+        contactAdapter.notifyDataSetChanged();
+    }
+
+    /* We need to know which element in the set is going to be updated so we need its id to find it, and update it */
+    public void modifyContactInDataSet(Intent data) {
+        Contact contact = new Contact(
+                data.getStringExtra("modified_contact_id"),
+                data.getStringExtra("modified_contact_name"),
+                data.getStringExtra("modified_contact_MayDay_ID"),
+                ContactStatus.valueOf(data.getStringExtra("modified_contact_status"))
         );
+        contactAdapter.modify(contact);
+        contactAdapter.notifyDataSetChanged();
     }
 
 }

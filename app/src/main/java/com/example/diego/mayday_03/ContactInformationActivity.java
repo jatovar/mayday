@@ -63,8 +63,6 @@ public class ContactInformationActivity extends AppCompatActivity{
 
         Log.v(log_v, "clickActionButton");
 
-
-
         if (modifiedName || modifiedId){
 
             try{
@@ -136,7 +134,7 @@ public class ContactInformationActivity extends AppCompatActivity{
     }
 
     public void clickRemoveContactButton(View view){
-        /*TODO : We need a confirmation message to warn the user if he really wants to delete the contact with xxxxx name before this code is executed */
+        /*TODO : We need a confirmation message to warn the user if he really wants to remove the contact with xxxxx name before this code is executed */
         Log.v(log_v, "clickRemoveContactButton");
         try{
 
@@ -156,7 +154,7 @@ public class ContactInformationActivity extends AppCompatActivity{
 
             Intent returnIntent = new Intent();
             returnIntent.putExtra("removed_contact_id", deletedContact.getIdAsString());
-            returnIntent.putExtra("is_deleting",true);
+            returnIntent.putExtra("is_deleting", true);
             setResult(RESULT_OK, returnIntent);
             finish();
 

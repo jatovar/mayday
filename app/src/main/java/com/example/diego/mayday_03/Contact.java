@@ -32,6 +32,9 @@ public class Contact {
         this.name     = name;
         this.status   = status;
     }
+
+
+
     public void setMayDayId(String mayDayID){
 
         this.mayDayID = mayDayID;

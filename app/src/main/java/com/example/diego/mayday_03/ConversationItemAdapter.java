@@ -69,7 +69,11 @@ public class ConversationItemAdapter extends BaseAdapter {
         holder.tvContactName.setText(contactPlaceholder);
         holder.tvMessageBody.setText(chatMessage.getMessage());
         holder.tvTimestamp.setText(chatMessage.getDatetime());
-        setNoReadMessage(holder.tvMessageBody, chatMessage.getStatus(), chatMessage.getDirection());
+        setNoReadMessage(
+                holder.tvMessageBody,
+                chatMessage.getStatus(),
+                chatMessage.getDirection()
+        );
 
         return convertView;
     }
@@ -100,14 +104,14 @@ public class ConversationItemAdapter extends BaseAdapter {
     /**This method looks in our list of latest messages and replaces it when a new message has arrived
      * the author and the mayday_id should not change because it will always be the same**/
     public void replaceMessageAndSetFirst(ChatMessage message){
-        this.addFirst(message);
         for (ChatMessage msg : chatMessages) {
             if(msg.getContactMayDayID().equals(message.getContactMayDayID())){
                 chatMessages.remove(msg);
+                this.addFirst(message);
                 return ;
             }
         }
-
+        this.addFirst(message);
     }
 
     /**This ViewHolder is a helper function for accessing to child controls in the conversation View*/

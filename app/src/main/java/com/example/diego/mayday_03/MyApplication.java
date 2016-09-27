@@ -48,6 +48,7 @@ public class MyApplication extends Application {
 
     private ConversationsFragment conversationsFragment;
     private ChatActivity chatActivity;
+    private ContactsFragment contactsFragment;
 
     @Override
     public void onCreate(){
@@ -74,6 +75,14 @@ public class MyApplication extends Application {
 
     public ConversationsFragment getConversationsFragment(){
         return this.conversationsFragment;
+    }
+
+    public void setContactsFragment(ContactsFragment contactsFragment){
+        this.contactsFragment = contactsFragment;
+    }
+
+    public ContactsFragment getContactsFragment(){
+        return this.contactsFragment;
     }
 
     public void setChatActivity(ChatActivity chatActivity){

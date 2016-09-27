@@ -16,13 +16,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Jorge Tovar"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:textSize="@dimen/name_contact"/>
 
     <LinearLayout
         android:id="@+id/lyTel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/top">
 
         <ImageView
             android:id="@+id/imgvTelefono"
@@ -43,12 +45,16 @@
                 android:text="Jorge"
                 android:onClick="clickEditContactName"
                 android:layout_gravity="center_vertical"
-                android:clickable="true"/>
+                android:textSize="@dimen/contact_field"
+                android:clickable="true"
+                android:paddingLeft="20dp" />
 
             <EditText
                 android:id="@+id/hidden_edit_view_name"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/contact_field"
+                >
             </EditText>
         </ViewSwitcher>
 
@@ -60,7 +66,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/top">
 
         <ImageView
             android:id="@+id/ivMid"
@@ -83,12 +90,16 @@
                 android:text="ABC-12345"
                 android:onClick="clickEditContactId"
                 android:layout_gravity="center_vertical"
-                android:clickable="true"/>
+                android:clickable="true"
+                android:textSize="@dimen/contact_field"
+                android:paddingLeft="20dp" />
 
             <EditText
                 android:id="@+id/hidden_tvMid"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/contact_field"
+                >
             </EditText>
         </ViewSwitcher>
 
@@ -99,7 +110,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_gravity="center"
-        >
+        android:layout_marginTop="@dimen/top">
 
         <Button
             android:layout_width="150dp"
