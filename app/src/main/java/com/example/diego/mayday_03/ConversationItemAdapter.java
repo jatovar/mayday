@@ -3,12 +3,15 @@ package com.example.diego.mayday_03;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -64,13 +67,13 @@ public class ConversationItemAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        String contactPlaceholder = chatMessage.getAuthor() + "(" +
-                chatMessage.getContactMayDayID() + ")";
+        String contactPlaceholder = chatMessage.getAuthor() + " [" +
+                chatMessage.getContactMayDayID() + "]";
         holder.tvContactName.setText(contactPlaceholder);
         holder.tvMessageBody.setText(chatMessage.getMessage());
         holder.tvTimestamp.setText(chatMessage.getDatetime());
         setNoReadMessage(
-                holder.tvMessageBody,
+                holder,
                 chatMessage.getStatus(),
                 chatMessage.getDirection()
         );
@@ -78,16 +81,20 @@ public class ConversationItemAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private void setNoReadMessage(TextView tvMessageBody, ChatMessageStatus status, ChatMessageDirection direction) {
+    private void setNoReadMessage(ViewHolder holder, ChatMessageStatus status, ChatMessageDirection direction) {
 
         if(direction == ChatMessageDirection.INCOMING && status == ChatMessageStatus.UNREAD) {
-            tvMessageBody.setTextAppearance(context, android.R.style.TextAppearance_Material_Medium);
-            tvMessageBody.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryMayday));
-            tvMessageBody.setTypeface(null, Typeface.BOLD);
+            holder.imgRead.setColorFilter(Color.RED);
+            holder.tvMessageBody.setTextAppearance(context, android.R.style.TextAppearance_DeviceDefault_Small);
+            holder.tvMessageBody.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryMayday));
+            holder.tvMessageBody.setTypeface(null, Typeface.BOLD);
+            holder.tvContactName.setTypeface(null, Typeface.BOLD);
         }else{
-            tvMessageBody.setTextAppearance(context, android.R.style.TextAppearance_DeviceDefault_Small);
-            tvMessageBody.setTextColor(ContextCompat.getColor(context, R.color.colorBlack));
-            tvMessageBody.setTypeface(null, Typeface.NORMAL);
+            holder.imgRead.setColorFilter(Color.LTGRAY);
+            holder.tvMessageBody.setTextAppearance(context, android.R.style.TextAppearance_DeviceDefault_Small);
+            holder.tvMessageBody.setTextColor(ContextCompat.getColor(context, R.color.colorBlack));
+            holder.tvMessageBody.setTypeface(null, Typeface.NORMAL);
+            holder.tvContactName.setTypeface(null, Typeface.NORMAL);
         }
 
     }
@@ -113,6 +120,11 @@ public class ConversationItemAdapter extends BaseAdapter {
         }
         this.addFirst(message);
     }
+    public void setAuthorToUnknown(String toRemoveMayDayId) {
+        for (ChatMessage chatMessage : chatMessages)
+            if (chatMessage.getContactMayDayID().equals(toRemoveMayDayId))
+                chatMessage.setAuthor(" UNKNOWN ");
+    }
 
     /**This ViewHolder is a helper function for accessing to child controls in the conversation View*/
     private ViewHolder createViewHolder(View v) {
@@ -121,14 +133,26 @@ public class ConversationItemAdapter extends BaseAdapter {
         holder.tvContactName = (TextView) v.findViewById(R.id.tvContactName);
         holder.tvMessageBody = (TextView) v.findViewById(R.id.tvMessageBody);
         holder.tvTimestamp   = (TextView) v.findViewById(R.id.tvTimestamp);
-
+        holder.imgRead       = (ImageView) v.findViewById(R.id.imgRead);
         return holder;
     }
+
+    public void updateContactInfo(Contact contact) {
+        for (ChatMessage chatMessage : chatMessages)
+            if (chatMessage.getContactMayDayID().equals(contact.getMayDayId())){
+                chatMessage.setAuthor(contact.getName());
+                chatMessage.setContactMayDayId(contact.getMayDayId());
+            }
+
+    }
+
+
 
     private static class ViewHolder {
         public TextView tvContactName;
         public TextView tvMessageBody;
         public TextView tvTimestamp;
+        public ImageView imgRead;
     }
 
 }

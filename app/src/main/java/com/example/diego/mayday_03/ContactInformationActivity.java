@@ -154,6 +154,7 @@ public class ContactInformationActivity extends AppCompatActivity{
 
             Intent returnIntent = new Intent();
             returnIntent.putExtra("removed_contact_id", deletedContact.getIdAsString());
+            returnIntent.putExtra("removed_contact_maydayid", deletedContact.getMayDayId());
             returnIntent.putExtra("is_deleting", true);
             setResult(RESULT_OK, returnIntent);
             finish();

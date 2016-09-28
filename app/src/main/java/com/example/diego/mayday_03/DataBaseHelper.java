@@ -240,6 +240,8 @@ public class DataBaseHelper extends SQLiteOpenHelper{
                 if(contact.getMayDayId().equals(message.getContactMayDayID()))
                     message.setAuthor(contact.getName());
             }
+            if(message.getAuthor().equals(""))
+                message.setAuthor(" UNKNOWN ");
         }
         return chatMessageList;
     }
@@ -249,9 +251,8 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     public ArrayList<ChatMessage> getMessages(String contact_MayDayID, int start_index, int counter) {
         ArrayList<ChatMessage> chatMessageList = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
-        /*TODO:
-            - add logic for start_index
-         */
+        //TODO: OPTIMIZATION  - add logic for start_index
+
        //String query = "SELECT TOP "+ String.valueOf(counter)+ " * FROM " +TABLE_MESSAGE + "WHERE " + COLUMN_MAYDAYID + " = " +contact_MayDayID;
         String query = "SELECT * FROM "
                 + TABLE_MESSAGE + " WHERE " + COLUMN_CONTACT_MAYDAYID + " =?";

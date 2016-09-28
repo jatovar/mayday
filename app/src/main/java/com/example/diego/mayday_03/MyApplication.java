@@ -139,10 +139,8 @@ public class MyApplication extends Application {
                                 String from = parts[0];
                                 Log.d("DEBUGING: ", "FROM: " + from);
                                 Log.d("DEBUGING: ", "BODY: " + body);
-                                /*TODO:
-                                    -Extract TYPE from incoming message
-                                */
-
+                                //TODO: -Extract TYPE from incoming message
+                                //TODO: -Get the author from db
                                 chatMessage.setContactMayDayId(from);
                                 chatMessage.setMessage(body);
                                 chatMessage.setDatetime(DateFormat.getDateTimeInstance()
@@ -154,7 +152,7 @@ public class MyApplication extends Application {
                                 chatMessage.setType(ChatMessageType.NORMAL);
                                 insertMessageInDb(chatMessage);
 
-                                if(from.equals(chatActivity.getCurrentConversationId()) &&
+                                if(chatActivity != null && from.equals(chatActivity.getCurrentConversationId()) &&
                                         chatActivity.hasWindowFocus())
                                 {
                                     Log.v(log_v, "LOADING due to INCOMING message");
@@ -162,9 +160,8 @@ public class MyApplication extends Application {
                                     chatActivity.runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            chatActivity.getChatAdapter().add(chatMessage);
-                                            chatActivity.getChatAdapter().notifyDataSetChanged();
-                                            chatActivity.scroll();
+                                            chatActivity.displayMessage(chatMessage);
+
                                         }
                                     });
                                 }
@@ -172,7 +169,7 @@ public class MyApplication extends Application {
                                 conversationsFragment.getActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        conversationsFragment.invalidateChatList(chatMessage);
+                                        conversationsFragment.addIncomingMessage(chatMessage);
                                     }
                                 });
 

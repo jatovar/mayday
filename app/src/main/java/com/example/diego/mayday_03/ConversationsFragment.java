@@ -41,7 +41,12 @@ public class ConversationsFragment extends Fragment {
 
         return view;
     }
-
+    @Override
+    public void onResume(){
+        super.onResume();
+        if(conversationItemAdapter != null)
+            conversationItemAdapter.notifyDataSetChanged();
+    }
     private void initControls() {
         lvMessages              = (ListView) view.findViewById(R.id.lvMessages);
         conversationItemAdapter = new ConversationItemAdapter(ConversationsFragment.this,
@@ -55,6 +60,7 @@ public class ConversationsFragment extends Fragment {
                 ChatMessage chatMessage = conversationItemAdapter.getItem(position);
                 Intent intent           = new Intent(parentActivity, ChatActivity.class);
                 intent.putExtra("contact_MayDayID", chatMessage.getContactMayDayID());
+                intent.putExtra("contact_author", chatMessage.getAuthor());
                 startActivity(intent);
             }
         });
@@ -85,8 +91,41 @@ public class ConversationsFragment extends Fragment {
         conversationItemAdapter.add(this.messageArrayList);
         lvMessages.setAdapter(conversationItemAdapter);
     }
-    public void invalidateChatList(ChatMessage message){
+
+    /**There is is no need to notify changes because onResume method will do that,
+     *  and the user will never be in this fragment when composing a message**/
+    public void addOutgoingMessage(ChatMessage message){
+        conversationItemAdapter.replaceMessageAndSetFirst(message);
+
+    }
+    /**The incoming messages are displayed intermediately because the user
+     * can be in conversations fragment **/
+    public void addIncomingMessage(ChatMessage message){
         conversationItemAdapter.replaceMessageAndSetFirst(message);
         conversationItemAdapter.notifyDataSetChanged();
+    }
+    /**Set **/
+    public void setContactInfoIfExists(Intent data) {
+        Contact contact = new Contact(
+                data.getStringExtra("modified_contact_id"),
+                data.getStringExtra("modified_contact_name"),
+                data.getStringExtra("modified_contact_MayDay_ID"),
+                ContactStatus.valueOf(data.getStringExtra("modified_contact_status"))
+        );
+        conversationItemAdapter.updateContactInfo(contact);
+    }
+
+    public void setToUnknownContactIfExists(Intent data) {
+        String toRemoveMayDayId = data.getStringExtra("removed_contact_maydayid");
+        conversationItemAdapter.setAuthorToUnknown(toRemoveMayDayId);
+    }
+
+    public void setAuthorIfExists(Intent data){
+        Contact contact = new Contact(
+                data.getStringExtra("new_contact_id"),
+                data.getStringExtra("new_contact_name"),
+                data.getStringExtra("new_contact_MaydayId"),
+                ContactStatus.NORMAL);
+        conversationItemAdapter.updateContactInfo(contact);
     }
 }

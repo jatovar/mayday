@@ -116,7 +116,7 @@ public class ContactAdapter extends BaseAdapter{
     }
 
     /**We need to sort in evey CRUD operation**/
-    private void sortContacts() {
+    public void sortContacts() {
         Collections.sort(contactList, new Comparator<Contact>() {
             @Override
             public int compare(Contact c1, Contact c2) {

@@ -22,22 +22,29 @@
 
         <EditText
             android:id="@+id/messageEdit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_toLeftOf="@+id/chatSendButton"
-            android:autoText="true"
-            android:hint="type message" />
-
-        <Button
-            android:id="@+id/chatSendButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:autoText="true"
+            android:hint="escriba su mensaje"
+            android:layout_toLeftOf="@+id/chatSendButton"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <Button
+            android:id="@+id/chatSendButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:background="@color/background_floating_material_dark"
-            android:text="Send MSG"
-            android:textColor="@color/background_material_light"/>
+            android:background="@drawable/ic_send_message"
+            android:textColor="@color/background_material_light"
+            android:backgroundTint="#ee0000"
+            android:clickable="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_alignLeft="@+id/friendLabel"
+            android:layout_alignStart="@+id/friendLabel" />
 
         <ListView
             android:id="@+id/messagesContainer"

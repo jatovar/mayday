@@ -31,6 +31,7 @@ public class ChatActivity extends AppCompatActivity{
 
     private String log_v = "ChatActivity: ";
     private String contactMaydayId;
+    private String author;
     private MyApplication app;
     //AbstractXMPPConnection connection;
 
@@ -40,7 +41,7 @@ public class ChatActivity extends AppCompatActivity{
     private Button btnSend;
     private ChatAdapter adapter;
     private ArrayList<ChatMessage> chatHistory;
-    private ConversationsFragment conversationsFragment;
+
     private Toolbar myToolbar;
     private Contact contact;
     @Override
@@ -50,12 +51,13 @@ public class ChatActivity extends AppCompatActivity{
 
 //        contactMaydayId = getIntent().getExtras().getString("contact_MayDayId");
         contactMaydayId = "jorge_spa"; //hard coded
+        author = getIntent().getExtras().getString("contact_author");
+
         Log.v(log_v, "Start a chat with MayDayId: " + contactMaydayId);
 
         app = (MyApplication) getApplication();
         app.createChat("jorge_spa@jorge-latitude-e5440"); //hard coded
         app.setChatActivity(this);
-        conversationsFragment = app.getConversationsFragment();
         initControls();
     }
 
@@ -71,7 +73,7 @@ public class ChatActivity extends AppCompatActivity{
         switch (item.getItemId()) {
             case R.id.action_add_contact:
                 Log.i("ActionBar", "Add contact!");
-                //TODO: Toast if contact already exists, add contact activity? if it doesnt exists
+                //TODO: Toast if contact already exists, add contact activity? if it doesn't
                 return true;
             case R.id.action_detail_contact:
                 Log.i("ActionBar", "Info!");
@@ -108,17 +110,22 @@ public class ChatActivity extends AppCompatActivity{
             Log.v(log_v,"RESULT OK, REFRESH CONTACT LIST DEPENDING THE CASE");
             // Check which request we're responding to
             switch (requestCode){
-                case ADD_CONTACT_REQUEST:
-
-                    break;
                 case EDIT_CONTACT_REQUEST:
-                    //TODO:We must refresh it all here...... the Contacts View, the Conversations View, and the ChatActivity menu title
+                    //TODO:We must refresh it all here...... the Contacts Fragment, the Conversations Fragment, and the ChatActivity menu title
                     Log.v(log_v, "EDIT_CONTACT_REQUEST");
-
+                    //This refreshes the contacts fragments...
                     if(data.getBooleanExtra("is_deleting", false))
+                    {
                         app.getContactsFragment().deleteContactInDataSet(data);
-                    else
+                        app.getConversationsFragment().setToUnknownContactIfExists(data);
+                        getSupportActionBar().setTitle("Unknown");
+                    }
+                    else {
                         app.getContactsFragment().modifyContactInDataSet(data);
+                        app.getConversationsFragment().setContactInfoIfExists(data);
+                        getSupportActionBar().setTitle(data.getStringExtra("modified_contact_name"));
+
+                    }
                     break;
 
             }
@@ -136,7 +143,7 @@ public class ChatActivity extends AppCompatActivity{
         TextView companionLabel  = (TextView) findViewById(R.id.friendLabel);
         RelativeLayout container = (RelativeLayout) findViewById(R.id.container);
         setSupportActionBar(myToolbar);
-        getSupportActionBar().setTitle("Jorge");
+        getSupportActionBar().setTitle(author);
         myToolbar.setTitleTextColor(Color.WHITE);
         myToolbar.setPadding(100,0,0,0);
         myToolbar.setSubtitleTextColor(Color.WHITE);
@@ -166,7 +173,7 @@ public class ChatActivity extends AppCompatActivity{
                     db.close();
                     etMessage.setText("");
                     displayMessage(outGoingMessage);
-                    conversationsFragment.invalidateChatList(outGoingMessage);
+                    app.getConversationsFragment().addOutgoingMessage(outGoingMessage);
                 }catch (Exception ex){
                     ex.printStackTrace();
                 }
@@ -180,6 +187,7 @@ public class ChatActivity extends AppCompatActivity{
 
     private void setOutgoingMessageProp(String messageText, ChatMessage chatMessage) {
         chatMessage.setContactMayDayId(contactMaydayId);
+        chatMessage.setAuthor(author);
         chatMessage.setMessage(messageText);
         chatMessage.setDatetime(DateFormat.getDateTimeInstance()
                 .format(new Date()));
@@ -220,17 +228,15 @@ public class ChatActivity extends AppCompatActivity{
         scroll();
     }
 
-    public void scroll() {
+    private void scroll() {
         messagesContainer.setSelection((messagesContainer.getCount() - 1));
     }
 
-    public ChatAdapter getChatAdapter(){
-        return this.adapter;
-    }
 
     public String getCurrentConversationId(){
         return this.contactMaydayId;
     }
+
 
 
 }

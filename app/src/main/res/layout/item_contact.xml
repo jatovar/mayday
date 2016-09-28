@@ -1,29 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="30dp">
 
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="3">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Jorge"
+            android:textColor="@color/colorBlack"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+            android:textStyle="bold"
+            android:id="@+id/tv_name"
+            android:layout_weight="10" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Tap to send message"
+            android:textColor="@color/colorPrimaryMayday"
+            android:id="@+id/textView"
+            android:paddingRight="10dp" />
+
+    </LinearLayout>
 
     <TextView
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:text="Jorge"
-        android:textColor="@color/colorBlack"
-        android:gravity="center"
-        android:paddingLeft="30dp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/tv_name"
-        android:layout_weight="1"/>
-
-    <TextView
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_weight="1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="jatovar"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
         android:textColor="@color/colorBlack"
-        android:gravity="center"
         android:id="@+id/tv_mayDayID" />
 
     <TextView

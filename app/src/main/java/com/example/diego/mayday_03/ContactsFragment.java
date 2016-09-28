@@ -24,7 +24,7 @@ public class ContactsFragment extends Fragment{
 
     /** There will be two requests from this view in order to refresh the current data**/
 
-    static final int ADD_CONTACT_REQUEST        = 1;
+    static final int ADD_CONTACT_REQUEST = 1;
 
 
     private String log_v = "ContactFragment";
@@ -50,7 +50,14 @@ public class ContactsFragment extends Fragment{
 
         return view;
     }
+    @Override
+    public void onResume(){
+        super.onResume();
+        if(contactAdapter != null) {
+            contactAdapter.notifyDataSetChanged();
+        }
 
+    }
 
     private void setClickAddContactListener(View view) {
         buttonAddContact = (FloatingActionButton)view.findViewById(R.id.bt_add);
@@ -77,6 +84,7 @@ public class ContactsFragment extends Fragment{
 
             lvContacts     = (ListView)currentView.findViewById(R.id.lv_contactList);
             contactAdapter = new ContactAdapter(ContactsFragment.this, dbContacts);
+            contactAdapter.sortContacts();
             lvContacts.setAdapter(contactAdapter);
             lvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -84,6 +92,7 @@ public class ContactsFragment extends Fragment{
                     Contact contact = contactAdapter.getItem(position);
                     Intent intent   = new Intent(parentActivity, ChatActivity.class);
                     intent.putExtra("contact_MayDayID", contact.getMayDayId());
+                    intent.putExtra("contact_author", contact.getName());
                     startActivity(intent);
                 }
             });
@@ -104,9 +113,10 @@ public class ContactsFragment extends Fragment{
             switch (requestCode){
                 case ADD_CONTACT_REQUEST:
                     //TODO:We must refresh the Contacts View, the Conversations View adapter
-
                     Log.v(log_v, "ADD_CONTACT_REQUEST");
                     addContactToDataSet(data);
+                    MyApplication app = (MyApplication) getActivity().getApplication();
+                    app.getConversationsFragment().setAuthorIfExists(data);
                 break;
 
 
@@ -137,7 +147,6 @@ public class ContactsFragment extends Fragment{
 
     public void deleteContactInDataSet(Intent data) {
         contactAdapter.remove(data.getStringExtra("removed_contact_id"));
-        contactAdapter.notifyDataSetChanged();
     }
 
     /* We need to know which element in the set is going to be updated so we need its id to find it, and update it */
@@ -149,7 +158,6 @@ public class ContactsFragment extends Fragment{
                 ContactStatus.valueOf(data.getStringExtra("modified_contact_status"))
         );
         contactAdapter.modify(contact);
-        contactAdapter.notifyDataSetChanged();
     }
 
 }
