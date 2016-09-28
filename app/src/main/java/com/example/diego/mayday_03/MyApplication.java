@@ -148,6 +148,11 @@ public class MyApplication extends Application {
                                 //**The status should change if the user is in ChatActivity**//
                                 chatMessage.setStatus(ChatMessageStatus.UNREAD);
                                 chatMessage.setDirection(ChatMessageDirection.INCOMING);
+                                Contact contact = contactsFragment.findContactById(from);
+                                if(contact != null)
+                                    chatMessage.setAuthor(contact.getName());
+                                else
+                                    chatMessage.setAuthor("UNKNOWN");
                                 //Change this to incoming info
                                 chatMessage.setType(ChatMessageType.NORMAL);
                                 insertMessageInDb(chatMessage);

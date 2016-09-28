@@ -49,14 +49,14 @@ public class ChatActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_conversation);
 
-//        contactMaydayId = getIntent().getExtras().getString("contact_MayDayId");
-        contactMaydayId = "jorge_spa"; //hard coded
+        contactMaydayId = getIntent().getExtras().getString("contact_MayDayID");
+        //contactMaydayId = "jorge_spa"; //hard coded
         author = getIntent().getExtras().getString("contact_author");
 
         Log.v(log_v, "Start a chat with MayDayId: " + contactMaydayId);
 
         app = (MyApplication) getApplication();
-        app.createChat("jorge_spa@jorge-latitude-e5440"); //hard coded
+        app.createChat(contactMaydayId+"@jorge-latitude-e5440"); //hard coded
         app.setChatActivity(this);
         initControls();
     }
@@ -111,7 +111,7 @@ public class ChatActivity extends AppCompatActivity{
             // Check which request we're responding to
             switch (requestCode){
                 case EDIT_CONTACT_REQUEST:
-                    //TODO:We must refresh it all here...... the Contacts Fragment, the Conversations Fragment, and the ChatActivity menu title
+                    //We must refresh it all here...... the Contacts Fragment, the Conversations Fragment, and the ChatActivity menu title
                     Log.v(log_v, "EDIT_CONTACT_REQUEST");
                     //This refreshes the contacts fragments...
                     if(data.getBooleanExtra("is_deleting", false))
@@ -148,8 +148,8 @@ public class ChatActivity extends AppCompatActivity{
         myToolbar.setPadding(100,0,0,0);
         myToolbar.setSubtitleTextColor(Color.WHITE);
         myToolbar.setSubtitle(contactMaydayId);
-        companionLabel.setText("Jorge SPA"); //Hard coded
-        meLabel.setText("Diego SPA");
+        //companionLabel.setText("Jorge SPA"); //Hard coded
+        //meLabel.setText("Diego SPA");
 
         adapter = new ChatAdapter(ChatActivity.this, new ArrayList<ChatMessage>());
         messagesContainer.setAdapter(adapter);

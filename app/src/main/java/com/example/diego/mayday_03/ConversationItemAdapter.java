@@ -108,8 +108,7 @@ public class ConversationItemAdapter extends BaseAdapter {
         chatMessages.addAll(messages);
     }
 
-    /**This method looks in our list of latest messages and replaces it when a new message has arrived
-     * the author and the mayday_id should not change because it will always be the same**/
+    /**This method looks in our list of latest messages and replaces it when a new message has arrived**/
     public void replaceMessageAndSetFirst(ChatMessage message){
         for (ChatMessage msg : chatMessages) {
             if(msg.getContactMayDayID().equals(message.getContactMayDayID())){

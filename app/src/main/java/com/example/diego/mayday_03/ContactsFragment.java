@@ -76,6 +76,7 @@ public class ContactsFragment extends Fragment{
 
         DataBaseHelper db = new DataBaseHelper(parentActivity);
         dbContacts        = db.getContacts();
+        db.close();
 
         if(dbContacts.isEmpty()){
             Log.v(log_v, "There is no contacts in DB!");

@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -19,9 +21,9 @@ import java.util.List;
  * Created by jorge on 27/09/16.
  * This class handles the contact adapter to our needs (it refreshes the data when its required)
  */
-public class ContactAdapter extends BaseAdapter{
+public class ContactAdapter extends BaseAdapter implements Filterable{
 
-    private final List<Contact> contactList;
+    private List<Contact> contactList;
     private Activity context;
 
     public ContactAdapter(ContactsFragment contactsFragment, ArrayList<Contact> contactList) {
@@ -133,6 +135,27 @@ public class ContactAdapter extends BaseAdapter{
         holder.tvStatus   = (TextView) v.findViewById(R.id.tv_status);
 
         return holder;
+    }
+
+    @Override
+    public Filter getFilter() {
+        Filter filter = new Filter() {
+
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                return null;
+            }
+
+            @Override
+            @SuppressWarnings("unchecked")
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+
+                contactList = (List<Contact>) results.values;
+                notifyDataSetChanged();
+            }
+
+        };
+        return filter;
     }
 
     private static class ViewHolder {

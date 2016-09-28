@@ -82,7 +82,7 @@ public class ContactInformationActivity extends AppCompatActivity{
                 this.db = new DataBaseHelper(this);
                 db.getWritableDatabase();
                 db.contactEdit(modifiedContact);
-
+                db.close();
                 Log.v(log_v,  "Editing contact: " + modifiedContact.getName()
                         + ", " + modifiedContact.getMayDayId());
 
@@ -148,7 +148,7 @@ public class ContactInformationActivity extends AppCompatActivity{
             db = new DataBaseHelper(this);
             db.getWritableDatabase();
             db.contactTruncate(deletedContact.getIdAsString());
-
+            db.close();
             Log.v(log_v,  "Removing contact: " + deletedContact.getName()
                     + ", " + deletedContact.getMayDayId());
 

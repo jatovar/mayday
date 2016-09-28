@@ -41,6 +41,7 @@ public class ContactAddActivity extends AppCompatActivity {
 
         //If mayDayID is already in the DB.
         long contactId = db.contactAdd(contact);
+        db.close();
 
         if(contactId == -1){
             Context context = getApplicationContext();
