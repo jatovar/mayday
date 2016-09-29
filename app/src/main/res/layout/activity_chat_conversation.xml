@@ -31,20 +31,14 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
 
-        <Button
-            android:id="@+id/chatSendButton"
-            android:layout_width="match_parent"
+        <ImageButton
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:id="@+id/chatSendButton"
+            android:src="@android:drawable/ic_menu_send"
+            android:layout_alignBottom="@+id/messageEdit"
             android:layout_alignParentRight="true"
-            android:background="@drawable/ic_send_message"
-            android:textColor="@color/background_material_light"
-            android:backgroundTint="#ee0000"
-            android:clickable="true"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_alignLeft="@+id/friendLabel"
-            android:layout_alignStart="@+id/friendLabel" />
+            android:layout_alignParentEnd="true" />
 
         <ListView
             android:id="@+id/messagesContainer"
@@ -54,10 +48,10 @@
             android:layout_alignParentTop="false"
             android:layout_marginBottom="20dp"
             android:layout_above="@+id/messageEdit"
-            android:layout_below="@+id/meLbl"
             android:listSelector="@android:color/transparent"
             android:transcriptMode="alwaysScroll"
-            android:divider="@null" />
+            android:divider="@null"
+            android:layout_marginTop="?attr/actionBarSize" />
 
 
 
@@ -66,16 +60,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:text="Amigo"
-            android:textSize="20dp" />
-
-        <TextView
-            android:id="@+id/meLbl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left|center_vertical"
-            android:text="Yo"
-            android:singleLine="false"
             android:textSize="20dp" />
 
     </RelativeLayout>

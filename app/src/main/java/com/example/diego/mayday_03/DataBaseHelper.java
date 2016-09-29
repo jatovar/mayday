@@ -252,6 +252,10 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         ArrayList<ChatMessage> chatMessageList = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
         //TODO: OPTIMIZATION  - add logic for start_index
+        ContentValues cv = new ContentValues();
+        cv.put(COLUMN_STATUS, String.valueOf(ChatMessageStatus.READ));
+        db.update(TABLE_MESSAGE, cv , COLUMN_CONTACT_MAYDAYID + " =?"
+                , new String[]{contact_MayDayID});
 
        //String query = "SELECT TOP "+ String.valueOf(counter)+ " * FROM " +TABLE_MESSAGE + "WHERE " + COLUMN_MAYDAYID + " = " +contact_MayDayID;
         String query = "SELECT * FROM "

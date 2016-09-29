@@ -2,6 +2,7 @@ package com.example.diego.mayday_03;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -38,7 +40,7 @@ public class ChatActivity extends AppCompatActivity{
 
     private EditText etMessage;
     private ListView messagesContainer;
-    private Button btnSend;
+    private ImageButton btnSend;
     private ChatAdapter adapter;
     private ArrayList<ChatMessage> chatHistory;
 
@@ -56,7 +58,7 @@ public class ChatActivity extends AppCompatActivity{
         Log.v(log_v, "Start a chat with MayDayId: " + contactMaydayId);
 
         app = (MyApplication) getApplication();
-        app.createChat(contactMaydayId+"@jorge-latitude-e5440"); //hard coded
+        app.createChat(contactMaydayId + "@jorge-latitude-e5440"); //hard coded
         app.setChatActivity(this);
         initControls();
     }
@@ -136,10 +138,10 @@ public class ChatActivity extends AppCompatActivity{
     private void initControls() {
         messagesContainer = (ListView) findViewById(R.id.messagesContainer);
         etMessage         = (EditText) findViewById(R.id.messageEdit);
-        btnSend           = (Button)   findViewById(R.id.chatSendButton);
+        btnSend           = (ImageButton)   findViewById(R.id.chatSendButton);
         myToolbar         = (Toolbar) findViewById(R.id.my_toolbar);
 
-        TextView meLabel         = (TextView) findViewById(R.id.meLbl);
+        //TextView meLabel         = (TextView) findViewById(R.id.meLbl);
         TextView companionLabel  = (TextView) findViewById(R.id.friendLabel);
         RelativeLayout container = (RelativeLayout) findViewById(R.id.container);
         setSupportActionBar(myToolbar);

@@ -8,7 +8,7 @@
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:text="Contactos"
         android:id="@+id/textView2"
         android:textColor="@color/colorPrimaryMayday"
@@ -23,6 +23,12 @@
         android:height="80dp"
         android:textStyle="bold" />
 
+
+    <android.widget.SearchView
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize">
+
+    </android.widget.SearchView>
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/srlMySwipeContacts"
@@ -54,10 +60,13 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:src="@drawable/add"
-        android:layout_below="@+id/srlMySwipeContacts"
-        android:layout_marginLeft="330dp"
         app:backgroundTint="@color/colorPrimaryMayday"
 
-        />
+        android:layout_alignBottom="@+id/srlMySwipeContacts"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="25dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="25dp" />
 
 </RelativeLayout>

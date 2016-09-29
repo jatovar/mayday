@@ -42,7 +42,7 @@
                 <AutoCompleteTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="diego_spa"
+                    android:text="jorge_spa"
                     android:id="@+id/et_MayDayID"
                     android:hint= "MayDayID"
                     android:maxLines="1"

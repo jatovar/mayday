@@ -34,17 +34,18 @@
                 android:layout_weight="2"
                 android:layout_height="wrap_content"
                 android:text="Large Text"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
                 android:layout_gravity="left"
                 android:layout_marginLeft="15dp" />
             <TextView
                 android:id="@+id/tvTimestamp"
-                android:layout_weight="4"
+                android:layout_weight="6"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="Large Text"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:layout_gravity="top" />
+                android:layout_gravity="top"
+                android:textAlignment="center" />
         </LinearLayout>
 
         <TextView
@@ -52,9 +53,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Small Text"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:layout_marginLeft="25dp"
-            android:layout_gravity="left" />
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+            android:layout_marginLeft="16dp"
+            android:layout_gravity="left"
+            android:layout_marginTop="-15dp" />
 
     </LinearLayout>
 

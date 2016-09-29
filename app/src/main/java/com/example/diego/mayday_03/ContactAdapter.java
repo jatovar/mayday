@@ -143,7 +143,21 @@ public class ContactAdapter extends BaseAdapter implements Filterable{
 
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
-                return null;
+                FilterResults results = new FilterResults();
+                ArrayList<String> FilteredArrayNames = new ArrayList<String>();
+
+                constraint = constraint.toString().toLowerCase();
+                for (int i = 0; i < contactList.size(); i++) {
+                    String dataNames = contactList.get(i).getName();
+                    if (dataNames.toLowerCase().startsWith(constraint.toString()))  {
+                        FilteredArrayNames.add(dataNames);
+                    }
+                }
+
+                results.count = FilteredArrayNames.size();
+                results.values = FilteredArrayNames;
+
+                return results;
             }
 
             @Override

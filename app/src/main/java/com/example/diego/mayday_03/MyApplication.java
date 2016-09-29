@@ -35,6 +35,12 @@ public class MyApplication extends Application {
     private static final String RESOURCE = "Android";
 
 
+
+  /*  private static final String DOMAIN   = "mayday";
+    private static final String HOST     = "10.10.51.155";
+    private static final int PORT        = 5222;
+    private static final String RESOURCE = "Android";
+    */
     private String mayDayID = "";
     private String password = "";
 
@@ -161,7 +167,7 @@ public class MyApplication extends Application {
                                         chatActivity.hasWindowFocus())
                                 {
                                     Log.v(log_v, "LOADING due to INCOMING message");
-
+                                    chatMessage.setStatus(ChatMessageStatus.READ);
                                     chatActivity.runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {

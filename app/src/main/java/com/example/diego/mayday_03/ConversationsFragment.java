@@ -58,6 +58,7 @@ public class ConversationsFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ChatMessage chatMessage = conversationItemAdapter.getItem(position);
+                chatMessage.setStatus(ChatMessageStatus.READ);
                 Intent intent           = new Intent(parentActivity, ChatActivity.class);
                 intent.putExtra("contact_MayDayID", chatMessage.getContactMayDayID());
                 intent.putExtra("contact_author", chatMessage.getAuthor());

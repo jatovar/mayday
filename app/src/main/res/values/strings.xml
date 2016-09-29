@@ -4,4 +4,5 @@
     <string name="detalle">Detalle</string>
     <string name="add_contact">agregar contacto</string>
     <string name="detail_contact">info.</string>
+    <string name="hint_search">buscar contacto</string>
 </resources>
