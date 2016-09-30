@@ -6,7 +6,7 @@
 
     <ImageView
         android:layout_width="75dp"
-        android:layout_height="60dp"
+        android:layout_height="?attr/actionBarSize"
         android:scaleType="fitCenter"
         android:id="@+id/icon"
         android:layout_gravity="center_horizontal" />

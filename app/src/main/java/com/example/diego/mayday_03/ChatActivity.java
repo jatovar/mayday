@@ -49,7 +49,7 @@ public class ChatActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat_conversation);
+        setContentView(R.layout.activity_chat_conversation2);
 
         contactMaydayId = getIntent().getExtras().getString("contact_MayDayID");
         //contactMaydayId = "jorge_spa"; //hard coded

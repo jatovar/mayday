@@ -1,11 +1,12 @@
 package com.example.diego.mayday_03;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-
+import android.view.inputmethod.InputMethodManager;
 
 
 /**
@@ -47,7 +48,7 @@ public class TabberActivity extends AppCompatActivity {
         app.startListening();
     }
 
-    private void setPagerConfig(TabLayout tabLayout) {
+    private void setPagerConfig(final TabLayout tabLayout) {
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         final PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
@@ -56,7 +57,9 @@ public class TabberActivity extends AppCompatActivity {
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-
+                final InputMethodManager imm = (InputMethodManager)getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(tabLayout.getWindowToken(), 0);
                 viewPager.setCurrentItem(tab.getPosition());
 
             }

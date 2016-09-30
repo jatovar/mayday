@@ -5,7 +5,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -25,6 +24,7 @@ public class ContactAdapter extends BaseAdapter implements Filterable{
 
     private List<Contact> contactList;
     private Activity context;
+    private ArrayList<Contact> filterOriginalContacts;
 
     public ContactAdapter(ContactsFragment contactsFragment, ArrayList<Contact> contactList) {
         this.context     = contactsFragment.getActivity();
@@ -127,9 +127,7 @@ public class ContactAdapter extends BaseAdapter implements Filterable{
         });
     }
     private ViewHolder createViewHolder(View v) {
-
         ViewHolder holder = new ViewHolder();
-
         holder.tvMayDayId = (TextView) v.findViewById(R.id.tv_mayDayID);
         holder.tvName     = (TextView) v.findViewById(R.id.tv_name);
         holder.tvStatus   = (TextView) v.findViewById(R.id.tv_status);
@@ -137,25 +135,42 @@ public class ContactAdapter extends BaseAdapter implements Filterable{
         return holder;
     }
 
+
+    private static class ViewHolder {
+        public TextView tvMayDayId;
+        public TextView tvName;
+        public TextView tvStatus;
+    }
+
     @Override
     public Filter getFilter() {
         Filter filter = new Filter() {
-
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
-                FilterResults results = new FilterResults();
-                ArrayList<String> FilteredArrayNames = new ArrayList<String>();
 
-                constraint = constraint.toString().toLowerCase();
-                for (int i = 0; i < contactList.size(); i++) {
-                    String dataNames = contactList.get(i).getName();
-                    if (dataNames.toLowerCase().startsWith(constraint.toString()))  {
-                        FilteredArrayNames.add(dataNames);
-                    }
+                FilterResults results = new FilterResults();
+                ArrayList<Contact> FilteredArrayNames = new ArrayList<>();
+
+                if (filterOriginalContacts == null) {
+                    // saves the original data in filterOriginalContacts
+                    filterOriginalContacts = new ArrayList<>(contactList);
                 }
 
-                results.count = FilteredArrayNames.size();
-                results.values = FilteredArrayNames;
+                if (constraint == null || constraint.length() == 0) {
+                    // set the Original result to return
+                    results.count = filterOriginalContacts.size();
+                    results.values = filterOriginalContacts;
+                }else {
+                    constraint = constraint.toString().toLowerCase();
+                    for (int i = 0; i < filterOriginalContacts.size(); i++) {
+                        Contact data = filterOriginalContacts.get(i);
+                        if (data.getName().toLowerCase().startsWith(constraint.toString())) {
+                            FilteredArrayNames.add(data);
+                        }
+                    }
+                    results.count = FilteredArrayNames.size();
+                    results.values = FilteredArrayNames;
+                }
 
                 return results;
             }
@@ -170,12 +185,6 @@ public class ContactAdapter extends BaseAdapter implements Filterable{
 
         };
         return filter;
-    }
-
-    private static class ViewHolder {
-        public TextView tvMayDayId;
-        public TextView tvName;
-        public TextView tvStatus;
     }
 
 }

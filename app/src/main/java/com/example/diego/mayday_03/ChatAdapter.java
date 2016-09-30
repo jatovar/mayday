@@ -50,27 +50,52 @@ public class ChatAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
+        int layoutResource; // determined by view type
         ChatMessage chatMessage = getItem(position);
         LayoutInflater vi = (LayoutInflater) context.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
+
+        ChatMessageDirection msgDirection = chatMessage.getDirection();
+
+        if(msgDirection == ChatMessageDirection.INCOMING)
+            layoutResource = R.layout.item_chat_left;
+        else
+            layoutResource = R.layout.item_chat_right;
+
         if(convertView == null){
-            convertView = vi.inflate(R.layout.item_message, null);
+            convertView = vi.inflate(layoutResource, null);
             holder      = createViewHolder(convertView);
             convertView.setTag(holder);
         }else{
             holder = (ViewHolder) convertView.getTag();
         }
 
-        ChatMessageDirection msgDirection = chatMessage.getDirection();
 
-        setAlignment(holder, msgDirection);
+        //setAlignment(holder, msgDirection);
+
         holder.txtMessage.setText(chatMessage.getMessage());
-        holder.txtInfo.setText(chatMessage.getDatetime());
+      //  holder.txtInfo.setText(chatMessage.getDatetime());
 
         return convertView;
 
     }
+    @Override
+    public int getViewTypeCount() {
+        // return the total number of view types. this value should never change
+        // at runtime
+        return 2;
+    }
 
+    @Override
+    public int getItemViewType(int position) {
+        // return a value between 0 and (getViewTypeCount - 1)
+        ChatMessage chatMessage = getItem(position);
+        ChatMessageDirection msgDirection = chatMessage.getDirection();
+        if(msgDirection == ChatMessageDirection.INCOMING)
+            return 0;
+        else
+            return 1;
+    }
     public void add(ChatMessage message){
         chatMessages.add(message);
     }
@@ -79,69 +104,23 @@ public class ChatAdapter extends BaseAdapter {
         chatMessages.addAll(messages);
     }
 
-    private void setAlignment(ViewHolder holder, ChatMessageDirection msgDirection) {
-        LinearLayout.LayoutParams layoutParams;
-        RelativeLayout.LayoutParams relativeLayoutParams;
-        if(msgDirection == ChatMessageDirection.INCOMING){
-
-            holder.contentWithBG.setBackgroundResource(R.drawable.in_message_bg);
-
-            layoutParams =
-                    (LinearLayout.LayoutParams) holder.contentWithBG.getLayoutParams();
-            layoutParams.gravity = Gravity.RIGHT;
-            holder.contentWithBG.setLayoutParams(layoutParams);
-
-            relativeLayoutParams = (RelativeLayout.LayoutParams) holder.content.getLayoutParams();
-            relativeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
-            relativeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            holder.content.setLayoutParams(relativeLayoutParams);
-
-            layoutParams = (LinearLayout.LayoutParams) holder.txtInfo.getLayoutParams();
-            layoutParams.gravity = Gravity.RIGHT;
-            holder.txtMessage.setLayoutParams(layoutParams);
-
-            layoutParams = (LinearLayout.LayoutParams) holder.txtInfo.getLayoutParams();
-            layoutParams.gravity = Gravity.RIGHT;
-            holder.txtInfo.setLayoutParams(layoutParams);
-
-        }else{
-
-            holder.contentWithBG.setBackgroundResource(R.drawable.out_message_bg);
-
-            layoutParams = (LinearLayout.LayoutParams) holder.contentWithBG.getLayoutParams();
-            layoutParams.gravity = Gravity.LEFT;
-            holder.contentWithBG.setLayoutParams(layoutParams);
-
-            relativeLayoutParams = (RelativeLayout.LayoutParams) holder.content.getLayoutParams();
-            relativeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
-            relativeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-            holder.content.setLayoutParams(relativeLayoutParams);
-
-            layoutParams = (LinearLayout.LayoutParams) holder.txtInfo.getLayoutParams();
-            layoutParams.gravity = Gravity.LEFT;
-            holder.txtMessage.setLayoutParams(layoutParams);
-
-            layoutParams = (LinearLayout.LayoutParams) holder.txtInfo.getLayoutParams();
-            layoutParams.gravity = Gravity.LEFT;
-            holder.txtInfo.setLayoutParams(layoutParams);
-        }
-    }
 
     private ViewHolder createViewHolder(View v) {
         ViewHolder holder    = new ViewHolder();
         holder.txtMessage    = (TextView) v.findViewById(R.id.txtMessage);
-        holder.content       = (LinearLayout) v.findViewById(R.id.content);
+       // holder.content       = (LinearLayout) v.findViewById(R.id.content);
         holder.contentWithBG = (LinearLayout) v.findViewById(R.id.contentWithBackground);
-        holder.txtInfo       = (TextView) v.findViewById(R.id.txtInfo);
+        //holder.txtInfo       = (TextView) v.findViewById(R.id.txtInfo);
         return holder;
     }
 
     private static class ViewHolder {
         public TextView txtMessage;
-        public TextView txtInfo;
-        public LinearLayout content;
+        //public TextView txtInfo;
+       // public LinearLayout content;
         public LinearLayout contentWithBG;
     }
+
 
 }
 

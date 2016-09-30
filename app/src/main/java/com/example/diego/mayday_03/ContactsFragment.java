@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.SearchView;
 
 import java.util.ArrayList;
 
@@ -20,7 +22,7 @@ import java.util.ArrayList;
  * It also initializes add contact activity in order to push new data in DB
  */
 
-public class ContactsFragment extends Fragment{
+public class ContactsFragment extends Fragment implements SearchView.OnQueryTextListener{
 
     /** There will be two requests from this view in order to refresh the current data**/
 
@@ -36,17 +38,23 @@ public class ContactsFragment extends Fragment{
     private ArrayList<Contact> dbContacts;
 
     private FloatingActionButton buttonAddContact;
+    private SearchView searchViewContact;
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_contact, container, false);
+        searchViewContact = (SearchView)view.findViewById(R.id.search_contact);
         this.parentActivity  = getActivity();
         loadContacts(view);
         setClickAddContactListener(view);
         //Need to share dbContacts with ChatActivity
         MyApplication app = (MyApplication) parentActivity.getApplication();
         app.setContactsFragment(this);
+        searchViewContact.setOnQueryTextListener(this);
+        searchViewContact.setIconified(false);
+        searchViewContact.clearFocus();
+
 
         return view;
     }
@@ -87,6 +95,7 @@ public class ContactsFragment extends Fragment{
             contactAdapter = new ContactAdapter(ContactsFragment.this, dbContacts);
             contactAdapter.sortContacts();
             lvContacts.setAdapter(contactAdapter);
+            lvContacts.setTextFilterEnabled(true);
             lvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -161,4 +170,14 @@ public class ContactsFragment extends Fragment{
         contactAdapter.modify(contact);
     }
 
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        contactAdapter.getFilter().filter(newText);
+        return false;
+    }
 }
