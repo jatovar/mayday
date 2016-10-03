@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Acceder"
-        android:id="@+id/button"
+        android:id="@+id/button_cover"
         android:theme="@style/buttonStyle"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"

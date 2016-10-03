@@ -83,10 +83,11 @@ public class ChatActivity extends AppCompatActivity{
                 if((contact = app.getContactsFragment().findContactById(contactMaydayId)) != null)
                 {
                     Intent intent = new Intent(getApplicationContext(), ContactInformationActivity.class);
-                    intent.putExtra("editing_contact_id", contact.getIdAsString());
+
+                    intent.putExtra("editing_contact_id",       contact.getIdAsString());
                     intent.putExtra("editing_contact_MayDayID", contact.getMayDayId());
-                    intent.putExtra("editing_contact_name", contact.getName());
-                    intent.putExtra("editing_contact_status", contact.getStatus());
+                    intent.putExtra("editing_contact_name",     contact.getName());
+                    intent.putExtra("editing_contact_status",   contact.getStatus());
                     startActivityForResult(intent, EDIT_CONTACT_REQUEST);
                 }
                 else
@@ -106,10 +107,10 @@ public class ChatActivity extends AppCompatActivity{
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.v(log_v,"Result callback");
+        Log.v(log_v, "Result callback");
         // Make sure the request was successful
         if (resultCode == RESULT_OK) {
-            Log.v(log_v,"RESULT OK, REFRESH CONTACT LIST DEPENDING THE CASE");
+            Log.v(log_v, "RESULT OK, REFRESH CONTACT LIST DEPENDING THE CASE");
             // Check which request we're responding to
             switch (requestCode){
                 case EDIT_CONTACT_REQUEST:
@@ -138,7 +139,7 @@ public class ChatActivity extends AppCompatActivity{
     private void initControls() {
         messagesContainer = (ListView) findViewById(R.id.messagesContainer);
         etMessage         = (EditText) findViewById(R.id.messageEdit);
-        btnSend           = (ImageButton)   findViewById(R.id.chatSendButton);
+        btnSend           = (ImageButton) findViewById(R.id.chatSendButton);
         myToolbar         = (Toolbar) findViewById(R.id.my_toolbar);
 
         //TextView meLabel         = (TextView) findViewById(R.id.meLbl);

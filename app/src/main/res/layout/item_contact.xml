@@ -16,6 +16,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Jorge"
+            android:ellipsize="end"
+            android:singleLine="true"
             android:textColor="@color/colorBlack"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
             android:textStyle="bold"

@@ -5,9 +5,10 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:layout_width="75dp"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_width="50dp"
+        android:layout_height="45dp"
         android:scaleType="fitCenter"
         android:id="@+id/icon"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:cropToPadding="false" />
 </LinearLayout>

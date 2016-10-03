@@ -94,7 +94,10 @@ public class ContactAdapter extends BaseAdapter implements Filterable{
         sortContacts();
     }
 
-    /**For removing from collection**/
+    /**
+     * When a contact is deleted we need to find it and remove it
+     * @param idToDelete The contact's mayDayId to delete
+     */
     public void remove(String idToDelete){
         for (Contact c : contactList)
             if(c.getIdAsString().equals(idToDelete)){
@@ -104,7 +107,11 @@ public class ContactAdapter extends BaseAdapter implements Filterable{
             }
     }
 
-    /**For modifying from collection**/
+    /**
+     * When a contact is modified we need to find it and set the information according to user's
+     * request.
+     * @param newContactInfo The contact's information to be modified
+     */
     public void modify(Contact newContactInfo){
         for (Contact c : contactList)
             if (c.getIdAsString().equals(newContactInfo.getIdAsString())){
@@ -117,7 +124,10 @@ public class ContactAdapter extends BaseAdapter implements Filterable{
 
     }
 
-    /**We need to sort in evey CRUD operation**/
+    /**
+     * This function is used to sort contacts every CRUD operation in order to keep them
+     * sorted in our ListView
+     */
     public void sortContacts() {
         Collections.sort(contactList, new Comparator<Contact>() {
             @Override
@@ -126,6 +136,14 @@ public class ContactAdapter extends BaseAdapter implements Filterable{
             }
         });
     }
+
+
+    /**
+     * This function initializes our inflatedView so we can change it in execution time
+     *
+     * @param v The Inflated view with child controls
+     * @return  The ViewHolder, a helper class to encapsulate our child controls
+     */
     private ViewHolder createViewHolder(View v) {
         ViewHolder holder = new ViewHolder();
         holder.tvMayDayId = (TextView) v.findViewById(R.id.tv_mayDayID);
@@ -135,13 +153,21 @@ public class ContactAdapter extends BaseAdapter implements Filterable{
         return holder;
     }
 
-
+    /**
+     * This is a  helper class to optimize the findViewById, so we only initialize them once
+     */
     private static class ViewHolder {
         public TextView tvMayDayId;
         public TextView tvName;
         public TextView tvStatus;
     }
 
+    /**
+     * This filter performs a contact name search to filter the contacts in the ListView
+     * it also saves a copy so we never lose the original data in this process
+     * @see Filterable
+     * @return  Filter, a set of data that is passed to SearchView
+     */
     @Override
     public Filter getFilter() {
         Filter filter = new Filter() {

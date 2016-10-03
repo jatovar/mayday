@@ -38,13 +38,13 @@ public class TabberActivity extends AppCompatActivity {
     }
 
     private void initializeServerConnection() {
-        mayDayId = getIntent().getExtras().getString("mayDayID");
-        password = getIntent().getExtras().getString("password");
+        //mayDayId = getIntent().getExtras().getString("mayDayID");
+        //password = getIntent().getExtras().getString("password");
 
         app = (MyApplication) getApplication();
-        app.setCredentials(mayDayId, password);
+        //app.setCredentials(mayDayId, password);
 
-        app.connect();
+       // app.connect();
         app.startListening();
     }
 

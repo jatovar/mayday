@@ -66,7 +66,7 @@ public class ConversationsFragment extends Fragment {
             }
         });
 
-        swpMessages = (SwipeRefreshLayout)view.findViewById(R.id.swpMessages);
+        swpMessages = (SwipeRefreshLayout) view.findViewById(R.id.swpMessages);
         swpMessages.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
             @Override
             public void onRefresh(){

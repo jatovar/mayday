@@ -1,6 +1,7 @@
 package com.example.diego.mayday_03;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -27,16 +29,11 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
     /** There will be two requests from this view in order to refresh the current data**/
 
     static final int ADD_CONTACT_REQUEST = 1;
-
-
     private String log_v = "ContactFragment";
-
     private ListView lvContacts;
-
     private ContactAdapter contactAdapter;
     private Activity parentActivity;
     private ArrayList<Contact> dbContacts;
-
     private FloatingActionButton buttonAddContact;
     private SearchView searchViewContact;
 
@@ -84,28 +81,34 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
 
         DataBaseHelper db = new DataBaseHelper(parentActivity);
         dbContacts        = db.getContacts();
+        //db.contactTruncate(null);// For debugging
         db.close();
 
-        if(dbContacts.isEmpty()){
+        contactAdapter = new ContactAdapter(ContactsFragment.this, new ArrayList<Contact>());
+        lvContacts     = (ListView)currentView.findViewById(R.id.lv_contactList);
+        lvContacts.setAdapter(contactAdapter);
+        lvContacts.setTextFilterEnabled(true);
+        lvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Contact contact = contactAdapter.getItem(position);
+                Intent intent   = new Intent(parentActivity, ChatActivity.class);
+                intent.putExtra("contact_MayDayID", contact.getMayDayId());
+                intent.putExtra("contact_author", contact.getName());
+                startActivity(intent);
+            }
+        });
+
+        if(dbContacts == null || dbContacts.isEmpty()){
             Log.v(log_v, "There is no contacts in DB!");
+            Context context   = parentActivity;
+            CharSequence text = "Aún no tienes contactos!";
+            Toast toast       = Toast.makeText(context, text, Toast.LENGTH_SHORT);
+            toast.show();
         }
         else{
-
-            lvContacts     = (ListView)currentView.findViewById(R.id.lv_contactList);
-            contactAdapter = new ContactAdapter(ContactsFragment.this, dbContacts);
+            contactAdapter.add(dbContacts);
             contactAdapter.sortContacts();
-            lvContacts.setAdapter(contactAdapter);
-            lvContacts.setTextFilterEnabled(true);
-            lvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Contact contact = contactAdapter.getItem(position);
-                    Intent intent   = new Intent(parentActivity, ChatActivity.class);
-                    intent.putExtra("contact_MayDayID", contact.getMayDayId());
-                    intent.putExtra("contact_author", contact.getName());
-                    startActivity(intent);
-                }
-            });
         }
     }
 

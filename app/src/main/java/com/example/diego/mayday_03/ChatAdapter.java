@@ -16,6 +16,8 @@ import java.util.List;
 
 /**
  * Created by jorge on 23/09/16.
+ * This is the Adapter of chat 1 to 1, it creates the chat bubbles dynamically according to database
+ *
  */
 public class ChatAdapter extends BaseAdapter {
 
@@ -51,16 +53,12 @@ public class ChatAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         int layoutResource; // determined by view type
-        ChatMessage chatMessage = getItem(position);
         LayoutInflater vi = (LayoutInflater) context.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
 
-        ChatMessageDirection msgDirection = chatMessage.getDirection();
-
-        if(msgDirection == ChatMessageDirection.INCOMING)
-            layoutResource = R.layout.item_chat_left;
-        else
-            layoutResource = R.layout.item_chat_right;
+        ChatMessage chatMessage = getItem(position);
+        layoutResource = chatMessage.getDirection() == ChatMessageDirection.INCOMING
+                ? R.layout.item_chat_left : R.layout.item_chat_right;
 
         if(convertView == null){
             convertView = vi.inflate(layoutResource, null);
@@ -70,11 +68,8 @@ public class ChatAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-
-        //setAlignment(holder, msgDirection);
-
         holder.txtMessage.setText(chatMessage.getMessage());
-      //  holder.txtInfo.setText(chatMessage.getDatetime());
+        holder.txtInfo.setText(chatMessage.getDatetime());
 
         return convertView;
 
@@ -88,13 +83,8 @@ public class ChatAdapter extends BaseAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        // return a value between 0 and (getViewTypeCount - 1)
         ChatMessage chatMessage = getItem(position);
-        ChatMessageDirection msgDirection = chatMessage.getDirection();
-        if(msgDirection == ChatMessageDirection.INCOMING)
-            return 0;
-        else
-            return 1;
+        return chatMessage.getDirection() == ChatMessageDirection.INCOMING ? 0 : 1;
     }
     public void add(ChatMessage message){
         chatMessages.add(message);
@@ -108,16 +98,14 @@ public class ChatAdapter extends BaseAdapter {
     private ViewHolder createViewHolder(View v) {
         ViewHolder holder    = new ViewHolder();
         holder.txtMessage    = (TextView) v.findViewById(R.id.txtMessage);
-       // holder.content       = (LinearLayout) v.findViewById(R.id.content);
+        holder.txtInfo       = (TextView)v.findViewById(R.id.txtInfo);
         holder.contentWithBG = (LinearLayout) v.findViewById(R.id.contentWithBackground);
-        //holder.txtInfo       = (TextView) v.findViewById(R.id.txtInfo);
         return holder;
     }
 
     private static class ViewHolder {
         public TextView txtMessage;
-        //public TextView txtInfo;
-       // public LinearLayout content;
+        public TextView txtInfo;
         public LinearLayout contentWithBG;
     }
 

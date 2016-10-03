@@ -212,16 +212,12 @@ public class MyApplication extends Application {
         db.close();
     }
 
-    public AbstractXMPPConnection getXMPPConnection(){
-
-        return connection;
-
-    }
 
 
 
 
-    private void createConnection() {
+
+    public void createConnection() {
 
         Log.v(log_v,"createConnection");
 
