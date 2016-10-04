@@ -78,6 +78,7 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onPreExecute(){
         progressView.setVisibility(View.VISIBLE);
+        progressView.requestFocus();
     }
 
     @Override
@@ -85,14 +86,14 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
         progressView.setVisibility(View.GONE);
 
         if (success) {
-
             Intent principal = new Intent(context, TabberActivity.class);
             principal.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(principal);
 
-
         } else {
-
+            Toast toast = Toast.makeText(context, "Credenciales inválidas", Toast.LENGTH_LONG);
+            toast.show();
+            progressView.setVisibility(View.GONE);
         }
 
     }

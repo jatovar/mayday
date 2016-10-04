@@ -33,4 +33,10 @@ dependencies {
     compile 'org.igniterealtime.smack:smack-im:4.1.4'
 // Optional for XMPP extensions support
     compile 'org.igniterealtime.smack:smack-extensions:4.1.4'
+    /*compile('org.simpleframework:simple-xml:2.7.+'){
+        exclude module: 'stax'
+        exclude module: 'stax-api'
+        exclude module: 'xpp3'
+    }*/
+
 }

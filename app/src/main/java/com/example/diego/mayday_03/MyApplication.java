@@ -114,6 +114,8 @@ public class MyApplication extends Application {
         try {
 
             chat.sendMessage(message);
+            //Message m;
+            //m.addExtension();
         }
         catch (SmackException.NotConnectedException e) {
 
@@ -139,6 +141,7 @@ public class MyApplication extends Application {
                                 //This is a control message like "composing, pause, etc"
                             }
                             else {
+
 
                                 //Split MayDayID@DOMAIN/RESOURCE into MayDayID(0) and DOMAIN/RESOURCE(1)
                                 String[] parts = message.getFrom().split("@");

@@ -8,6 +8,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by diego on 9/09/16.
@@ -16,6 +19,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private String log_v = "Android:";
     private View mProgressView;
+    final long TIMEOUT = 5000;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
                 etPassword.requestFocus();
             }
             else{
-                UserLoginTask userLoginTask =
+                final UserLoginTask userLoginTask =
                         new UserLoginTask(
                                 mayDayId,
                                 password,
@@ -50,7 +54,30 @@ public class LoginActivity extends AppCompatActivity {
                                 this.getApplicationContext(),
                                 mProgressView,
                                 etPassword);
+
                 userLoginTask.execute();
+
+                Thread threadTimeout = new Thread(){
+                    public void run(){
+                        try {
+                            userLoginTask.get(TIMEOUT, TimeUnit.MILLISECONDS);
+
+                        } catch (Exception e) {
+                            userLoginTask.cancel(true);
+                            LoginActivity.this.runOnUiThread(new Runnable()
+                            {
+                                public void run()
+                                {
+                                    mProgressView.setVisibility(View.GONE);
+                                    Toast.makeText(LoginActivity.this, "El servidor no ha respondido correctamente, reintentar la conexión", Toast.LENGTH_LONG).show();
+
+                                }
+                            });
+                        }
+                    }
+                };
+                threadTimeout.start();
+
             }
 
 
