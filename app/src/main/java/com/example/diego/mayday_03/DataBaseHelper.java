@@ -17,7 +17,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 
     private String log_v="DataBaseHelper";
 
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
 
     // Database Name
     private static final String DATABASE_NAME = "mayDay";
@@ -44,6 +44,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     private static final String COLUMN_CONTACT_MAYDAYID = "contact_MayDayID";
     private static final String COLUMN_MESSAGE = "message";
     private static final String COLUMN_DATETIME = "datetime";
+    private static final String COLUMN_EXPIRETIME = "expiretime";
 
 
     //direction can be: INCOMING or OUTGOING
@@ -73,6 +74,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
                     + COLUMN_DATETIME           + " DATETIME,"
                     + COLUMN_STATUS             + " TEXT,"
                     + COLUMN_DIRECTION          + " TEXT,"
+                    + COLUMN_EXPIRETIME         + " TEXT,"
                     + COLUMN_TYPE               + " TEXT)";
                     //+ "FOREIGN KEY("+ COLUMN_ID_CONTACT +") REFERENCES "+ TABLE_CONTACT+"(" + COLUMN_ID +")";
 
@@ -183,6 +185,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         values.put(COLUMN_DATETIME, chatMessage.getDatetime());
         values.put(COLUMN_STATUS, chatMessage.getStatus().toString());
         values.put(COLUMN_DIRECTION, chatMessage.getDirection().toString());
+        values.put(COLUMN_EXPIRETIME, chatMessage.getExpireTime());
         values.put(COLUMN_TYPE, chatMessage.getType().toString());
 
 
@@ -227,6 +230,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
                 msg.setContactMayDayId(c.getString(c.getColumnIndex(COLUMN_CONTACT_MAYDAYID)));
                 msg.setStatus(c.getString(c.getColumnIndex(COLUMN_STATUS)));
                 msg.setType(c.getString(c.getColumnIndex(COLUMN_TYPE)));
+                msg.setExpireTime(c.getString(c.getColumnIndex(COLUMN_EXPIRETIME)));
                 msg.setMessage(c.getString(c.getColumnIndex(COLUMN_MESSAGE)));
                 msg.setDatetime(c.getString(c.getColumnIndex(COLUMN_DATETIME)));
                 msg.setDirection(c.getString(c.getColumnIndex(COLUMN_DIRECTION)));
@@ -271,6 +275,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
                 newChatMessage.setStatus(c.getString(c.getColumnIndex(COLUMN_STATUS)));
                 newChatMessage.setDirection(c.getString(c.getColumnIndex(COLUMN_DIRECTION)));
                 newChatMessage.setType(c.getString(c.getColumnIndex(COLUMN_TYPE)));
+                newChatMessage.setExpireTime(c.getString(c.getColumnIndex(COLUMN_EXPIRETIME)));
                 chatMessageList.add(newChatMessage);
 
             }while(c.moveToNext());
