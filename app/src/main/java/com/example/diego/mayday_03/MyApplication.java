@@ -1,7 +1,10 @@
 package com.example.diego.mayday_03;
 
 import android.app.Application;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.support.annotation.RequiresPermission;
+import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
@@ -11,10 +14,15 @@ import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.chat.Chat;
 import org.jivesoftware.smack.chat.ChatManager;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
+import org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
+import org.jivesoftware.smackx.receipts.DeliveryReceiptRequest;
+import org.jivesoftware.smackx.receipts.ReceiptReceivedListener;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -113,12 +121,26 @@ public class MyApplication extends Application {
 
         try {
 
-            chat.sendMessage(message);
-            //Message m;
-            //m.addExtension();
-        }
-        catch (SmackException.NotConnectedException e) {
+            Message m = new Message();
+            m.setBody(message);
 
+            DeliveryReceiptRequest.addTo(m);
+
+            SharedPreferences sharedPref =
+                    PreferenceManager.getDefaultSharedPreferences(this);
+
+            String milliseconds =
+                    sharedPref.getString(ConfigFragment.PREF_KEY_DESTROY_RECEIPT, "");
+
+            SelfDestructiveReceipt selfDestructiveReceipt =
+                    new SelfDestructiveReceipt(milliseconds);
+
+            m.addExtension(selfDestructiveReceipt);
+
+            chat.sendMessage(m);
+        }
+        catch(SmackException.NotConnectedException e)
+        {
             Log.d(log_e, "Exception at sendMsg " + e.getMessage());
             e.printStackTrace();
         }
@@ -236,6 +258,16 @@ public class MyApplication extends Application {
         //TODO: CHANGE to false
         configBuilder.setDebuggerEnabled(true);
         connection = new XMPPTCPConnection(configBuilder.build());
+
+        //This is the event manager for receipt received messages
+        DeliveryReceiptManager.getInstanceFor(connection).addReceiptReceivedListener(
+        new ReceiptReceivedListener() {
+            @Override
+            public void onReceiptReceived(String fromJid, String toJid, String deliveryReceiptId, Stanza stanza) {
+                Log.d("PACKET", "onReceiptReceived: from: " + fromJid + " to: " + toJid
+                        + " deliveryReceiptId: " + deliveryReceiptId + " stanza: " + stanza);
+            }
+        });
     }
 
     private void connectAndLogin(){

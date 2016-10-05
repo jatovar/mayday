@@ -2,7 +2,6 @@ package com.example.diego.mayday_03;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,7 +10,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -49,7 +47,7 @@ public class ChatActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat_conversation2);
+        setContentView(R.layout.activity_chat_conversation);
 
         contactMaydayId = getIntent().getExtras().getString("contact_MayDayID");
         //contactMaydayId = "jorge_spa"; //hard coded
@@ -143,8 +141,8 @@ public class ChatActivity extends AppCompatActivity{
         myToolbar         = (Toolbar) findViewById(R.id.my_toolbar);
 
         //TextView meLabel         = (TextView) findViewById(R.id.meLbl);
-        TextView companionLabel  = (TextView) findViewById(R.id.friendLabel);
-        RelativeLayout container = (RelativeLayout) findViewById(R.id.container);
+        //TextView companionLabel  = (TextView) findViewById(R.id.friendLabel);
+        //RelativeLayout container = (RelativeLayout) findViewById(R.id.container);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setTitle(author);
         myToolbar.setTitleTextColor(Color.WHITE);

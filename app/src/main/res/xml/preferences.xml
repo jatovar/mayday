@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/security_category"
+        android:key="pref_key_security_settings">
+        <CheckBoxPreference
+            android:key="pref_key_security_encode"
+            android:summary="@string/pref_summary_encode"
+            android:title="@string/pref_title_encode"
+            android:defaultValue="true"/>
+        <ListPreference
+            android:key="pref_key_destroy_receipt"
+            android:title="@string/pref_title_destroy_receptor"
+            android:summary="@string/pref_summary_destroy_receptor"
+            android:entries="@array/listentries"
+            android:entryValues="@array/listvalues" />
+        <ListPreference
+            android:key="pref_key_destroy_mine"
+            android:title="@string/pref_title_destroy_mine"
+            android:summary="@string/pref_summary_destroy_mine"
+            android:entries="@array/listentries"
+            android:entryValues="@array/listvalues" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Sonidos y notificaciones"
+        android:key="pref_key_sounds_settings">
+        <Preference
+            android:showDefault="true"
+            android:showSilent="true"
+            android:title="Sonido de notificacion"
+            android:ringtoneType="ringtone|notification|alarm|all"
+            android:key="KEY_RINGTONE_PREFERENCE"
+            android:summary="Captain's log"
+            android:persistent="false">
+        </Preference>
+        <CheckBoxPreference
+            android:key="pref_key_sounds_vibration"
+            android:summary="Vibrar al recibir un mensaje"
+            android:title="Activar vibracion"
+            android:defaultValue="true"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Cuenta"
+        android:key="pref_account">
+        <ListPreference
+            android:key="pref_key_blocked_contacts"
+            android:title="Ver lista de contactos bloqueados"
+            android:summary="Desbloquea el contacto seleccionado"
+            android:entries="@array/listentries"
+            android:entryValues="@array/listvalues" />
+        <ListPreference
+            android:key="pref_key_transfer_account"
+            android:title="Transferir cuenta"
+            android:summary="Selecciona un contacto para hacer la transferencia"
+            android:entries="@array/listentries"
+            android:entryValues="@array/listvalues" />
+    </PreferenceCategory>
+</PreferenceScreen>
