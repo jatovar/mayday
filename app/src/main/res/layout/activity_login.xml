@@ -16,7 +16,7 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         tools:context="com.example.diego.mayday_03.LoginActivity">
 
-        <!-- Login progress -->
+        <!-- Login circular_progress_bar -->
         <ProgressBar
             android:id="@+id/login_progress"
             style="?android:attr/progressBarStyleLarge"

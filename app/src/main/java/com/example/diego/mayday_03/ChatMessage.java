@@ -10,6 +10,7 @@ public class ChatMessage {
     private String datetime        = "";
     private int id                 = -1;
     private String author          = "";
+    private String expireTime      = "";
 
     private ChatMessageStatus status;
     private ChatMessageDirection direction;
@@ -115,5 +116,13 @@ public class ChatMessage {
 
     public String getAuthor(){
         return this.author;
+    }
+
+    public String getExpireTime() {
+        return expireTime;
+    }
+
+    public void setExpireTime(String expireTime) {
+        this.expireTime = expireTime;
     }
 }

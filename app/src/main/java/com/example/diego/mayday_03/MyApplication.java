@@ -18,6 +18,7 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
@@ -31,7 +32,7 @@ import java.util.Date;
 /**
  * Created by diego on 12/09/16.
  */
-public class MyApplication extends Application {
+public class MyApplication extends Application implements ReceiptReceivedListener{
 
 
     private String log_v = "MyApplication: ";
@@ -176,6 +177,17 @@ public class MyApplication extends Application {
                                 chatMessage.setMessage(body);
                                 chatMessage.setDatetime(DateFormat.getDateTimeInstance()
                                         .format(new Date()));
+                                ExtensionElement element =
+                                        message.getExtension(
+                                                SelfDestructiveReceipt.NAMESPACE);
+                                String milliseconds = ((SelfDestructiveReceipt)element).getMilliseconds();
+
+                                if(!milliseconds.equals("0"))
+                                    chatMessage.setType(ChatMessageType.SELFDESTRUCTIVE);
+                                else
+                                    chatMessage.setType(ChatMessageType.NORMAL);
+                                chatMessage.setExpireTime(milliseconds);
+
                                 //**The status should change if the user is in ChatActivity**//
                                 chatMessage.setStatus(ChatMessageStatus.UNREAD);
                                 chatMessage.setDirection(ChatMessageDirection.INCOMING);
@@ -185,7 +197,6 @@ public class MyApplication extends Application {
                                 else
                                     chatMessage.setAuthor("UNKNOWN");
                                 //Change this to incoming info
-                                chatMessage.setType(ChatMessageType.NORMAL);
                                 insertMessageInDb(chatMessage);
 
                                 if(chatActivity != null && from.equals(chatActivity.getCurrentConversationId()) &&
@@ -260,14 +271,14 @@ public class MyApplication extends Application {
         connection = new XMPPTCPConnection(configBuilder.build());
 
         //This is the event manager for receipt received messages
-        DeliveryReceiptManager.getInstanceFor(connection).addReceiptReceivedListener(
-        new ReceiptReceivedListener() {
-            @Override
-            public void onReceiptReceived(String fromJid, String toJid, String deliveryReceiptId, Stanza stanza) {
-                Log.d("PACKET", "onReceiptReceived: from: " + fromJid + " to: " + toJid
-                        + " deliveryReceiptId: " + deliveryReceiptId + " stanza: " + stanza);
-            }
-        });
+        DeliveryReceiptManager.getInstanceFor(connection).addReceiptReceivedListener(this);
+
+        ProviderManager.addExtensionProvider(
+                SelfDestructiveReceipt.ELEMENT,
+                SelfDestructiveReceipt.NAMESPACE,
+                new SelfDestructiveReceipt.Provider()
+        );
+
     }
 
     private void connectAndLogin(){
@@ -328,5 +339,9 @@ public class MyApplication extends Application {
     }
 
 
-
+    @Override
+    public void onReceiptReceived(String fromJid, String toJid, String receiptId, Stanza receipt) {
+        Log.d("PACKET", "onReceiptReceived: from: " + fromJid + " to: " + toJid
+                + " deliveryReceiptId: " + receiptId + " stanza: " + receipt);
+    }
 }

@@ -1,6 +1,11 @@
 package com.example.diego.mayday_03;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.provider.EmbeddedExtensionProvider;
+import org.jivesoftware.smack.util.Objects;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by jorge on 4/10/16.
@@ -16,6 +21,10 @@ public class SelfDestructiveReceipt implements ExtensionElement {
     public SelfDestructiveReceipt(String milliseconds)
     {
         this.milliseconds = milliseconds;
+    }
+    public SelfDestructiveReceipt(Object milliseconds)
+    {
+        this.milliseconds = milliseconds.toString();
     }
     /**
      * Returns the root element XML namespace.
@@ -44,9 +53,19 @@ public class SelfDestructiveReceipt implements ExtensionElement {
      */
     @Override
     public CharSequence toXML() {
-        return "<destructive xmlns='" + NAMESPACE + "' ms='" + this.milliseconds + "'/>";
+        return "<destructive xmlns='" + NAMESPACE + "' milliseconds='" + this.milliseconds + "'/>";
     }
     public String getMilliseconds(){
         return this.milliseconds;
     }
+
+    public static class Provider extends EmbeddedExtensionProvider
+    {
+
+        @Override
+        protected ExtensionElement createReturnExtension(String currentElement, String currentNamespace, Map attributeMap, List content) {
+            return new SelfDestructiveReceipt(attributeMap.get("milliseconds"));
+        }
+    }
 }
+

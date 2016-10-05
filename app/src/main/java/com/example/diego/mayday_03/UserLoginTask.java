@@ -16,7 +16,7 @@ import java.io.IOException;
 
 /**
  * Created by jorge on 3/10/16.
- * This class handles the asynchronous login with a progress bar, retrieves the error type
+ * This class handles the asynchronous login with a circular_progress_bar bar, retrieves the error type
  * within the EditText errors.
  */
 public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
