@@ -142,10 +142,10 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     }
 
     public ArrayList<Contact> getContacts() {
-        Log.v(log_v,"getContacts");
-        ArrayList<Contact> contactList = new ArrayList<Contact>();
+        Log.v(log_v, "getContacts");
+        ArrayList<Contact> contactList = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
-        String query = "SELECT * FROM "+TABLE_CONTACT;
+        String query = "SELECT * FROM " + TABLE_CONTACT;
 
         Cursor c = db.rawQuery(query, null);
 
@@ -169,8 +169,6 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         return contactList;
     }
 
-
-
     //CRUDO
     //Table: message
 
@@ -193,7 +191,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
             newMessageID = db.insert(TABLE_MESSAGE, null, values);
         }
         catch (SQLiteConstraintException e){
-            newMessageID=-1;
+            newMessageID = -1;
             Log.v(log_v, "Couldn't insert message exception: "+ e.getMessage());
 
         }

@@ -6,13 +6,19 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
+import android.view.animation.Transformation;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by jorge on 23/09/16.
@@ -68,12 +74,52 @@ public class ChatAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
+        setTimerView(holder,chatMessage);
         holder.txtMessage.setText(chatMessage.getMessage());
         holder.txtInfo.setText(chatMessage.getDatetime());
 
         return convertView;
 
     }
+
+    private void setTimerView(ViewHolder holder, final ChatMessage chatMessage) {
+        if(chatMessage.getType() == ChatMessageType.SELFDESTRUCTIVE
+                && chatMessage.getDirection() == ChatMessageDirection.INCOMING
+                && !chatMessage.getExpireTime().equals("")){
+            int originalTime = Integer.parseInt(chatMessage.getExpireTime());
+            holder.layoutProgress.setVisibility(View.VISIBLE);
+            int seconds = originalTime / 1000;
+            holder.textProgress.setText(String.valueOf(seconds));
+            holder.progressBar.setMax(seconds);
+            ProgressBarAnimation anim = new ProgressBarAnimation(0, seconds + 1, holder);
+            anim.setDuration(originalTime);
+            holder.progressBar.startAnimation(anim);
+            Timer myTimer = new Timer();
+            myTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    deleteMessage(chatMessage);
+                }
+
+            }, originalTime);
+        }
+    }
+    private void deleteMessage(final ChatMessage chatMessage){
+        context.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                chatMessages.remove(chatMessage);
+                notifyDataSetChanged();
+            }
+        });
+    }
+
+    private Runnable updateView = new Runnable() {
+        public void run() {
+            notifyDataSetChanged();
+        }
+    };
+
     @Override
     public int getViewTypeCount() {
         // return the total number of view types. this value should never change
@@ -96,10 +142,13 @@ public class ChatAdapter extends BaseAdapter {
 
 
     private ViewHolder createViewHolder(View v) {
-        ViewHolder holder    = new ViewHolder();
-        holder.txtMessage    = (TextView) v.findViewById(R.id.txtMessage);
-        holder.txtInfo       = (TextView)v.findViewById(R.id.txtInfo);
-        holder.contentWithBG = (LinearLayout) v.findViewById(R.id.contentWithBackground);
+        ViewHolder holder     = new ViewHolder();
+        holder.txtMessage     = (TextView) v.findViewById(R.id.txtMessage);
+        holder.txtInfo        = (TextView)v.findViewById(R.id.txtInfo);
+        holder.contentWithBG  = (LinearLayout) v.findViewById(R.id.contentWithBackground);
+        holder.layoutProgress = (RelativeLayout)v.findViewById(R.id.layoutProgressBar);
+        holder.progressBar    = (ProgressBar)v.findViewById(R.id.progressBarDestroy);
+        holder.textProgress   = (TextView)v.findViewById(R.id.textViewProgressBar);
         return holder;
     }
 
@@ -107,10 +156,40 @@ public class ChatAdapter extends BaseAdapter {
         public TextView txtMessage;
         public TextView txtInfo;
         public LinearLayout contentWithBG;
+        public RelativeLayout layoutProgress;
+        public ProgressBar progressBar;
+        public TextView textProgress;
     }
 
+    private class ProgressBarAnimation extends Animation{
 
+        private  ViewHolder holder;
+        private float from;
+        private float  to;
+
+        public ProgressBarAnimation(float from, float to, ViewHolder holder) {
+            super();
+            this.from = from;
+            this.to = to;
+            this.holder = holder;
+        }
+
+        @Override
+        protected void applyTransformation(float interpolatedTime, Transformation t) {
+            super.applyTransformation(interpolatedTime, t);
+            float value = to + (from - to) * interpolatedTime;
+            holder.progressBar.setProgress((int) value);
+            int inverse = (int)(value);
+            holder.textProgress.setText(String.valueOf(inverse));
+        }
+
+
+    }
 }
+
+
+
+
 
 
 

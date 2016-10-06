@@ -26,31 +26,18 @@ public class SelfDestructiveReceipt implements ExtensionElement {
     {
         this.milliseconds = milliseconds.toString();
     }
-    /**
-     * Returns the root element XML namespace.
-     *
-     * @return the namespace.
-     */
+
     @Override
     public String getNamespace() {
         return NAMESPACE;
     }
 
-    /**
-     * Returns the root element name.
-     *
-     * @return the element name.
-     */
     @Override
     public String getElementName() {
         return ELEMENT;
     }
 
-    /**
-     * Returns the XML representation of this Element.
-     *
-     * @return the stanza(/packet) extension as XML.
-     */
+
     @Override
     public CharSequence toXML() {
         return "<destructive xmlns='" + NAMESPACE + "' milliseconds='" + this.milliseconds + "'/>";
@@ -61,9 +48,9 @@ public class SelfDestructiveReceipt implements ExtensionElement {
 
     public static class Provider extends EmbeddedExtensionProvider
     {
-
         @Override
-        protected ExtensionElement createReturnExtension(String currentElement, String currentNamespace, Map attributeMap, List content) {
+        protected ExtensionElement createReturnExtension
+                (String currentElement, String currentNamespace, Map attributeMap, List content) {
             return new SelfDestructiveReceipt(attributeMap.get("milliseconds"));
         }
     }
