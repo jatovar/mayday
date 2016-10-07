@@ -5,7 +5,7 @@ android {
     buildToolsVersion "24.0.2"
 
     defaultConfig {
-        applicationId "com.example.diego.mayday_03"
+        applicationId "com.example.mayday.mayday_03"
         minSdkVersion 16
         targetSdkVersion 24
         versionCode 1
@@ -36,6 +36,8 @@ dependencies {
     compile 'org.igniterealtime.smack:smack-extensions:4.1.4'
     compile 'com.android.support:preference-v7:24.2.1'
     compile 'com.android.support:recyclerview-v7:24.2.1'
+    //We need this for backgroundtasks
+    compile 'com.birbit:android-priority-jobqueue:2.0.0'
 
     //compile 'com.takisoft.fix:preference-v7:24.2.1.0'
 

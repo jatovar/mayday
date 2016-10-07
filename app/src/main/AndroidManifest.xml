@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.diego.mayday_03">
+    package="com.spadigital.mayday.app">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -12,18 +12,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
 
-        android:name="com.example.diego.mayday_03.MyApplication">
-        <activity android:name=".CoverActivity">
+        android:name="com.spadigital.mayday.app.MyApplication">
+        <activity android:name="com.spadigital.mayday.app.Activities.CoverActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ContactAddActivity"></activity>
-        <activity android:name=".ContactInformationActivity"></activity>
-        <activity android:name=".ChatActivity"></activity>
-        <activity android:name=".LoginActivity"></activity>
-        <activity android:name=".TabberActivity"></activity>
+        <activity android:name="com.spadigital.mayday.app.Activities.ContactAddActivity"></activity>
+        <activity android:name="com.spadigital.mayday.app.Activities.ContactAddActivity$ContactInformationActivity"></activity>
+        <activity android:name="com.spadigital.mayday.app.Activities.ChatActivity"></activity>
+        <activity android:name="com.spadigital.mayday.app.Activities.LoginActivity"></activity>
+        <activity android:name="com.spadigital.mayday.app.Activities.TabberActivity"></activity>
     </application>
 
 </manifest>
