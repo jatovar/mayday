@@ -1,4 +1,4 @@
-package com.spadigital.mayday.app;
+package com.spadigital.mayday.app.Tasks;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,10 +7,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.spadigital.mayday.app.Activities.TabberActivity;
+import com.spadigital.mayday.app.Activities.TaberActivity;
+import com.spadigital.mayday.app.MayDayApplication;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.Presence;
 
 import java.io.IOException;
 
@@ -21,7 +23,6 @@ import java.io.IOException;
  */
 public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
-    private MyApplication app;
     private Context context;
     private View progressView;
 
@@ -31,20 +32,19 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
      * user, it also creates a new connection with the corresponding username and password
      * @param mayDayId the user's maydayId
      * @param password the user's password
-     * @param app the Application variables, where the XMPP connection is handled
      * @param context application context
      * @param progressView the progressView control in LoginActivity
      */
-    public UserLoginTask(String mayDayId, String password, MyApplication app, Context context,
-                         View progressView) {
+    public UserLoginTask(String mayDayId, String password, Context context, View progressView) {
 
         this.context        = context;
-        this.app            = app;
+
         this.progressView   = progressView;
 
 
-        this.app.setCredentials(mayDayId, password);
-        this.app.createConnection();
+        MayDayApplication.getInstance().setCredentials(mayDayId, password);
+        MayDayApplication.getInstance().createConnection();
+        MayDayApplication.getInstance().startListening();
     }
 
     /**
@@ -58,7 +58,7 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
         Boolean result = false;
         try {
 
-           app.connection.connect();
+           MayDayApplication.getInstance().getConnection().connect();
 
             if(login())
                 result = true;
@@ -85,7 +85,16 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
         progressView.setVisibility(View.GONE);
 
         if (success) {
-            Intent principal = new Intent(context, TabberActivity.class);
+
+            Presence presence = new Presence(Presence.Type.available);
+
+            try {
+                //noinspection deprecation
+                MayDayApplication.getInstance().getConnection().sendPacket(presence);
+            } catch (SmackException.NotConnectedException e) {
+                e.printStackTrace();
+            }
+            Intent principal = new Intent(context, TaberActivity.class);
             principal.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(principal);
 
@@ -106,7 +115,7 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
         Boolean result = false;
 
         try {
-            app.connection.login();
+            MayDayApplication.getInstance().getConnection().login();
             result = true;
         }
         catch (XMPPException | SmackException | IOException e){

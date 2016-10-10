@@ -28,8 +28,6 @@ public class ContactInformationActivity extends AppCompatActivity {
     private DataBaseHelper db;
     private EditText etContactId;
     private EditText etContactName;
-    private TextView tvName;
-    private TextView tvMaydayId;
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -46,8 +44,8 @@ public class ContactInformationActivity extends AppCompatActivity {
 
         Log.v(log_v, "Starting editing with MayDayID: " + contactMayDayID);
 
-        tvName       = (TextView) findViewById(R.id.tvName);
-        tvMaydayId   = (TextView) findViewById(R.id.tvMid);
+        TextView tvName       = (TextView) findViewById(R.id.tvName);
+        TextView tvMaydayId   = (TextView) findViewById(R.id.tvMid);
         TextView tvNameHeader = (TextView) findViewById(R.id.tv_name);
 
         tvName.setText(contactName);

@@ -17,8 +17,8 @@ import com.spadigital.mayday.app.Enum.ChatMessageStatus;
 import com.spadigital.mayday.app.Entities.Contact;
 import com.spadigital.mayday.app.Enum.ContactStatus;
 import com.spadigital.mayday.app.Adapters.ConversationItemAdapter;
+import com.spadigital.mayday.app.MayDayApplication;
 import com.spadigital.mayday.app.Models.DataBaseHelper;
-import com.spadigital.mayday.app.MyApplication;
 import com.spadigital.mayday.app.R;
 
 import java.util.ArrayList;
@@ -33,18 +33,20 @@ public class ConversationsFragment extends Fragment {
     private ArrayList<ChatMessage> messageArrayList;
     private View view;
     private ConversationItemAdapter conversationItemAdapter;
-    private MyApplication app;
     private Activity parentActivity;
+    private static ConversationsFragment instance;
 
+    public static ConversationsFragment getInstance(){
+        return instance;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        instance = this;
         view            = inflater.inflate(R.layout.activity_all_chats, container, false);
         parentActivity  = getActivity();
-        app             = (MyApplication) getActivity().getApplication();
 
-        app.setConversationsFragment(this);
 
         loadConversations();
         initControls();

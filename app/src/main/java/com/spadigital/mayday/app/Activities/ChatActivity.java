@@ -15,15 +15,16 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.birbit.android.jobqueue.JobManager;
 import com.spadigital.mayday.app.Adapters.ChatAdapter;
+import com.spadigital.mayday.app.Fragments.ContactsFragment;
+import com.spadigital.mayday.app.Fragments.ConversationsFragment;
 import com.spadigital.mayday.app.Models.DataBaseHelper;
 import com.spadigital.mayday.app.Entities.ChatMessage;
 import com.spadigital.mayday.app.Entities.Contact;
 import com.spadigital.mayday.app.Enum.ChatMessageDirection;
 import com.spadigital.mayday.app.Enum.ChatMessageStatus;
 import com.spadigital.mayday.app.Enum.ChatMessageType;
-import com.spadigital.mayday.app.MyApplication;
+import com.spadigital.mayday.app.MayDayApplication;
 import com.spadigital.mayday.app.R;
 
 import java.text.DateFormat;
@@ -32,6 +33,7 @@ import java.util.Date;
 
 /**
  * Created by jorge on 21/09/16.
+ * This is the activity where the user establish a conversation with another user
  */
 public class ChatActivity extends AppCompatActivity{
 
@@ -40,34 +42,30 @@ public class ChatActivity extends AppCompatActivity{
     private String log_v = "ChatActivity: ";
     private String contactMaydayId;
     private String author;
-    private MyApplication app;
-    //AbstractXMPPConnection connection;
 
 
     private EditText etMessage;
     private ListView messagesContainer;
-    private ImageButton btnSend;
     private ChatAdapter adapter;
-    private ArrayList<ChatMessage> chatHistory;
+    private static ChatActivity instance;
 
-    private Toolbar myToolbar;
-    private Contact contact;
+    public static ChatActivity getInstance(){
+        return instance;
+    }
 
-    JobManager jobManager;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+
+        instance = this;
         setContentView(R.layout.activity_chat_conversation);
 
         contactMaydayId = getIntent().getExtras().getString("contact_MayDayID");
-        //contactMaydayId = "jorge_spa"; //hard coded
         author = getIntent().getExtras().getString("contact_author");
 
         Log.v(log_v, "Start a chat with MayDayId: " + contactMaydayId);
 
-        app = (MyApplication) getApplication();
-        app.createChat(contactMaydayId + "@jorge-latitude-e5440"); //hard coded
-        app.setChatActivity(this);
+        MayDayApplication.getInstance().createChat(contactMaydayId + "@jorge-latitude-e5440");
         initControls();
     }
 
@@ -88,7 +86,8 @@ public class ChatActivity extends AppCompatActivity{
             case R.id.action_detail_contact:
                 Log.i("ActionBar", "Info!");
 
-                if((contact = app.getContactsFragment().findContactById(contactMaydayId)) != null)
+                Contact contact;
+                if((contact = ContactsFragment.getInstance().findContactById(contactMaydayId)) != null)
                 {
                     Intent intent = new Intent(getApplicationContext(), ContactAddActivity.ContactInformationActivity.class);
 
@@ -127,13 +126,13 @@ public class ChatActivity extends AppCompatActivity{
                     //This refreshes the contacts fragments...
                     if(data.getBooleanExtra("is_deleting", false))
                     {
-                        app.getContactsFragment().deleteContactInDataSet(data);
-                        app.getConversationsFragment().setToUnknownContactIfExists(data);
+                        ContactsFragment.getInstance().deleteContactInDataSet(data);
+                        ConversationsFragment.getInstance().setToUnknownContactIfExists(data);
                         getSupportActionBar().setTitle("Unknown");
                     }
                     else {
-                        app.getContactsFragment().modifyContactInDataSet(data);
-                        app.getConversationsFragment().setContactInfoIfExists(data);
+                        ContactsFragment.getInstance().modifyContactInDataSet(data);
+                        ConversationsFragment.getInstance().setContactInfoIfExists(data);
                         getSupportActionBar().setTitle(data.getStringExtra("modified_contact_name"));
 
                     }
@@ -147,8 +146,8 @@ public class ChatActivity extends AppCompatActivity{
     private void initControls() {
         messagesContainer = (ListView) findViewById(R.id.messagesContainer);
         etMessage         = (EditText) findViewById(R.id.messageEdit);
-        btnSend           = (ImageButton) findViewById(R.id.chatSendButton);
-        myToolbar         = (Toolbar) findViewById(R.id.my_toolbar);
+        ImageButton btnSend = (ImageButton) findViewById(R.id.chatSendButton);
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
 
         setSupportActionBar(myToolbar);
         getSupportActionBar().setTitle(author);
@@ -173,13 +172,13 @@ public class ChatActivity extends AppCompatActivity{
                     DataBaseHelper db = new DataBaseHelper(v.getContext());
                     ChatMessage outGoingMessage = new ChatMessage();
                     setOutgoingMessageProp(messageText, outGoingMessage);
-                    app.sendMessage(messageText);
+                    MayDayApplication.getInstance().sendMessage(outGoingMessage);
                     db.getWritableDatabase();
                     db.messageAdd(outGoingMessage);
                     db.close();
                     etMessage.setText("");
                     displayMessage(outGoingMessage);
-                    app.getConversationsFragment().addOutgoingMessage(outGoingMessage);
+                    ConversationsFragment.getInstance().addOutgoingMessage(outGoingMessage);
                 }catch (Exception ex){
                     ex.printStackTrace();
                 }
@@ -206,15 +205,15 @@ public class ChatActivity extends AppCompatActivity{
         Log.v(log_v, "Loading conversation history... \n");
         try {
             DataBaseHelper db = new DataBaseHelper(this);
-            this.chatHistory  = db.getMessages(contactMaydayId, 0, 5);
+            ArrayList<ChatMessage> chatHistory = db.getMessages(contactMaydayId, 0, 5);
             adapter = new ChatAdapter(ChatActivity.this, new ArrayList<ChatMessage>());
             messagesContainer.setAdapter(adapter);
 
-            if(this.chatHistory.isEmpty()) {
+            if(chatHistory.isEmpty()) {
                     Log.v(log_v, "Empty Conversation");
             }else{
 
-                for(ChatMessage message : this.chatHistory) {
+                for(ChatMessage message : chatHistory) {
                     System.out.println(message.getDirection().toString() + " : " + message.getMessage());
                     displayMessage(message);
 

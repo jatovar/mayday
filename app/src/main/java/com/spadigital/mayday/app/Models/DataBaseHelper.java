@@ -288,6 +288,35 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         return chatMessageList;
     }
 
+    public ArrayList<ChatMessage> getSendingMessages() {
+        ArrayList<ChatMessage> chatMessageList = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+
+        String query = "SELECT * FROM "
+                + TABLE_MESSAGE + " WHERE " + COLUMN_STATUS + " = '"
+                + String.valueOf(ChatMessageStatus.SENDING)+"'";
+
+        Cursor c = db.rawQuery(query, null);
+        if(c != null && c.moveToFirst()){
+            do{
+                ChatMessage newChatMessage = new ChatMessage();
+                newChatMessage.setContactMayDayId(c.getString(c.getColumnIndex(COLUMN_CONTACT_MAYDAYID)));
+                newChatMessage.setId(c.getInt(c.getColumnIndex(COLUMN_ID)));
+                newChatMessage.setMessage(c.getString(c.getColumnIndex(COLUMN_MESSAGE)));
+                newChatMessage.setDatetime(c.getString(c.getColumnIndex(COLUMN_DATETIME)));
+                newChatMessage.setStatus(c.getString(c.getColumnIndex(COLUMN_STATUS)));
+                newChatMessage.setDirection(c.getString(c.getColumnIndex(COLUMN_DIRECTION)));
+                newChatMessage.setType(c.getString(c.getColumnIndex(COLUMN_TYPE)));
+                newChatMessage.setExpireTime(c.getString(c.getColumnIndex(COLUMN_EXPIRETIME)));
+                chatMessageList.add(newChatMessage);
+
+            }while(c.moveToNext());
+            c.close();
+        }
+
+        return chatMessageList;
+    }
+
     //Erase conversation(s)
     public void messageTruncate(String MayDayID){
 

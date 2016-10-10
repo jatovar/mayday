@@ -1,15 +1,14 @@
 package com.spadigital.mayday.app.Activities;
 
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.spadigital.mayday.app.Adapters.TabsAdapter;
-import com.spadigital.mayday.app.MyApplication;
 import com.spadigital.mayday.app.R;
 
 /**
@@ -18,14 +17,8 @@ import com.spadigital.mayday.app.R;
  * its corresponding view
  */
 
-public class TabberActivity extends AppCompatActivity {
+public class TaberActivity extends AppCompatActivity {
 
-    private String log_v = "ContactFragment";
-
-    /**Login server credentials and background thread to listen incoming requests**/
-    private String mayDayId;
-    private String password;
-    private MyApplication app;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,19 +30,9 @@ public class TabberActivity extends AppCompatActivity {
         setTabSelectorSettings(tabLayout);
         setPagerConfig(tabLayout);
 
-        initializeServerConnection();
+
     }
 
-    private void initializeServerConnection() {
-        //mayDayId = getIntent().getExtras().getString("mayDayID");
-        //password = getIntent().getExtras().getString("password");
-
-        app = (MyApplication) getApplication();
-        //app.setCredentials(mayDayId, password);
-
-       // app.connect();
-        app.startListening();
-    }
 
     private void setPagerConfig(final TabLayout tabLayout) {
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);

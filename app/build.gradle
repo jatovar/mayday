@@ -37,7 +37,7 @@ dependencies {
     compile 'com.android.support:preference-v7:24.2.1'
     compile 'com.android.support:recyclerview-v7:24.2.1'
     //We need this for backgroundtasks
-    compile 'com.birbit:android-priority-jobqueue:2.0.0'
+    //compile 'com.birbit:android-priority-jobqueue:2.0.0'
 
     //compile 'com.takisoft.fix:preference-v7:24.2.1.0'
 

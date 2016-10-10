@@ -20,8 +20,8 @@ import com.spadigital.mayday.app.Entities.Contact;
 import com.spadigital.mayday.app.Adapters.ContactAdapter;
 import com.spadigital.mayday.app.Activities.ContactAddActivity;
 import com.spadigital.mayday.app.Enum.ContactStatus;
+import com.spadigital.mayday.app.MayDayApplication;
 import com.spadigital.mayday.app.Models.DataBaseHelper;
-import com.spadigital.mayday.app.MyApplication;
 import com.spadigital.mayday.app.R;
 
 import java.util.ArrayList;
@@ -38,24 +38,24 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
 
     static final int ADD_CONTACT_REQUEST = 1;
     private String log_v = "ContactFragment";
-    private ListView lvContacts;
     private ContactAdapter contactAdapter;
     private Activity parentActivity;
     private ArrayList<Contact> dbContacts;
-    private FloatingActionButton buttonAddContact;
-    private SearchView searchViewContact;
+    private static ContactsFragment instance;
 
 
+    public static ContactsFragment getInstance(){
+        return instance;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
+        instance = this;
         View view = inflater.inflate(R.layout.activity_contact, container, false);
-        searchViewContact = (SearchView)view.findViewById(R.id.search_contact);
+        SearchView searchViewContact = (SearchView) view.findViewById(R.id.search_contact);
         this.parentActivity  = getActivity();
         loadContacts(view);
         setClickAddContactListener(view);
         //Need to share dbContacts with ChatActivity
-        MyApplication app = (MyApplication) parentActivity.getApplication();
-        app.setContactsFragment(this);
         searchViewContact.setOnQueryTextListener(this);
         searchViewContact.setIconified(false);
         searchViewContact.clearFocus();
@@ -73,7 +73,7 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
     }
 
     private void setClickAddContactListener(View view) {
-        buttonAddContact = (FloatingActionButton)view.findViewById(R.id.bt_add);
+        FloatingActionButton buttonAddContact = (FloatingActionButton) view.findViewById(R.id.bt_add);
         buttonAddContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,7 +93,7 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
         db.close();
 
         contactAdapter = new ContactAdapter(ContactsFragment.this, new ArrayList<Contact>());
-        lvContacts     = (ListView)currentView.findViewById(R.id.lv_contactList);
+        ListView lvContacts = (ListView) currentView.findViewById(R.id.lv_contactList);
         lvContacts.setAdapter(contactAdapter);
         lvContacts.setTextFilterEnabled(true);
         lvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -136,8 +136,7 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
                     //TODO:We must refresh the Contacts View, the Conversations View adapter
                     Log.v(log_v, "ADD_CONTACT_REQUEST");
                     addContactToDataSet(data);
-                    MyApplication app = (MyApplication) getActivity().getApplication();
-                    app.getConversationsFragment().setAuthorIfExists(data);
+                    ConversationsFragment.getInstance().setAuthorIfExists(data);
                 break;
 
 

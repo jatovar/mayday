@@ -20,27 +20,6 @@ public class ChatMessage {
     private ChatMessageDirection direction;
     private ChatMessageType type;
 
-    public ChatMessage(String contactMayDayID, String message, String datetime, String status, String direction, String type){
-
-        this.contactMayDayID = contactMayDayID;
-        this.message         = message;
-        this.datetime        = datetime;
-        this.status          = ChatMessageStatus.valueOf(status);
-        this.direction       = ChatMessageDirection.valueOf(direction);
-        this.type            = ChatMessageType.valueOf(type);
-
-    }
-
-    public ChatMessage(String contactMayDayID, String message, String datetime, ChatMessageStatus status, ChatMessageDirection direction, ChatMessageType type){
-
-        this.contactMayDayID = contactMayDayID;
-        this.message         = message;
-        this.datetime        = datetime;
-        this.status          = status;
-        this.direction       = direction;
-        this.type            = type;
-
-    }
 
     public ChatMessage(){
 

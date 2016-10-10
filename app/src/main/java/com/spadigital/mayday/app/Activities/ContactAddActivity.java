@@ -19,6 +19,7 @@ import com.spadigital.mayday.app.R;
 
 /**
  * Created by mayday on 9/09/16.
+ * This Activity appends a new contact to contact list
  */
 public class ContactAddActivity extends AppCompatActivity {
 
@@ -135,10 +136,10 @@ public class ContactAddActivity extends AppCompatActivity {
             if (modifiedName || modifiedId){
 
                 try{
-                    this.contactName = modifiedName && etContactName.getText().toString() != "" ?
+                    this.contactName = modifiedName && !etContactName.getText().toString().equals("")?
                             etContactName.getText().toString() : this.contactName;
 
-                    this.contactMayDayID = modifiedId && etContactId.getText().toString() != ""  ?
+                    this.contactMayDayID = modifiedId && !etContactId.getText().toString().equals("")  ?
                             etContactId.getText().toString() : this.contactMayDayID;
 
                     Contact modifiedContact = new Contact(

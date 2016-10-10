@@ -8,9 +8,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.spadigital.mayday.app.MyApplication;
 import com.spadigital.mayday.app.R;
-import com.spadigital.mayday.app.UserLoginTask;
+import com.spadigital.mayday.app.Tasks.UserLoginTask;
 
 import java.util.concurrent.TimeUnit;
 
@@ -52,10 +51,8 @@ public class LoginActivity extends AppCompatActivity {
                         new UserLoginTask(
                                 mayDayId,
                                 password,
-                                (MyApplication)getApplication(),
                                 this.getApplicationContext(),
-                                mProgressView,
-                                etPassword);
+                                mProgressView);
 
                 userLoginTask.execute();
 

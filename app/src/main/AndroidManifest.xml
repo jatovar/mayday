@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
 
-        android:name="com.spadigital.mayday.app.MyApplication">
+        android:name=".MayDayApplication">
         <activity android:name="com.spadigital.mayday.app.Activities.CoverActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,7 +23,7 @@
         <activity android:name="com.spadigital.mayday.app.Activities.ContactAddActivity$ContactInformationActivity"></activity>
         <activity android:name="com.spadigital.mayday.app.Activities.ChatActivity"></activity>
         <activity android:name="com.spadigital.mayday.app.Activities.LoginActivity"></activity>
-        <activity android:name="com.spadigital.mayday.app.Activities.TabberActivity"></activity>
+        <activity android:name=".Activities.TaberActivity"></activity>
     </application>
 
 </manifest>

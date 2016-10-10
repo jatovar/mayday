@@ -9,6 +9,7 @@ import com.spadigital.mayday.app.R;
 
 /**
  * Created by jorge on 22/09/16.
+ * This is the starting application activity
  */
 public class CoverActivity extends AppCompatActivity {
     @Override

@@ -1,4 +1,4 @@
-package com.spadigital.mayday.app;
+package com.spadigital.mayday.app.CustomPreferences;
 
 import android.content.Context;
 import android.support.v7.preference.DialogPreference;

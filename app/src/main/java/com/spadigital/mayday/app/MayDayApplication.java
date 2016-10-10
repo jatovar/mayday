@@ -18,6 +18,7 @@ import com.spadigital.mayday.app.Fragments.ConfigFragment;
 import com.spadigital.mayday.app.Fragments.ContactsFragment;
 import com.spadigital.mayday.app.Fragments.ConversationsFragment;
 import com.spadigital.mayday.app.Models.DataBaseHelper;
+import com.spadigital.mayday.app.Listeners.MyConnectionListener;
 import com.spadigital.mayday.app.PacketExtensions.SelfDestructiveReceipt;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
@@ -32,6 +33,7 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
+import org.jivesoftware.smack.util.ArrayBlockingQueueWithShutdown;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptRequest;
 import org.jivesoftware.smackx.receipts.ReceiptReceivedListener;
@@ -42,10 +44,10 @@ import java.util.Date;
 /**
  * Created by jorge on 12/09/16.
  */
-public class MyApplication extends Application implements ReceiptReceivedListener{
+public class MayDayApplication extends Application implements ReceiptReceivedListener{
 
 
-    private String log_v = "MyApplication: ";
+    private String log_v = "MayDayApplication: ";
     private String log_e = "MyApplicationERROR: ";
 
     private static final String DOMAIN   = "jorge-latitude-e5440";
@@ -62,20 +64,25 @@ public class MyApplication extends Application implements ReceiptReceivedListene
     */
     private String mayDayID = "";
     private String password = "";
-
-
-    ChatManager chatManager;
-    AbstractXMPPConnection connection;
-    Chat chat;
-
-    private ConversationsFragment conversationsFragment;
-    private ChatActivity chatActivity;
-    private ContactsFragment contactsFragment;
+    private AbstractXMPPConnection connection;
+    private Chat chat;
     private NotificationManager mNotifyMgr;
+    private static MayDayApplication instance;
+
+
     @Override
     public void onCreate(){
         super.onCreate();
+        instance   = this;
         mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+    }
+
+    public static MayDayApplication getInstance() {
+        return instance;
+    }
+
+    public AbstractXMPPConnection getConnection(){
+        return this.connection;
     }
 
     public void setCredentials(String mayDayId, String password){
@@ -84,62 +91,40 @@ public class MyApplication extends Application implements ReceiptReceivedListene
         this.password = password;
     }
 
-    public void setConversationsFragment(ConversationsFragment conversationsFragment){
-        this.conversationsFragment = conversationsFragment;
-    }
-
-    public ConversationsFragment getConversationsFragment(){
-        return this.conversationsFragment;
-    }
-
-    public void setContactsFragment(ContactsFragment contactsFragment){
-        this.contactsFragment = contactsFragment;
-    }
-
-    public ContactsFragment getContactsFragment(){
-        return this.contactsFragment;
-    }
-
-    public void setChatActivity(ChatActivity chatActivity){
-        this.chatActivity = chatActivity;
-    }
-
-    public Boolean isConnected(){
-
-        return connection.isConnected();
-
-    }
-
     public void createChat(String contactString){
-        chatManager = ChatManager.getInstanceFor(connection);
+        ChatManager chatManager = ChatManager.getInstanceFor(connection);
         chat        = chatManager.createChat(contactString);
     }
-    public void sendMessage(String message){
+    public void sendMessage(ChatMessage message) {
 
         Log.v(log_v, "Send_message");
 
         try {
 
-            Message m = new Message();
-            m.setBody(message);
+                Message m = new Message();
+                m.setBody(message.getMessage());
 
-            DeliveryReceiptRequest.addTo(m);
+                DeliveryReceiptRequest.addTo(m);
 
-            SharedPreferences sharedPref =
-                    PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences sharedPref =
+                        PreferenceManager.getDefaultSharedPreferences(this);
 
-            String milliseconds =
-                    sharedPref.getString(ConfigFragment.PREF_KEY_DESTROY_RECEIPT, "0");
+                String milliseconds =
+                        sharedPref.getString(ConfigFragment.PREF_KEY_DESTROY_RECEIPT, "0");
 
-            SelfDestructiveReceipt selfDestructiveReceipt =
-                    new SelfDestructiveReceipt(milliseconds);
+                SelfDestructiveReceipt selfDestructiveReceipt =
+                        new SelfDestructiveReceipt(milliseconds);
 
-            m.addExtension(selfDestructiveReceipt);
+                m.addExtension(selfDestructiveReceipt);
+                chat.sendMessage(m);
+                message.setStatus(ChatMessageStatus.SENT);
 
-            chat.sendMessage(m);
+
+
         }
         catch(SmackException.NotConnectedException e)
         {
+            message.setStatus(ChatMessageStatus.SENDING);
             Log.d(log_e, "Exception at sendMsg " + e.getMessage());
             e.printStackTrace();
         }
@@ -175,7 +160,9 @@ public class MyApplication extends Application implements ReceiptReceivedListene
                                 getSelfDestructiveExtension(message, chatMessage);
                                 chatMessage.setStatus(ChatMessageStatus.UNREAD);
                                 chatMessage.setDirection(ChatMessageDirection.INCOMING);
-                                Contact contact = contactsFragment.findContactById(from);
+                                Contact contact = null;
+                                if(ContactsFragment.getInstance() != null)
+                                    contact = ContactsFragment.getInstance().findContactById(from);
                                 if(contact != null)
                                     chatMessage.setAuthor(contact.getName());
                                 else
@@ -183,27 +170,27 @@ public class MyApplication extends Application implements ReceiptReceivedListene
                                 insertMessageInDb(chatMessage);
                                 setNotificationManager(message, chatMessage);
 
-                                if(chatActivity != null
-                                        && from.equals(chatActivity.getCurrentConversationId())
-                                        && chatActivity.hasWindowFocus())
+                                if(ChatActivity.getInstance() != null
+                                        && from.equals(ChatActivity.getInstance().getCurrentConversationId())
+                                        && ChatActivity.getInstance().hasWindowFocus())
                                 {
                                     Log.v(log_v, "LOADING due to INCOMING message");
                                     chatMessage.setStatus(ChatMessageStatus.READ);
-                                    chatActivity.runOnUiThread(new Runnable() {
+                                    ChatActivity.getInstance().runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            chatActivity.displayMessage(chatMessage);
+                                            ChatActivity.getInstance().displayMessage(chatMessage);
 
                                         }
                                     });
                                 }
-
-                                conversationsFragment.getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        conversationsFragment.addIncomingMessage(chatMessage);
-                                    }
-                                });
+                                if(ContactsFragment.getInstance() != null)
+                                    ConversationsFragment.getInstance().getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            ConversationsFragment.getInstance().addIncomingMessage(chatMessage);
+                                        }
+                                    });
 
                             }
 
@@ -290,6 +277,7 @@ public class MyApplication extends Application implements ReceiptReceivedListene
         XMPPTCPConnectionConfiguration.Builder configBuilder
                 = XMPPTCPConnectionConfiguration.builder();
         configBuilder.setUsernameAndPassword(mayDayID, password);
+        configBuilder.setSendPresence(false);
         configBuilder.setServiceName(DOMAIN);
         configBuilder.setHost(HOST);
         configBuilder.setPort(PORT);
@@ -299,7 +287,8 @@ public class MyApplication extends Application implements ReceiptReceivedListene
         //TODO: CHANGE to false
         configBuilder.setDebuggerEnabled(true);
         connection = new XMPPTCPConnection(configBuilder.build());
-
+        MyConnectionListener listener = new MyConnectionListener(this.getApplicationContext());
+        connection.addConnectionListener(listener);
         //This is the event manager for receipt received messages
         DeliveryReceiptManager.getInstanceFor(connection).addReceiptReceivedListener(this);
 
@@ -308,6 +297,8 @@ public class MyApplication extends Application implements ReceiptReceivedListene
                 SelfDestructiveReceipt.NAMESPACE,
                 new SelfDestructiveReceipt.Provider()
         );
+
+
 
     }
 

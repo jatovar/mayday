@@ -70,17 +70,17 @@ public class ConfigFragment extends PreferenceFragmentCompat implements SharedPr
         if (requestCode == 333 && data != null) {
             Uri ringtone = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
             if (ringtone != null) {
-                setRingtonPreferenceValue(ringtone.toString()); // TODO
+                setRingtonePreferenceValue(ringtone.toString()); // TODO
             } else {
                 // "Silent" was selected
-                setRingtonPreferenceValue(""); // TODO
+                setRingtonePreferenceValue(""); // TODO
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
-    private void setRingtonPreferenceValue(String s) {
+    private void setRingtonePreferenceValue(String s) {
     }
     private String getRingtonePreferenceValue(){
         return "";
