@@ -2,15 +2,22 @@ package com.spadigital.mayday.app.Fragments;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v14.preference.MultiSelectListPreference;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
+import com.spadigital.mayday.app.Entities.Contact;
+import com.spadigital.mayday.app.Models.DataBaseHelper;
 import com.spadigital.mayday.app.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by jorge on 27/09/16.
@@ -19,12 +26,13 @@ public class ConfigFragment extends PreferenceFragmentCompat implements SharedPr
 
     public final static String PREF_KEY_DESTROY_RECEIPT = "pref_key_destroy_receipt";
     public final static String PREF_KEY_DESTROY_MINE    = "pref_key_destroy_mine";
+    public final static String PREF_KEY_BLOCKED_CONTACTS = "pref_key_blocked_contacts";
 
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
         addPreferencesFromResource(R.xml.preferences);
-
+       // MultiSelectListPreferenceDialogFragmentCompat
     }
     @Override public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +43,18 @@ public class ConfigFragment extends PreferenceFragmentCompat implements SharedPr
         Preference destroyMine = findPreference(PREF_KEY_DESTROY_MINE);
         destroyMine.setSummary(((ListPreference)destroyMine).getEntry());
 
+        final MultiSelectListPreference blockedContacts = (MultiSelectListPreference)findPreference(PREF_KEY_BLOCKED_CONTACTS);
+        blockedContacts.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                setBlockedContactsList(blockedContacts);
+                return false;
+            }
+        });
+
     }
+
+
     @Override
     public boolean onPreferenceTreeClick(Preference preference) {
         if (preference.getKey().equals("KEY_RINGTONE_PREFERENCE")) {
@@ -116,5 +135,33 @@ public class ConfigFragment extends PreferenceFragmentCompat implements SharedPr
         getPreferenceScreen().getSharedPreferences()
                 .unregisterOnSharedPreferenceChangeListener(this);
     }
+
+    private void setBlockedContactsList(MultiSelectListPreference lp) {
+
+        DataBaseHelper db = new DataBaseHelper(this.getContext());
+        ArrayList<Contact> blockedContacts = db.getBlockedContacts();
+        db.close();
+        List<String> entriesList = new ArrayList<>();
+        List<String> entryValuesList = new ArrayList<>();
+
+        for (int i = 0; i < blockedContacts.size(); i++) {
+            entriesList.add(blockedContacts.get(i).getMayDayId());
+            entryValuesList.add(blockedContacts.get(i).getMayDayId());
+        }
+
+        CharSequence[] entries = entriesList.toArray(new CharSequence[entriesList.size()]);
+        CharSequence[] entryValues = entryValuesList.toArray(new CharSequence[entryValuesList.size()]);
+
+
+        lp.setEntries(entries);
+        lp.setDefaultValue("1");
+        lp.setEntryValues(entryValues);
+        lp.setDialogTitle("Selecciona el contacto que deseas bloquear/desbloquear");
+        lp.setPositiveButtonText("Ok");
+        lp.setNegativeButtonText("Cancelar");
+
+        //lp.listener
+    }
+
 
 }

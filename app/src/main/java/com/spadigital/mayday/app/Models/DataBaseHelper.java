@@ -11,6 +11,7 @@ import android.util.Log;
 import com.spadigital.mayday.app.Entities.ChatMessage;
 import com.spadigital.mayday.app.Entities.Contact;
 import com.spadigital.mayday.app.Enum.ChatMessageStatus;
+import com.spadigital.mayday.app.Enum.ContactStatus;
 
 import java.util.ArrayList;
 
@@ -252,6 +253,24 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         }
         return chatMessageList;
     }
+
+    public ContactStatus findContactStatus(String mayDayId){
+        Contact contact = new Contact();
+        SQLiteDatabase db = getReadableDatabase();
+
+        String query = "SELECT * FROM "
+                + TABLE_CONTACT + " WHERE " + COLUMN_MAYDAYID + " = '"
+                + mayDayId + "'";
+
+        Cursor c = db.rawQuery(query, null);
+
+        if(c != null && c.moveToFirst()){
+            contact.setStatus(c.getString(c.getColumnIndex(COLUMN_STATUS)));
+            c.close();
+        }
+
+        return contact.getStatus();
+    }
     /*Returns the last @counter messages where contact_MayDayID=@contact_MayDayID
     Staring from message number @start_index.
     * */
@@ -261,7 +280,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         //TODO: OPTIMIZATION  - add logic for start_index
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_STATUS, String.valueOf(ChatMessageStatus.READ));
-        db.update(TABLE_MESSAGE, cv , COLUMN_CONTACT_MAYDAYID + " =?"
+        db.update(TABLE_MESSAGE, cv , COLUMN_CONTACT_MAYDAYID + " =? AND "+ COLUMN_STATUS + "= 'OUTGOING' "
                 , new String[]{contact_MayDayID});
 
         String query = "SELECT * FROM "
@@ -352,5 +371,31 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_MESSAGE, COLUMN_ID + "=" + String.valueOf(id), null);
         db.close();
+    }
+
+
+    public ArrayList<Contact> getBlockedContacts() {
+        Log.v(log_v, "getBlockedContacts");
+        ArrayList<Contact> contactList = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_CONTACT + " WHERE " + COLUMN_STATUS+ " = 'BLOCKED' ";
+
+        Cursor c = db.rawQuery(query, null);
+
+        if(c != null && c.moveToFirst()){
+
+            do{
+                Contact newContact = new Contact();
+                newContact.setMayDayId(c.getString(c.getColumnIndex(COLUMN_MAYDAYID)));
+                newContact.setName(c.getString(c.getColumnIndex(COLUMN_NAME)));
+
+                contactList.add(newContact);
+
+
+            }while(c.moveToNext());
+            c.close();
+        }
+
+        return contactList;
     }
 }

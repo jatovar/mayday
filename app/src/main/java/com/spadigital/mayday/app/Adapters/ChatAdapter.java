@@ -8,12 +8,14 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.spadigital.mayday.app.Enum.ChatMessageDirection;
+import com.spadigital.mayday.app.Enum.ChatMessageStatus;
 import com.spadigital.mayday.app.Enum.ChatMessageType;
 import com.spadigital.mayday.app.Models.DataBaseHelper;
 import com.spadigital.mayday.app.Entities.ChatMessage;
@@ -81,11 +83,23 @@ public class ChatAdapter extends BaseAdapter {
         }
 
         setTimerView(holder, chatMessage);
+        setSendingStatusIcon(holder, chatMessage);
         holder.txtMessage.setText(chatMessage.getMessage());
         holder.txtInfo.setText(chatMessage.getDatetime());
 
         return convertView;
 
+    }
+
+    private void setSendingStatusIcon(ViewHolder holder, ChatMessage chatMessage) {
+        if(chatMessage.getDirection() == ChatMessageDirection.OUTGOING){
+            if(chatMessage.getStatus() == ChatMessageStatus.SENT){
+                holder.imgStatus.setImageResource(R.drawable.ic_sent_icon);
+            }else{
+                holder.imgStatus.setImageResource(R.drawable.ic_sending_icon);
+
+            }
+        }
     }
 
     private void setTimerView(ViewHolder holder, final ChatMessage chatMessage) {
@@ -158,6 +172,7 @@ public class ChatAdapter extends BaseAdapter {
         holder.layoutProgress = (RelativeLayout)v.findViewById(R.id.layoutProgressBar);
         holder.progressBar    = (ProgressBar)v.findViewById(R.id.progressBarDestroy);
         holder.textProgress   = (TextView)v.findViewById(R.id.textViewProgressBar);
+        holder.imgStatus      = (ImageView)v.findViewById(R.id.imgStatus);
         return holder;
     }
 
@@ -168,6 +183,7 @@ public class ChatAdapter extends BaseAdapter {
         public RelativeLayout layoutProgress;
         public ProgressBar progressBar;
         public TextView textProgress;
+        public ImageView imgStatus;
     }
 
     private class ProgressBarAnimation extends Animation{

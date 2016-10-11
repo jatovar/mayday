@@ -14,6 +14,7 @@ import com.spadigital.mayday.app.Entities.Contact;
 import com.spadigital.mayday.app.Enum.ChatMessageDirection;
 import com.spadigital.mayday.app.Enum.ChatMessageStatus;
 import com.spadigital.mayday.app.Enum.ChatMessageType;
+import com.spadigital.mayday.app.Enum.ContactStatus;
 import com.spadigital.mayday.app.Fragments.ConfigFragment;
 import com.spadigital.mayday.app.Fragments.ContactsFragment;
 import com.spadigital.mayday.app.Fragments.ConversationsFragment;
@@ -137,43 +138,45 @@ public class MayDayApplication extends Application implements ReceiptReceivedLis
                 @Override
                 public void processPacket(Stanza packet) throws SmackException.NotConnectedException {
 
-                        try {
+                    try {
 
-                            Message message = (Message) packet;
-                            final ChatMessage chatMessage = new ChatMessage();
-                            String body = message.getBody();
-                            if(body == null){
-                                //This is a control message like "composing, pause, etc"
-                            }
-                            else {
-                                //Split MayDayID@DOMAIN/RESOURCE into MayDayID(0) and DOMAIN/RESOURCE(1)
-                                String[] parts = message.getFrom().split("@");
-                                String from = parts[0];
-                                Log.d("DEBUGING: ", "FROM: " + from);
-                                Log.d("DEBUGING: ", "BODY: " + body);
-                                //TODO: -Extract TYPE from incoming message
-                                //TODO: -Get the author from db
-                                chatMessage.setContactMayDayId(from);
-                                chatMessage.setMessage(body);
-                                chatMessage.setDatetime(DateFormat.getDateTimeInstance()
-                                        .format(new Date()));
-                                getSelfDestructiveExtension(message, chatMessage);
-                                chatMessage.setStatus(ChatMessageStatus.UNREAD);
-                                chatMessage.setDirection(ChatMessageDirection.INCOMING);
-                                Contact contact = null;
-                                if(ContactsFragment.getInstance() != null)
-                                    contact = ContactsFragment.getInstance().findContactById(from);
-                                if(contact != null)
-                                    chatMessage.setAuthor(contact.getName());
-                                else
-                                    chatMessage.setAuthor("UNKNOWN");
+                        Message message = (Message) packet;
+                        final ChatMessage chatMessage = new ChatMessage();
+                        String body = message.getBody();
+                        if(body == null){
+                            //This is a control message like "composing, pause, etc"
+                        }
+                        else {
+                            //Split MayDayID@DOMAIN/RESOURCE into MayDayID(0) and DOMAIN/RESOURCE(1)
+                            String[] parts = message.getFrom().split("@");
+                            String from = parts[0];
+                            Log.d("DEBUGING: ", "FROM: " + from);
+                            Log.d("DEBUGING: ", "BODY: " + body);
+                            chatMessage.setContactMayDayId(from);
+                            chatMessage.setMessage(body);
+                            chatMessage.setDatetime(DateFormat.getDateTimeInstance()
+                                    .format(new Date()));
+                            getSelfDestructiveExtension(message, chatMessage);
+                            chatMessage.setStatus(ChatMessageStatus.UNREAD);
+                            chatMessage.setDirection(ChatMessageDirection.INCOMING);
+                            Contact contact = null;
+                            if(ContactsFragment.getInstance() != null)
+                                contact = ContactsFragment.getInstance().findContactById(from);
+                            if(contact != null)
+                                chatMessage.setAuthor(contact.getName());
+                            else
+                                chatMessage.setAuthor("UNKNOWN");
+                            //a blocked contact will always exist in db
+                            DataBaseHelper db = new DataBaseHelper(getApplicationContext());
+                            ContactStatus status = db.findContactStatus(from);
+                            db.close();
+                            if(status != ContactStatus.BLOCKED) {
                                 insertMessageInDb(chatMessage);
                                 setNotificationManager(message, chatMessage);
 
-                                if(ChatActivity.getInstance() != null
+                                if (ChatActivity.getInstance() != null
                                         && from.equals(ChatActivity.getInstance().getCurrentConversationId())
-                                        && ChatActivity.getInstance().hasWindowFocus())
-                                {
+                                        && ChatActivity.getInstance().hasWindowFocus()) {
                                     Log.v(log_v, "LOADING due to INCOMING message");
                                     chatMessage.setStatus(ChatMessageStatus.READ);
                                     ChatActivity.getInstance().runOnUiThread(new Runnable() {
@@ -184,21 +187,21 @@ public class MayDayApplication extends Application implements ReceiptReceivedLis
                                         }
                                     });
                                 }
-                                if(ContactsFragment.getInstance() != null)
+                                if (ContactsFragment.getInstance() != null)
                                     ConversationsFragment.getInstance().getActivity().runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
                                             ConversationsFragment.getInstance().addIncomingMessage(chatMessage);
                                         }
                                     });
-
                             }
 
                         }
-                        catch(ClassCastException e) {
 
-                            Log.v(log_v, "Exception in startListening: "+ e.getMessage());
-                        }
+                    }
+                    catch(ClassCastException e) {
+                        Log.v(log_v, "Exception in startListening: "+ e.getMessage());
+                    }
                 }
             }, null);
 
@@ -233,10 +236,10 @@ public class MayDayApplication extends Application implements ReceiptReceivedLis
             {
                 chatMessage.setType(ChatMessageType.SELFDESTRUCTIVE);
                 chatMessage.setExpireTime(milliseconds);
-
             }
             else
             {
+                //extract our preferences
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
                 String millisecondsMine =
                         sharedPref.getString(ConfigFragment.PREF_KEY_DESTROY_MINE, "0");
@@ -256,6 +259,8 @@ public class MayDayApplication extends Application implements ReceiptReceivedLis
 
 
         }else{
+            //if the message is not self destructive at all (another clients that doesn't support
+            //our extension)
             chatMessage.setType(ChatMessageType.NORMAL);
         }
     }

@@ -36,12 +36,8 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
      * @param progressView the progressView control in LoginActivity
      */
     public UserLoginTask(String mayDayId, String password, Context context, View progressView) {
-
         this.context        = context;
-
         this.progressView   = progressView;
-
-
         MayDayApplication.getInstance().setCredentials(mayDayId, password);
         MayDayApplication.getInstance().createConnection();
         MayDayApplication.getInstance().startListening();

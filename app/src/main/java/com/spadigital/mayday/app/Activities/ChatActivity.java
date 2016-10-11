@@ -1,8 +1,10 @@
 package com.spadigital.mayday.app.Activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -16,6 +18,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.spadigital.mayday.app.Adapters.ChatAdapter;
+import com.spadigital.mayday.app.Enum.ContactStatus;
 import com.spadigital.mayday.app.Fragments.ContactsFragment;
 import com.spadigital.mayday.app.Fragments.ConversationsFragment;
 import com.spadigital.mayday.app.Models.DataBaseHelper;
@@ -106,6 +109,40 @@ public class ChatActivity extends AppCompatActivity{
                     toast.show();
                 }
 
+                return true;
+            case R.id.action_block_contact:
+                new AlertDialog.Builder(this)
+                        .setIcon(android.R.drawable.ic_delete)
+                        .setTitle("Bloquear contacto")
+                        .setMessage("¿Estás seguro que deseas bloquear este contacto?")
+                        .setPositiveButton("Sí", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                DataBaseHelper db = new DataBaseHelper(ChatActivity.this);
+                                ArrayList<Contact> contacts = db.getContacts();
+                                boolean found = false;
+                                for (Contact c: contacts) {
+                                    if (c.getMayDayId().equals(contactMaydayId)){
+                                        c.setStatus(ContactStatus.BLOCKED);
+                                        db.contactEdit(c);
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                                if (!found){
+                                    Contact newContact = new Contact("" ,
+                                            contactMaydayId,
+                                            ContactStatus.BLOCKED);
+                                    db.contactAdd(newContact);
+                                }
+
+                                finish();
+                            }
+
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

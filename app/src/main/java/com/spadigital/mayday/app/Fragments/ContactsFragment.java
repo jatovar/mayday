@@ -42,7 +42,7 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
     private Activity parentActivity;
     private ArrayList<Contact> dbContacts;
     private static ContactsFragment instance;
-
+    private View currentView;
 
     public static ContactsFragment getInstance(){
         return instance;
@@ -51,6 +51,7 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         instance = this;
         View view = inflater.inflate(R.layout.activity_contact, container, false);
+        currentView = view;
         SearchView searchViewContact = (SearchView) view.findViewById(R.id.search_contact);
         this.parentActivity  = getActivity();
         loadContacts(view);
@@ -67,7 +68,8 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
     public void onResume(){
         super.onResume();
         if(contactAdapter != null) {
-            contactAdapter.notifyDataSetChanged();
+            loadContacts(currentView);
+            //contactAdapter.notifyDataSetChanged();
         }
 
     }

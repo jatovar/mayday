@@ -58,6 +58,7 @@ public class ContactAdapter extends BaseAdapter implements Filterable{
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         Contact contact = getItem(position);
+
         LayoutInflater vi = (LayoutInflater) context.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
         if(convertView == null){
@@ -73,14 +74,18 @@ public class ContactAdapter extends BaseAdapter implements Filterable{
         switch (contact.getStatus()){
             case BLOCKED:
                 holder.tvName.setText(contact.getName());
+                convertView.setVisibility(View.INVISIBLE);
                 // status.setText("blocked");
                 break;
             case UNKNOWN:
                 holder.tvName.setText("");
+                convertView.setVisibility(View.VISIBLE);
+
                 // status.setText("unknown");
                 break;
             case NORMAL:
                 holder.tvName.setText(contact.getName());
+                convertView.setVisibility(View.VISIBLE);
                 // status.setText("normal");
                 break;
         }

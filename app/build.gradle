@@ -36,6 +36,7 @@ dependencies {
     compile 'org.igniterealtime.smack:smack-extensions:4.1.4'
     compile 'com.android.support:preference-v7:24.2.1'
     compile 'com.android.support:recyclerview-v7:24.2.1'
+    compile 'com.android.support:preference-v14:24.2.1'
     //We need this for backgroundtasks
     //compile 'com.birbit:android-priority-jobqueue:2.0.0'
 
