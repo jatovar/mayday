@@ -209,7 +209,7 @@ public class ChatActivity extends AppCompatActivity{
                     DataBaseHelper db = new DataBaseHelper(v.getContext());
                     ChatMessage outGoingMessage = new ChatMessage();
                     setOutgoingMessageProp(messageText, outGoingMessage);
-                    MayDayApplication.getInstance().sendMessage(outGoingMessage);
+                    MayDayApplication.getInstance().sendMessage(outGoingMessage,false);
                     db.getWritableDatabase();
                     db.messageAdd(outGoingMessage);
                     db.close();
@@ -277,6 +277,13 @@ public class ChatActivity extends AppCompatActivity{
 
     public String getCurrentConversationId(){
         return this.contactMaydayId;
+    }
+
+    public void updateSentIcon(int id){
+        if(adapter != null){
+            adapter.setMessageToSent(id);
+        }
+
     }
 
 

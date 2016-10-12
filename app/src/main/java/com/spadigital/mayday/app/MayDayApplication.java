@@ -24,6 +24,8 @@ import com.spadigital.mayday.app.PacketExtensions.SelfDestructiveReceipt;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.ReconnectionManager;
+import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.chat.Chat;
@@ -96,30 +98,38 @@ public class MayDayApplication extends Application implements ReceiptReceivedLis
         ChatManager chatManager = ChatManager.getInstanceFor(connection);
         chat        = chatManager.createChat(contactString);
     }
-    public void sendMessage(ChatMessage message) {
+    public void sendMessage(ChatMessage message, boolean resending) {
 
         Log.v(log_v, "Send_message");
 
         try {
 
-                Message m = new Message();
-                m.setBody(message.getMessage());
+            Message m = new Message();
+            m.setBody(message.getMessage());
 
-                DeliveryReceiptRequest.addTo(m);
+            DeliveryReceiptRequest.addTo(m);
 
-                SharedPreferences sharedPref =
-                        PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences sharedPref =
+                    PreferenceManager.getDefaultSharedPreferences(this);
 
-                String milliseconds =
-                        sharedPref.getString(ConfigFragment.PREF_KEY_DESTROY_RECEIPT, "0");
+            String milliseconds =
+                    sharedPref.getString(ConfigFragment.PREF_KEY_DESTROY_RECEIPT, "0");
 
-                SelfDestructiveReceipt selfDestructiveReceipt =
-                        new SelfDestructiveReceipt(milliseconds);
+            SelfDestructiveReceipt selfDestructiveReceipt =
+                    new SelfDestructiveReceipt(milliseconds);
 
-                m.addExtension(selfDestructiveReceipt);
-                chat.sendMessage(m);
-                message.setStatus(ChatMessageStatus.SENT);
-
+            m.addExtension(selfDestructiveReceipt);
+            chat.sendMessage(m);
+            message.setStatus(ChatMessageStatus.SENT);
+            if(resending){
+                DataBaseHelper db = new DataBaseHelper(this);
+                db.updateSendingMessage(message.getId());
+                db.close();
+                if(ChatActivity.getInstance() != null)
+                    ChatActivity.getInstance().updateSentIcon(message.getId());
+            }
+            /*
+            */
 
 
         }
@@ -278,10 +288,10 @@ public class MayDayApplication extends Application implements ReceiptReceivedLis
     public void createConnection() {
 
         Log.v(log_v,"createConnection");
-
         XMPPTCPConnectionConfiguration.Builder configBuilder
                 = XMPPTCPConnectionConfiguration.builder();
         configBuilder.setUsernameAndPassword(mayDayID, password);
+        configBuilder.setConnectTimeout(3000);
         configBuilder.setSendPresence(false);
         configBuilder.setServiceName(DOMAIN);
         configBuilder.setHost(HOST);
@@ -296,7 +306,9 @@ public class MayDayApplication extends Application implements ReceiptReceivedLis
         connection.addConnectionListener(listener);
         //This is the event manager for receipt received messages
         DeliveryReceiptManager.getInstanceFor(connection).addReceiptReceivedListener(this);
-
+        ReconnectionManager.getInstanceFor(connection).enableAutomaticReconnection();
+        ReconnectionManager.getInstanceFor(connection).setReconnectionPolicy(ReconnectionManager.ReconnectionPolicy.FIXED_DELAY);
+        ReconnectionManager.getInstanceFor(connection).setFixedDelay(3);
         ProviderManager.addExtensionProvider(
                 SelfDestructiveReceipt.ELEMENT,
                 SelfDestructiveReceipt.NAMESPACE,

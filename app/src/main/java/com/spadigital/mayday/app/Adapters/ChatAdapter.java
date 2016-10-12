@@ -176,6 +176,21 @@ public class ChatAdapter extends BaseAdapter {
         return holder;
     }
 
+    public void setMessageToSent(int id) {
+        for (ChatMessage chatMessage : chatMessages) {
+            if(chatMessage.getId() == id){
+                chatMessage.setStatus(ChatMessageStatus.SENT);
+                break;
+            }
+        }
+        context.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                notifyDataSetChanged();
+            }
+        });
+    }
+
     private static class ViewHolder {
         public TextView txtMessage;
         public TextView txtInfo;

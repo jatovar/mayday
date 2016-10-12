@@ -280,7 +280,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         //TODO: OPTIMIZATION  - add logic for start_index
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_STATUS, String.valueOf(ChatMessageStatus.READ));
-        db.update(TABLE_MESSAGE, cv , COLUMN_CONTACT_MAYDAYID + " =? AND "+ COLUMN_STATUS + "= 'OUTGOING' "
+        db.update(TABLE_MESSAGE, cv , COLUMN_CONTACT_MAYDAYID + " =? AND "+ COLUMN_STATUS + "= 'INCOMING' "
                 , new String[]{contact_MayDayID});
 
         String query = "SELECT * FROM "
@@ -314,7 +314,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         String query = "SELECT * FROM "
                 + TABLE_MESSAGE + " WHERE " + COLUMN_STATUS + " = '"
                 + String.valueOf(ChatMessageStatus.SENDING)+"'";
-
+        //TODO:UPDATE
         Cursor c = db.rawQuery(query, null);
         if(c != null && c.moveToFirst()){
             do{
@@ -397,5 +397,21 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         }
 
         return contactList;
+    }
+
+    public void updateSendingMessage(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_STATUS, "SENT");
+        db.update(TABLE_MESSAGE, values, COLUMN_ID + "=" + String.valueOf(id), null);
+        db.close();
+    }
+
+    public void unblockContact(String checkedField) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_STATUS, "NORMAL");
+        db.update(TABLE_CONTACT, values, COLUMN_MAYDAYID + "=" + "'" + checkedField + "'", null);
+        db.close();
     }
 }

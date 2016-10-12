@@ -42,7 +42,7 @@
     <PreferenceCategory
         android:title="Cuenta"
         android:key="pref_account">
-        <com.spadigital.mayday.app.CustomPreferences.MyMultiSelectListPreference
+        <MultiSelectListPreference
             android:key="pref_key_blocked_contacts"
             android:title="Ver lista de contactos bloqueados"
             android:summary="Desbloquea el contacto seleccionado"

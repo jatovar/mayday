@@ -2,6 +2,7 @@ package com.spadigital.mayday.app.Adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,7 +75,13 @@ public class ContactAdapter extends BaseAdapter implements Filterable{
         switch (contact.getStatus()){
             case BLOCKED:
                 holder.tvName.setText(contact.getName());
-                convertView.setVisibility(View.INVISIBLE);
+                //convertView.setVisibility(View.GONE);
+                convertView.setActivated(false);
+                convertView.setSelected(false);
+                convertView.setClickable(false);
+                convertView.setEnabled(false);
+                convertView.setFocusable(false);
+                convertView.setBackgroundColor(Color.LTGRAY);
                 // status.setText("blocked");
                 break;
             case UNKNOWN:

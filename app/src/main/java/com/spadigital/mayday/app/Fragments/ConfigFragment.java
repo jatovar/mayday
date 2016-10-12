@@ -1,5 +1,6 @@
 package com.spadigital.mayday.app.Fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
@@ -18,14 +19,15 @@ import com.spadigital.mayday.app.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by jorge on 27/09/16.
  */
 public class ConfigFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener{
 
-    public final static String PREF_KEY_DESTROY_RECEIPT = "pref_key_destroy_receipt";
-    public final static String PREF_KEY_DESTROY_MINE    = "pref_key_destroy_mine";
+    public final static String PREF_KEY_DESTROY_RECEIPT  = "pref_key_destroy_receipt";
+    public final static String PREF_KEY_DESTROY_MINE     = "pref_key_destroy_mine";
     public final static String PREF_KEY_BLOCKED_CONTACTS = "pref_key_blocked_contacts";
 
 
@@ -51,7 +53,20 @@ public class ConfigFragment extends PreferenceFragmentCompat implements SharedPr
                 return false;
             }
         });
+        blockedContacts.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                ArrayList<String>checkedFields = new ArrayList<>();
+                checkedFields.addAll((Set<String>)newValue);
+                DataBaseHelper db = new DataBaseHelper(ConfigFragment.this.getContext());
+                for (String checkedField : checkedFields) {
+                    db.unblockContact(checkedField);
+                }
+                db.close();
 
+                return true;
+            }
+        });
     }
 
 
@@ -112,12 +127,14 @@ public class ConfigFragment extends PreferenceFragmentCompat implements SharedPr
                 Preference destroyReceipt = findPreference(key);
                 // Set summary to be the user-description for the selected entry
                 destroyReceipt.setSummary(((ListPreference)destroyReceipt).getEntry());
-            break;
+                break;
 
             case PREF_KEY_DESTROY_MINE:
                 Preference destroyMine = findPreference(key);
                 destroyMine.setSummary(((ListPreference)destroyMine).getEntry());
-            break;
+                break;
+
+
         }
 
     }
@@ -152,15 +169,13 @@ public class ConfigFragment extends PreferenceFragmentCompat implements SharedPr
         CharSequence[] entries = entriesList.toArray(new CharSequence[entriesList.size()]);
         CharSequence[] entryValues = entryValuesList.toArray(new CharSequence[entryValuesList.size()]);
 
-
+        lp.setDefaultValue(entryValues);
         lp.setEntries(entries);
-        lp.setDefaultValue("1");
         lp.setEntryValues(entryValues);
-        lp.setDialogTitle("Selecciona el contacto que deseas bloquear/desbloquear");
+        lp.setDialogTitle("Selecciona el contacto que deseas desbloquear");
         lp.setPositiveButtonText("Ok");
         lp.setNegativeButtonText("Cancelar");
 
-        //lp.listener
     }
 
 
