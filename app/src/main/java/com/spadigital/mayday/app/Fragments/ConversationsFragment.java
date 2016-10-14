@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.spadigital.mayday.app.Activities.ChatActivity;
 import com.spadigital.mayday.app.Entities.ChatMessage;
@@ -69,12 +70,24 @@ public class ConversationsFragment extends Fragment {
         lvMessages.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ChatMessage chatMessage = conversationItemAdapter.getItem(position);
-                chatMessage.setStatus(ChatMessageStatus.READ);
-                Intent intent           = new Intent(parentActivity, ChatActivity.class);
-                intent.putExtra("contact_MayDayID", chatMessage.getContactMayDayID());
-                intent.putExtra("contact_author", chatMessage.getAuthor());
-                startActivity(intent);
+                //if the contact is not bloked
+                if(view.isEnabled())
+                {
+                    ChatMessage chatMessage = conversationItemAdapter.getItem(position);
+                    chatMessage.setStatus(ChatMessageStatus.READ);
+                    Intent intent           = new Intent(parentActivity, ChatActivity.class);
+                    intent.putExtra("contact_MayDayID", chatMessage.getContactMayDayID());
+                    intent.putExtra("contact_author", chatMessage.getAuthor());
+                    startActivity(intent);
+                }else{
+
+
+                    Toast toast = Toast.makeText(ConversationsFragment.this.getContext(),
+                            "Contacto bloqueado, para desbloquear ve al menu configuración",
+                            Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+
             }
         });
 

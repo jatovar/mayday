@@ -1,9 +1,13 @@
 package com.spadigital.mayday.app;
 
+import android.app.AlarmManager;
 import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.SystemClock;
 import android.support.v7.app.NotificationCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
@@ -21,6 +25,7 @@ import com.spadigital.mayday.app.Fragments.ConversationsFragment;
 import com.spadigital.mayday.app.Models.DataBaseHelper;
 import com.spadigital.mayday.app.Listeners.MyConnectionListener;
 import com.spadigital.mayday.app.PacketExtensions.SelfDestructiveReceipt;
+import com.spadigital.mayday.app.Tasks.AlarmReceiver;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
@@ -43,6 +48,7 @@ import org.jivesoftware.smackx.receipts.ReceiptReceivedListener;
 
 import java.text.DateFormat;
 import java.util.Date;
+
 
 /**
  * Created by jorge on 12/09/16.
@@ -71,13 +77,24 @@ public class MayDayApplication extends Application implements ReceiptReceivedLis
     private Chat chat;
     private NotificationManager mNotifyMgr;
     private static MayDayApplication instance;
-
-
+    private AlarmManager alarmManager;
+    private PendingIntent alarmIntent;
     @Override
     public void onCreate(){
         super.onCreate();
         instance   = this;
         mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
+        alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
+
+
+
+
+    }
+
+    public void cancelMayday(){
+        alarmManager.cancel(alarmIntent);
     }
 
     public static MayDayApplication getInstance() {
@@ -204,6 +221,9 @@ public class MayDayApplication extends Application implements ReceiptReceivedLis
                                             ConversationsFragment.getInstance().addIncomingMessage(chatMessage);
                                         }
                                     });
+                                //alarmManager.set(AlarmManager.RTC_WAKEUP,
+                                //        System.currentTimeMillis() + 100,
+                                 //       alarmIntent);
                             }
 
                         }
@@ -271,7 +291,19 @@ public class MayDayApplication extends Application implements ReceiptReceivedLis
         }else{
             //if the message is not self destructive at all (another clients that doesn't support
             //our extension)
-            chatMessage.setType(ChatMessageType.NORMAL);
+            //extract our preferences
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            String millisecondsMine =
+                    sharedPref.getString(ConfigFragment.PREF_KEY_DESTROY_MINE, "0");
+
+            //if there is a actual configuration, its going to destroy
+            if(!millisecondsMine.equals("0")) {
+                chatMessage.setType(ChatMessageType.SELFDESTRUCTIVE);
+                chatMessage.setExpireTime(millisecondsMine);
+            }else{
+                //no autodestruction was configured, the message is normal
+                chatMessage.setType(ChatMessageType.NORMAL);
+            }
         }
     }
 

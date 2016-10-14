@@ -117,8 +117,12 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
             toast.show();
         }
         else{
-            contactAdapter.add(dbContacts);
-            contactAdapter.sortContacts();
+            for (Contact dbContact : dbContacts) {
+                if(dbContact.getStatus()!= ContactStatus.BLOCKED){
+                    contactAdapter.add(dbContact);
+                    contactAdapter.sortContacts();
+                }
+            }
         }
     }
 

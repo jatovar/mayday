@@ -4,6 +4,9 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
 
     <application
         android:allowBackup="true"
@@ -19,6 +22,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <receiver android:name=".Tasks.AlarmReceiver"></receiver>
         <activity android:name="com.spadigital.mayday.app.Activities.ContactAddActivity"></activity>
         <activity android:name="com.spadigital.mayday.app.Activities.ContactAddActivity$ContactInformationActivity"></activity>
         <activity android:name="com.spadigital.mayday.app.Activities.ChatActivity"></activity>

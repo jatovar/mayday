@@ -102,7 +102,7 @@ public class ChatAdapter extends BaseAdapter {
         }
     }
 
-    private void setTimerView(ViewHolder holder, final ChatMessage chatMessage) {
+    private void setTimerView(final ViewHolder holder, final ChatMessage chatMessage) {
         if(chatMessage.getType() == ChatMessageType.SELFDESTRUCTIVE
                 && chatMessage.getDirection() == ChatMessageDirection.INCOMING
                 && !chatMessage.getExpireTime().equals("")){
@@ -111,24 +111,44 @@ public class ChatAdapter extends BaseAdapter {
             int seconds      = milliseconds / 1000;
 
             holder.layoutProgress.setVisibility(View.VISIBLE);
+            holder.textProgress.setVisibility(View.VISIBLE);
+
             holder.textProgress.setText(String.valueOf(seconds));
             holder.progressBar.setMax(seconds);
 
+
             ProgressBarAnimation anim = new ProgressBarAnimation(0, seconds + 1, holder);
             anim.setDuration(milliseconds);
-            holder.progressBar.startAnimation(anim);
-
-            Timer setDeletionTimer = new Timer();
-            setDeletionTimer.schedule(new TimerTask() {
+            anim.setAnimationListener(new Animation.AnimationListener() {
                 @Override
-                public void run() {
-                    deleteMessage(chatMessage);
+                public void onAnimationStart(Animation animation) {
+
                 }
 
-            }, milliseconds);
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    deleteMessage(chatMessage,holder);
+
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            holder.progressBar.startAnimation(anim);
+
+
+
+
+
+        }else{
+            //holder.layoutProgress.setVisibility(View.GONE);
+            //holder.textProgress.setVisibility(View.GONE);
         }
     }
-    private void deleteMessage(final ChatMessage chatMessage){
+    private void deleteMessage(final ChatMessage chatMessage, final ViewHolder holder){
 
         DataBaseHelper db = new DataBaseHelper(context);
         db.messageRemove(chatMessage.getId());
@@ -136,6 +156,8 @@ public class ChatAdapter extends BaseAdapter {
         context.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                holder.layoutProgress.setVisibility(View.GONE);
+                holder.textProgress.setVisibility(View.GONE);
                 chatMessages.remove(chatMessage);
                 notifyDataSetChanged();
             }

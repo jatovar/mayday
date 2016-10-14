@@ -17,7 +17,9 @@ import com.spadigital.mayday.app.Enum.ChatMessageDirection;
 import com.spadigital.mayday.app.Enum.ChatMessageStatus;
 import com.spadigital.mayday.app.Entities.ChatMessage;
 import com.spadigital.mayday.app.Entities.Contact;
+import com.spadigital.mayday.app.Enum.ContactStatus;
 import com.spadigital.mayday.app.Fragments.ConversationsFragment;
+import com.spadigital.mayday.app.Models.DataBaseHelper;
 import com.spadigital.mayday.app.R;
 
 import java.util.ArrayList;
@@ -83,7 +85,13 @@ public class ConversationItemAdapter extends BaseAdapter {
                 chatMessage.getStatus(),
                 chatMessage.getDirection()
         );
-
+        DataBaseHelper db = new DataBaseHelper(context);
+        ContactStatus status = db.findContactStatus(chatMessage.getContactMayDayID());
+        if(status == ContactStatus.BLOCKED)
+            convertView.setEnabled(false);
+        else
+            convertView.setEnabled(true);
+        db.close();
         return convertView;
     }
 

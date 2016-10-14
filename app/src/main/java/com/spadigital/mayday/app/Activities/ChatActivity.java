@@ -29,6 +29,7 @@ import com.spadigital.mayday.app.Enum.ChatMessageStatus;
 import com.spadigital.mayday.app.Enum.ChatMessageType;
 import com.spadigital.mayday.app.MayDayApplication;
 import com.spadigital.mayday.app.R;
+import com.spadigital.mayday.app.Tasks.AlarmReceiver;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -70,6 +71,11 @@ public class ChatActivity extends AppCompatActivity{
 
         MayDayApplication.getInstance().createChat(contactMaydayId + "@jorge-latitude-e5440");
         initControls();
+        if(AlarmReceiver.v != null && AlarmReceiver.v != null){
+            AlarmReceiver.r.stop();
+            AlarmReceiver.v.cancel();
+        }
+
     }
 
     @Override

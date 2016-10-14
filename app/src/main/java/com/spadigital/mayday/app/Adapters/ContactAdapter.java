@@ -12,6 +12,8 @@ import android.widget.Filterable;
 import android.widget.TextView;
 
 import com.spadigital.mayday.app.Entities.Contact;
+import com.spadigital.mayday.app.Enum.ChatMessageStatus;
+import com.spadigital.mayday.app.Enum.ContactStatus;
 import com.spadigital.mayday.app.Fragments.ContactsFragment;
 import com.spadigital.mayday.app.R;
 
@@ -76,23 +78,23 @@ public class ContactAdapter extends BaseAdapter implements Filterable{
             case BLOCKED:
                 holder.tvName.setText(contact.getName());
                 //convertView.setVisibility(View.GONE);
-                convertView.setActivated(false);
-                convertView.setSelected(false);
-                convertView.setClickable(false);
-                convertView.setEnabled(false);
-                convertView.setFocusable(false);
-                convertView.setBackgroundColor(Color.LTGRAY);
+                //convertView.setActivated(false);
+                //convertView.setSelected(false);
+                //convertView.setClickable(false);
+                //convertView.setEnabled(false);
+                //convertView.setFocusable(false);
+                //convertView.setBackgroundColor(Color.LTGRAY);
                 // status.setText("blocked");
                 break;
             case UNKNOWN:
                 holder.tvName.setText("");
-                convertView.setVisibility(View.VISIBLE);
+                //convertView.setVisibility(View.VISIBLE);
 
                 // status.setText("unknown");
                 break;
             case NORMAL:
                 holder.tvName.setText(contact.getName());
-                convertView.setVisibility(View.VISIBLE);
+                //convertView.setVisibility(View.VISIBLE);
                 // status.setText("normal");
                 break;
         }
@@ -101,8 +103,10 @@ public class ContactAdapter extends BaseAdapter implements Filterable{
 
     /** For new contacts **/
     public void add(Contact contact){
-        contactList.add(contact);
-        sortContacts();
+        if(contact.getStatus() != ContactStatus.BLOCKED) {
+            contactList.add(contact);
+            sortContacts();
+        }
     }
     /** For initializing from db set  **/
     public void add(List<Contact> contactList){
