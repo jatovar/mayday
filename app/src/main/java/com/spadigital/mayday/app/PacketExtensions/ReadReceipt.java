@@ -8,6 +8,7 @@ import java.util.Map;
 
 /**
  * Created by jorge on 5/10/16.
+ * TODO
  */
 public class ReadReceipt implements ExtensionElement {
     public static final String NAMESPACE = "urn:xmpp:read";

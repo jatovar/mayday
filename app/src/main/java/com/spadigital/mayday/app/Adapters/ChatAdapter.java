@@ -37,10 +37,9 @@ public class ChatAdapter extends BaseAdapter {
     private Activity context;
 
     public ChatAdapter(Activity context, ArrayList<ChatMessage> chatMessageList){
-        this.context = context;
+        this.context      = context;
         this.chatMessages = chatMessageList;
     }
-
 
     @Override
     public int getCount() {
@@ -120,13 +119,13 @@ public class ChatAdapter extends BaseAdapter {
             anim.setDuration(milliseconds);
             anim.setAnimationListener(new Animation.AnimationListener() {
                 @Override
-                public void onAnimationStart(Animation animation) {}
+                public void onAnimationStart(Animation animation) {/*Empty*/}
                 @Override
                 public void onAnimationEnd(Animation animation) {
                     deleteMessage(chatMessage, holder);
                 }
                 @Override
-                public void onAnimationRepeat(Animation animation) {}
+                public void onAnimationRepeat(Animation animation) {/*Empty*/}
             });
             holder.progressBar.startAnimation(anim);
         }

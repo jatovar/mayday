@@ -43,10 +43,9 @@ public class ConversationsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        instance = this;
+        instance        = this;
         view            = inflater.inflate(R.layout.fragment_all_chats, container, false);
         parentActivity  = getActivity();
-
 
         loadConversations();
         initControls();
@@ -60,6 +59,7 @@ public class ConversationsFragment extends Fragment {
             conversationItemAdapter.notifyDataSetChanged();
     }
     private void initControls() {
+
         lvMessages              = (ListView) view.findViewById(R.id.lvMessages);
         conversationItemAdapter = new ConversationItemAdapter(ConversationsFragment.this,
                 new ArrayList<ChatMessage>());
@@ -107,6 +107,7 @@ public class ConversationsFragment extends Fragment {
     }
 
     private void refreshListView(){
+
         swpMessages.setRefreshing(false);
         loadConversations();
 
@@ -131,6 +132,7 @@ public class ConversationsFragment extends Fragment {
     }
     /**Set **/
     public void setContactInfoIfExists(Intent data) {
+
         Contact contact = new Contact(
                 data.getStringExtra("modified_contact_id"),
                 data.getStringExtra("modified_contact_name"),
@@ -141,11 +143,13 @@ public class ConversationsFragment extends Fragment {
     }
 
     public void setToUnknownContactIfExists(Intent data) {
+
         String toRemoveMayDayId = data.getStringExtra("removed_contact_maydayid");
         conversationItemAdapter.setAuthorToUnknown(toRemoveMayDayId);
     }
 
     public void setAuthorIfExists(Intent data){
+
         Contact contact = new Contact(
                 data.getStringExtra("new_contact_id"),
                 data.getStringExtra("new_contact_name"),

@@ -126,7 +126,6 @@ public class ContactInformationActivity extends AppCompatActivity {
 
         ViewSwitcher switcherName = (ViewSwitcher) findViewById(R.id.my_switcher_name);
         switcherName.showNext();
-
         etContactName.setText(contactName);
         modifiedName = true;
         btnAction.setText("Guardar");
@@ -136,6 +135,7 @@ public class ContactInformationActivity extends AppCompatActivity {
     public void clickRemoveContactButton(View view){
         //TODO : We need a confirmation message to warn the user if he really wants to remove the contact with xxxxx name before this code is executed */
         Log.v(log_v, "clickRemoveContactButton");
+
         try{
 
             Contact deletedContact = new Contact(

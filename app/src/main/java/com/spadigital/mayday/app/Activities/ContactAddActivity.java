@@ -27,6 +27,7 @@ public class ContactAddActivity extends AppCompatActivity {
 
 
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_add);
         Log.v(log_v, "onCreate");
@@ -74,7 +75,6 @@ public class ContactAddActivity extends AppCompatActivity {
     }
 
     public void click_cancel(View view){
-
         setResult(RESULT_CANCELED);
         finish();
     }

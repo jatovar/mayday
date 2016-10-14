@@ -59,6 +59,7 @@ public class ContactAdapter extends BaseAdapter implements Filterable{
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
         ViewHolder holder;
         Contact contact = getItem(position);
 
@@ -77,25 +78,12 @@ public class ContactAdapter extends BaseAdapter implements Filterable{
         switch (contact.getStatus()){
             case BLOCKED:
                 holder.tvName.setText(contact.getName());
-                //convertView.setVisibility(View.GONE);
-                //convertView.setActivated(false);
-                //convertView.setSelected(false);
-                //convertView.setClickable(false);
-                //convertView.setEnabled(false);
-                //convertView.setFocusable(false);
-                //convertView.setBackgroundColor(Color.LTGRAY);
-                // status.setText("blocked");
                 break;
             case UNKNOWN:
-                holder.tvName.setText("");
-                //convertView.setVisibility(View.VISIBLE);
-
-                // status.setText("unknown");
+                holder.tvName.setText("Unknown");
                 break;
             case NORMAL:
                 holder.tvName.setText(contact.getName());
-                //convertView.setVisibility(View.VISIBLE);
-                // status.setText("normal");
                 break;
         }
         return convertView;
@@ -103,6 +91,7 @@ public class ContactAdapter extends BaseAdapter implements Filterable{
 
     /** For new contacts **/
     public void add(Contact contact){
+
         if(contact.getStatus() != ContactStatus.BLOCKED) {
             contactList.add(contact);
             sortContacts();
@@ -119,6 +108,7 @@ public class ContactAdapter extends BaseAdapter implements Filterable{
      * @param idToDelete The contact's mayDayId to delete
      */
     public void remove(String idToDelete){
+
         for (Contact c : contactList)
             if(c.getIdAsString().equals(idToDelete)){
                 contactList.remove(c);
@@ -133,6 +123,7 @@ public class ContactAdapter extends BaseAdapter implements Filterable{
      * @param newContactInfo The contact's information to be modified
      */
     public void modify(Contact newContactInfo){
+
         for (Contact c : contactList)
             if (c.getIdAsString().equals(newContactInfo.getIdAsString())){
                 c.setStatus(newContactInfo.getStatus());
@@ -141,7 +132,6 @@ public class ContactAdapter extends BaseAdapter implements Filterable{
                 sortContacts();
                 break;
             }
-
     }
 
     /**
@@ -165,7 +155,9 @@ public class ContactAdapter extends BaseAdapter implements Filterable{
      * @return  The ViewHolder, a helper class to encapsulate our child controls
      */
     private ViewHolder createViewHolder(View v) {
+
         ViewHolder holder = new ViewHolder();
+
         holder.tvMayDayId = (TextView) v.findViewById(R.id.tv_mayDayID);
         holder.tvName     = (TextView) v.findViewById(R.id.tv_name);
         holder.tvStatus   = (TextView) v.findViewById(R.id.tv_status);
@@ -190,7 +182,9 @@ public class ContactAdapter extends BaseAdapter implements Filterable{
      */
     @Override
     public Filter getFilter() {
+
         Filter filter = new Filter() {
+
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
 

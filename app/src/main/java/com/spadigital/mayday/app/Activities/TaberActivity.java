@@ -22,24 +22,23 @@ public class TaberActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_tabber);
-
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         setTabSelectorSettings(tabLayout);
         setPagerConfig(tabLayout);
-
-
     }
 
 
     private void setPagerConfig(final TabLayout tabLayout) {
+
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         final TabsAdapter adapter = new TabsAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -63,6 +62,7 @@ public class TaberActivity extends AppCompatActivity {
     }
 
     private void setTabSelectorSettings(TabLayout tabLayout) {
+
         View view1 = getLayoutInflater().inflate(R.layout.item_tab, null);
         view1.findViewById(R.id.icon).setBackgroundResource(R.drawable.user);
         tabLayout.addTab(tabLayout.newTab().setCustomView(view1));

@@ -13,6 +13,8 @@ import java.util.ArrayList;
 
 /**
  * Created by jorge on 10/10/16.
+ * This class is listening between network and server connection, if there is an error
+ * it tries to reconnect and sends pending messages (if successful)
  */
 public class MyConnectionListener implements ConnectionListener {
 
@@ -29,6 +31,7 @@ public class MyConnectionListener implements ConnectionListener {
 
     @Override
     public void authenticated(XMPPConnection connection, boolean resumed) {
+
         DataBaseHelper db = new DataBaseHelper(context);
         ArrayList<ChatMessage> chatHistory = db.getSendingMessages();
         db.close();
@@ -52,6 +55,7 @@ public class MyConnectionListener implements ConnectionListener {
 
     @Override
     public void reconnectionSuccessful() {
+
         DataBaseHelper db = new DataBaseHelper(context);
         ArrayList<ChatMessage> chatHistory = db.getSendingMessages();
         db.close();

@@ -64,7 +64,7 @@ public class ConversationItemAdapter extends BaseAdapter {
 
         ViewHolder holder;
         ChatMessage chatMessage = getItem(position);
-        LayoutInflater vi = (LayoutInflater) context.getSystemService(
+        LayoutInflater vi       = (LayoutInflater) context.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
 
         if(convertView == null){
@@ -77,33 +77,35 @@ public class ConversationItemAdapter extends BaseAdapter {
 
         String contactPlaceholder = chatMessage.getAuthor() + " [" +
                 chatMessage.getContactMayDayID() + "]";
+
         holder.tvContactName.setText(contactPlaceholder);
         holder.tvMessageBody.setText(chatMessage.getMessage());
         holder.tvTimestamp.setText(chatMessage.getDatetime());
-        setNoReadMessage(
-                holder,
-                chatMessage.getStatus(),
-                chatMessage.getDirection()
-        );
+        setNoReadMessage(holder, chatMessage.getStatus(), chatMessage.getDirection());
+
         DataBaseHelper db = new DataBaseHelper(context);
         ContactStatus status = db.findContactStatus(chatMessage.getContactMayDayID());
+
         if(status == ContactStatus.BLOCKED)
             convertView.setEnabled(false);
         else
             convertView.setEnabled(true);
         db.close();
+
         return convertView;
     }
 
     private void setNoReadMessage(ViewHolder holder, ChatMessageStatus status, ChatMessageDirection direction) {
 
         if(direction == ChatMessageDirection.INCOMING && status == ChatMessageStatus.UNREAD) {
+
             holder.imgRead.setColorFilter(Color.RED);
             holder.tvMessageBody.setTextAppearance(context, android.R.style.TextAppearance_DeviceDefault_Small);
             holder.tvMessageBody.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryMayday));
             holder.tvMessageBody.setTypeface(null, Typeface.BOLD);
             holder.tvContactName.setTypeface(null, Typeface.BOLD);
         }else{
+
             holder.imgRead.setColorFilter(Color.LTGRAY);
             holder.tvMessageBody.setTextAppearance(context, android.R.style.TextAppearance_DeviceDefault_Small);
             holder.tvMessageBody.setTextColor(ContextCompat.getColor(context, R.color.colorBlack));
@@ -124,6 +126,7 @@ public class ConversationItemAdapter extends BaseAdapter {
 
     /**This method looks in our list of latest messages and replaces it when a new message has arrived**/
     public void replaceMessageAndSetFirst(ChatMessage message){
+
         for (ChatMessage msg : chatMessages) {
             if(msg.getContactMayDayID().equals(message.getContactMayDayID())){
                 chatMessages.remove(msg);
@@ -141,22 +144,24 @@ public class ConversationItemAdapter extends BaseAdapter {
 
     /**This ViewHolder is a helper function for accessing to child controls in the conversation View*/
     private ViewHolder createViewHolder(View v) {
+
         ViewHolder holder    = new ViewHolder();
 
         holder.tvContactName = (TextView) v.findViewById(R.id.tvContactName);
         holder.tvMessageBody = (TextView) v.findViewById(R.id.tvMessageBody);
         holder.tvTimestamp   = (TextView) v.findViewById(R.id.tvTimestamp);
         holder.imgRead       = (ImageView) v.findViewById(R.id.imgRead);
+
         return holder;
     }
 
     public void updateContactInfo(Contact contact) {
+
         for (ChatMessage chatMessage : chatMessages)
             if (chatMessage.getContactMayDayID().equals(contact.getMayDayId())){
                 chatMessage.setAuthor(contact.getName());
                 chatMessage.setContactMayDayId(contact.getMayDayId());
             }
-
     }
 
 

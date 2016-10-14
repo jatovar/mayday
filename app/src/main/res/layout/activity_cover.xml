@@ -42,7 +42,7 @@
             android:theme="@style/buttonStyle"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:onClick="MiOnclick" />
+            android:onClick="myOnClick" />
     </LinearLayout>
 
 

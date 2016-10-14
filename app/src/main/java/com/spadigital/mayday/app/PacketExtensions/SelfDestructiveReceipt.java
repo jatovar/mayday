@@ -14,15 +14,14 @@ import java.util.Map;
 public class SelfDestructiveReceipt implements ExtensionElement {
 
     public static final String NAMESPACE = "urn:xmpp:destructive";
-    public static final String ELEMENT = "destructive";
-    private String milliseconds = "0";
+    public static final String ELEMENT   = "destructive";
+    private String milliseconds          = "0";
 
-    public SelfDestructiveReceipt(String milliseconds)
-    {
+    public SelfDestructiveReceipt(String milliseconds) {
         this.milliseconds = milliseconds;
     }
-    public SelfDestructiveReceipt(Object milliseconds)
-    {
+
+    public SelfDestructiveReceipt(Object milliseconds) {
         this.milliseconds = milliseconds.toString();
     }
 

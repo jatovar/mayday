@@ -42,17 +42,20 @@ public class MyMessageListener implements StanzaListener {
     private String log_v = "MyMessageListener: ";
 
     public MyMessageListener(Context context, NotificationManager mNotifyMgr){
+
         this.mNotifyMgr = mNotifyMgr;
-        this.context = context;
+        this.context    = context;
     }
 
 
     @Override
     public void processPacket(Stanza packet) throws SmackException.NotConnectedException {
+
         try {
-            Message message = (Message) packet;
+            Message message               = (Message) packet;
             final ChatMessage chatMessage = new ChatMessage();
-            String body = message.getBody();
+            String body                   = message.getBody();
+
             if(body == null){
                 //This is a control message like "composing, pause, etc"
             }
@@ -63,13 +66,14 @@ public class MyMessageListener implements StanzaListener {
                 String from = parts[0];
                 Log.d("DEBUGING: ", "FROM: " + from);
                 Log.d("DEBUGING: ", "BODY: " + body);
+                //set messsage properties
                 chatMessage.setContactMayDayId(from);
                 chatMessage.setMessage(body);
-                chatMessage.setDatetime(DateFormat.getDateTimeInstance()
-                        .format(new Date()));
+                chatMessage.setDatetime(DateFormat.getDateTimeInstance().format(new Date()));
                 getSelfDestructiveExtension(message, chatMessage);
                 chatMessage.setStatus(ChatMessageStatus.UNREAD);
                 chatMessage.setDirection(ChatMessageDirection.INCOMING);
+                //find contact in db for name
                 Contact contact = null;
                 if(ContactsFragment.getInstance() != null)
                     contact = ContactsFragment.getInstance().findContactById(from);
@@ -78,10 +82,12 @@ public class MyMessageListener implements StanzaListener {
                 else
                     chatMessage.setAuthor("UNKNOWN");
                 //a blocked contact will always exist in db
-                DataBaseHelper db = new DataBaseHelper(this.context);
+                DataBaseHelper db    = new DataBaseHelper(this.context);
                 ContactStatus status = db.findContactStatus(from);
                 db.close();
+
                 if(status != ContactStatus.BLOCKED) {
+
                     Log.v(log_v, "insertMessageInDb");
 
                     DataBaseHelper db2 = new DataBaseHelper(context);
@@ -92,8 +98,11 @@ public class MyMessageListener implements StanzaListener {
 
                     if (ChatActivity.getInstance() != null
                             && from.equals(ChatActivity.getInstance().getCurrentConversationId())
-                            && ChatActivity.getInstance().hasWindowFocus()) {
+                            && ChatActivity.getInstance().hasWindowFocus())
+                    {
+
                         Log.v(log_v, "LOADING due to INCOMING message");
+
                         chatMessage.setStatus(ChatMessageStatus.READ);
                         ChatActivity.getInstance().runOnUiThread(new Runnable() {
                             @Override
@@ -103,13 +112,15 @@ public class MyMessageListener implements StanzaListener {
                             }
                         });
                     }
-                    if (ContactsFragment.getInstance() != null)
+                    if (ContactsFragment.getInstance() != null) {
+
                         ConversationsFragment.getInstance().getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 ConversationsFragment.getInstance().addIncomingMessage(chatMessage);
                             }
                         });
+                    }
                     //alarmManager.set(AlarmManager.RTC_WAKEUP,
                     //        System.currentTimeMillis() + 100,
                     //       alarmIntent);
@@ -174,6 +185,7 @@ public class MyMessageListener implements StanzaListener {
     }
 
     private void setNotificationManager(Message message, ChatMessage chatMessage) {
+
         NotificationCompat.Builder mBuilder =
                 (NotificationCompat.Builder) new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.send)
@@ -181,8 +193,8 @@ public class MyMessageListener implements StanzaListener {
                         .setContentText(chatMessage.getAuthor()+": "+chatMessage.getMessage())
                         .setDefaults(Notification.DEFAULT_SOUND)
                         .setAutoCancel(true);
-        int mNotificationId = message.getStanzaId().hashCode();
 
+        int mNotificationId = message.getStanzaId().hashCode();
         mNotifyMgr.notify(mNotificationId, mBuilder.build());
     }
 }

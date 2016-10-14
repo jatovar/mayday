@@ -24,11 +24,11 @@ public class LoginActivity extends AppCompatActivity {
 
 
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         Log.v(log_v, "onCreate");
         mProgressView = findViewById(R.id.login_progress);
-
     }
 
     public void click_login(View view){
@@ -38,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
         EditText etPassword = (EditText) findViewById(R.id.et_Password);
         String mayDayId     = etMayDayId.getText().toString();
         String password     = etPassword.getText().toString();
+
         if(TextUtils.isEmpty(mayDayId)) {
             etMayDayId.setError("escriba su MayDayId");
             etMayDayId.requestFocus();
@@ -68,7 +69,10 @@ public class LoginActivity extends AppCompatActivity {
                                 public void run()
                                 {
                                     mProgressView.setVisibility(View.GONE);
-                                    Toast.makeText(LoginActivity.this, "El servidor no ha respondido correctamente, reintentar la conexión", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(LoginActivity.this,
+                                            "El servidor no ha respondido correctamente, " +
+                                                    "reintentar la conexión",
+                                            Toast.LENGTH_LONG).show();
 
                                 }
                             });

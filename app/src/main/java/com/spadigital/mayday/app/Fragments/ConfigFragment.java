@@ -37,6 +37,7 @@ public class ConfigFragment extends PreferenceFragmentCompat implements SharedPr
        // MultiSelectListPreferenceDialogFragmentCompat
     }
     @Override public void onCreate(final Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
         Preference destroyReceipt = findPreference(PREF_KEY_DESTROY_RECEIPT);
@@ -46,6 +47,7 @@ public class ConfigFragment extends PreferenceFragmentCompat implements SharedPr
         destroyMine.setSummary(((ListPreference)destroyMine).getEntry());
 
         final MultiSelectListPreference blockedContacts = (MultiSelectListPreference)findPreference(PREF_KEY_BLOCKED_CONTACTS);
+
         blockedContacts.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -53,17 +55,20 @@ public class ConfigFragment extends PreferenceFragmentCompat implements SharedPr
                 return false;
             }
         });
+
         blockedContacts.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 ArrayList<String>checkedFields = new ArrayList<>();
+
                 checkedFields.addAll((Set<String>)newValue);
                 DataBaseHelper db = new DataBaseHelper(ConfigFragment.this.getContext());
+
                 for (String checkedField : checkedFields) {
                     db.unblockContact(checkedField);
                 }
-                db.close();
 
+                db.close();
                 return true;
             }
         });
@@ -72,7 +77,9 @@ public class ConfigFragment extends PreferenceFragmentCompat implements SharedPr
 
     @Override
     public boolean onPreferenceTreeClick(Preference preference) {
+
         if (preference.getKey().equals("KEY_RINGTONE_PREFERENCE")) {
+
             Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
@@ -101,11 +108,12 @@ public class ConfigFragment extends PreferenceFragmentCompat implements SharedPr
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         if (requestCode == 333 && data != null) {
             Uri ringtone = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
             if (ringtone != null) {
                 setRingtonePreferenceValue(ringtone.toString()); // TODO
-            } else {
+            }else{
                 // "Silent" was selected
                 setRingtonePreferenceValue(""); // TODO
             }
@@ -122,7 +130,9 @@ public class ConfigFragment extends PreferenceFragmentCompat implements SharedPr
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
         switch (key){
+
             case PREF_KEY_DESTROY_RECEIPT:
                 Preference destroyReceipt = findPreference(key);
                 // Set summary to be the user-description for the selected entry
@@ -133,10 +143,7 @@ public class ConfigFragment extends PreferenceFragmentCompat implements SharedPr
                 Preference destroyMine = findPreference(key);
                 destroyMine.setSummary(((ListPreference)destroyMine).getEntry());
                 break;
-
-
         }
-
     }
 
     @Override

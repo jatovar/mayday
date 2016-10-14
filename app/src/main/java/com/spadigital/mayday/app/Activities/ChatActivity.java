@@ -41,7 +41,7 @@ import java.util.Date;
  */
 public class ChatActivity extends AppCompatActivity{
 
-    static final int EDIT_CONTACT_REQUEST = 2;
+    private static final int EDIT_CONTACT_REQUEST = 2;
 
     private String log_v = "ChatActivity: ";
     private String contactMaydayId;
@@ -59,6 +59,7 @@ public class ChatActivity extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
+
         super.onCreate(savedInstanceState);
 
         instance = this;
@@ -71,6 +72,9 @@ public class ChatActivity extends AppCompatActivity{
 
         MayDayApplication.getInstance().createChat(contactMaydayId + "@jorge-latitude-e5440");
         initControls();
+
+        //The alarm receiver can be null if the user is only selecting a contact to chat with
+        //so we have to ensure there is actually an alarm Receiver
         if(AlarmReceiver.v != null && AlarmReceiver.v != null){
             AlarmReceiver.r.stop();
             AlarmReceiver.v.cancel();
@@ -87,6 +91,7 @@ public class ChatActivity extends AppCompatActivity{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()) {
             case R.id.action_add_contact:
                 Log.i("ActionBar", "Add contact!");
@@ -98,7 +103,8 @@ public class ChatActivity extends AppCompatActivity{
                 Contact contact;
                 if((contact = ContactsFragment.getInstance().findContactById(contactMaydayId)) != null)
                 {
-                    Intent intent = new Intent(getApplicationContext(), ContactAddActivity.ContactInformationActivity.class);
+                    Intent intent = new Intent(getApplicationContext(),
+                            ContactAddActivity.ContactInformationActivity.class);
 
                     intent.putExtra("editing_contact_id",       contact.getIdAsString());
                     intent.putExtra("editing_contact_MayDayID", contact.getMayDayId());
@@ -157,6 +163,7 @@ public class ChatActivity extends AppCompatActivity{
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         Log.v(log_v, "Result callback");
         // Make sure the request was successful
         if (resultCode == RESULT_OK) {
@@ -164,7 +171,8 @@ public class ChatActivity extends AppCompatActivity{
             // Check which request we're responding to
             switch (requestCode){
                 case EDIT_CONTACT_REQUEST:
-                    //We must refresh it all here...... the Contacts Fragment, the Conversations Fragment, and the ChatActivity menu title
+                    //We must refresh it all here...... the Contacts Fragment,
+                    // the Conversations Fragment, and the ChatActivity menu title
                     Log.v(log_v, "EDIT_CONTACT_REQUEST");
                     //This refreshes the contacts fragments...
                     if(data.getBooleanExtra("is_deleting", false))
@@ -177,7 +185,6 @@ public class ChatActivity extends AppCompatActivity{
                         ContactsFragment.getInstance().modifyContactInDataSet(data);
                         ConversationsFragment.getInstance().setContactInfoIfExists(data);
                         getSupportActionBar().setTitle(data.getStringExtra("modified_contact_name"));
-
                     }
                     break;
 
@@ -187,15 +194,16 @@ public class ChatActivity extends AppCompatActivity{
     }
 
     private void initControls() {
-        messagesContainer = (ListView) findViewById(R.id.messagesContainer);
-        etMessage         = (EditText) findViewById(R.id.messageEdit);
+
+        messagesContainer   = (ListView) findViewById(R.id.messagesContainer);
+        etMessage           = (EditText) findViewById(R.id.messageEdit);
         ImageButton btnSend = (ImageButton) findViewById(R.id.chatSendButton);
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        Toolbar myToolbar   = (Toolbar) findViewById(R.id.my_toolbar);
 
         setSupportActionBar(myToolbar);
         getSupportActionBar().setTitle(author);
         myToolbar.setTitleTextColor(Color.WHITE);
-        myToolbar.setPadding(100,0,0,0);
+        myToolbar.setPadding(100, 0,  0, 0);
         myToolbar.setSubtitleTextColor(Color.WHITE);
         myToolbar.setSubtitle(contactMaydayId);
 
@@ -234,18 +242,21 @@ public class ChatActivity extends AppCompatActivity{
     }
 
     private void setOutgoingMessageProp(String messageText, ChatMessage chatMessage) {
+
         chatMessage.setContactMayDayId(contactMaydayId);
         chatMessage.setAuthor(author);
         chatMessage.setMessage(messageText);
         chatMessage.setDatetime(DateFormat.getDateTimeInstance()
                 .format(new Date()));
-        chatMessage.setDirection(ChatMessageDirection.OUTGOING);//setme(true)
+        chatMessage.setDirection(ChatMessageDirection.OUTGOING);
         chatMessage.setType(ChatMessageType.NORMAL);
         chatMessage.setStatus(ChatMessageStatus.SENDING);
     }
 
     private void loadChatDbHistory() {
+
         Log.v(log_v, "Loading conversation history... \n");
+
         try {
             DataBaseHelper db = new DataBaseHelper(this);
             ArrayList<ChatMessage> chatHistory = db.getMessages(contactMaydayId, 0, 5);
@@ -289,7 +300,6 @@ public class ChatActivity extends AppCompatActivity{
         if(adapter != null){
             adapter.setMessageToSent(id);
         }
-
     }
 
 

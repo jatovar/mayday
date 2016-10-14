@@ -46,23 +46,27 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
     public static ContactsFragment getInstance(){
         return instance;
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
-        instance = this;
-        View view = inflater.inflate(R.layout.fragment_contacts, container, false);
-        currentView = view;
+
+        instance                     = this;
+        View view                    = inflater.inflate(R.layout.fragment_contacts, container, false);
+        currentView                  = view;
         SearchView searchViewContact = (SearchView) view.findViewById(R.id.search_contact);
-        this.parentActivity  = getActivity();
+        this.parentActivity          = getActivity();
+
         loadContacts(view);
         setClickAddContactListener(view);
+
         //Need to share dbContacts with ChatActivity
         searchViewContact.setOnQueryTextListener(this);
         searchViewContact.setIconified(false);
         searchViewContact.clearFocus();
 
-
         return view;
     }
+
     @Override
     public void onResume(){
         super.onResume();
@@ -74,7 +78,9 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
     }
 
     private void setClickAddContactListener(View view) {
+
         FloatingActionButton buttonAddContact = (FloatingActionButton) view.findViewById(R.id.bt_add);
+
         buttonAddContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,6 +92,7 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
     }
 
     private void loadContacts(View currentView) {
+
         Log.v(log_v, "Loading contacts...");
 
         DataBaseHelper db = new DataBaseHelper(parentActivity);
@@ -97,6 +104,7 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
         ListView lvContacts = (ListView) currentView.findViewById(R.id.lv_contactList);
         lvContacts.setAdapter(contactAdapter);
         lvContacts.setTextFilterEnabled(true);
+
         lvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -125,12 +133,9 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
         }
     }
 
-
-
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         Log.v(log_v, "Result callback");
         /* Make sure the request was successful */
         if (resultCode == Activity.RESULT_OK) {
@@ -143,13 +148,9 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
                     addContactToDataSet(data);
                     ConversationsFragment.getInstance().setAuthorIfExists(data);
                 break;
-
-
             }
         }
     }
-
-
 
     public Contact findContactById(String mayDayId){
         for (Contact c: dbContacts) {
@@ -176,6 +177,7 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
 
     /* We need to know which element in the set is going to be updated so we need its id to find it, and update it */
     public void modifyContactInDataSet(Intent data) {
+
         Contact contact = new Contact(
                 data.getStringExtra("modified_contact_id"),
                 data.getStringExtra("modified_contact_name"),

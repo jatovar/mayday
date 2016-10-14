@@ -18,8 +18,7 @@ public class CoverActivity extends AppCompatActivity {
         setContentView(R.layout.activity_cover);
     }
 
-    public void MiOnclick(View view)
-    {
+    public void myOnClick(View view){
         Intent login = new Intent(getApplicationContext(), LoginActivity.class);
         startActivity(login);
         finish();
