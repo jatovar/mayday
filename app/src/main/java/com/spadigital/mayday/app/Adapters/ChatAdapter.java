@@ -97,7 +97,6 @@ public class ChatAdapter extends BaseAdapter {
                 holder.imgStatus.setImageResource(R.drawable.ic_sent_icon);
             }else{
                 holder.imgStatus.setImageResource(R.drawable.ic_sending_icon);
-
             }
         }
     }
@@ -121,37 +120,22 @@ public class ChatAdapter extends BaseAdapter {
             anim.setDuration(milliseconds);
             anim.setAnimationListener(new Animation.AnimationListener() {
                 @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
+                public void onAnimationStart(Animation animation) {}
                 @Override
                 public void onAnimationEnd(Animation animation) {
-                    deleteMessage(chatMessage,holder);
-
-
+                    deleteMessage(chatMessage, holder);
                 }
-
                 @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
+                public void onAnimationRepeat(Animation animation) {}
             });
             holder.progressBar.startAnimation(anim);
-
-
-
-
-
-        }else{
-            //holder.layoutProgress.setVisibility(View.GONE);
-            //holder.textProgress.setVisibility(View.GONE);
         }
     }
     private void deleteMessage(final ChatMessage chatMessage, final ViewHolder holder){
 
         DataBaseHelper db = new DataBaseHelper(context);
         db.messageRemove(chatMessage.getId());
+        db.close();
 
         context.runOnUiThread(new Runnable() {
             @Override

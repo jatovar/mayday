@@ -20,7 +20,6 @@ import com.spadigital.mayday.app.Entities.Contact;
 import com.spadigital.mayday.app.Adapters.ContactAdapter;
 import com.spadigital.mayday.app.Activities.ContactAddActivity;
 import com.spadigital.mayday.app.Enum.ContactStatus;
-import com.spadigital.mayday.app.MayDayApplication;
 import com.spadigital.mayday.app.Models.DataBaseHelper;
 import com.spadigital.mayday.app.R;
 
@@ -50,7 +49,7 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         instance = this;
-        View view = inflater.inflate(R.layout.activity_contact, container, false);
+        View view = inflater.inflate(R.layout.fragment_contacts, container, false);
         currentView = view;
         SearchView searchViewContact = (SearchView) view.findViewById(R.id.search_contact);
         this.parentActivity  = getActivity();
