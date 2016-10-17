@@ -86,7 +86,16 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
     }
     @Override
     protected void onResume() {
+
         super.onResume();
+        contactMaydayId = getIntent().getExtras().getString("contact_MayDayID");
+        author = getIntent().getExtras().getString("contact_author");
+
+        Log.v(log_v, "Start a chat with MayDayId: " + contactMaydayId);
+
+        MayDayApplication.getInstance().createChat(contactMaydayId + "@jorge-latitude-e5440");
+        initControls();
+
         if(AlarmReceiver.v != null && AlarmReceiver.r != null){
             AlarmReceiver.r.stop();
             AlarmReceiver.v.cancel();
@@ -275,6 +284,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
 
         try {
             DataBaseHelper db = new DataBaseHelper(this);
+            //db.updateRead(contactMaydayId);
             ArrayList<ChatMessage> chatHistory = db.getMessages(contactMaydayId, 0, 5);
             adapter = new ChatAdapter(ChatActivity.this, new ArrayList<ChatMessage>());
             messagesContainer.setAdapter(adapter);

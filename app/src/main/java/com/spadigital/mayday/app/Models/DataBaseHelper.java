@@ -215,7 +215,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 
         values.put(COLUMN_STATUS, "READ");
 
-        db.update(TABLE_CONTACT, values, COLUMN_MAYDAYID+"=? AND " + COLUMN_DIRECTION +
+        db.update(TABLE_CONTACT, values, COLUMN_MAYDAYID + "=? AND " + COLUMN_DIRECTION +
                 "= OUTGOING", new String[]{mayDayId});
     }
 
@@ -285,7 +285,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         //TODO: OPTIMIZATION  - add logic for start_index
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_STATUS, String.valueOf(ChatMessageStatus.READ));
-        db.update(TABLE_MESSAGE, cv , COLUMN_CONTACT_MAYDAYID + " =? AND "+ COLUMN_STATUS + "= 'INCOMING' "
+        db.update(TABLE_MESSAGE, cv , COLUMN_CONTACT_MAYDAYID + " =? AND "+ COLUMN_DIRECTION + "= 'INCOMING' "
                 , new String[]{contact_MayDayID});
 
         String query = "SELECT * FROM "
@@ -419,6 +419,14 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         ContentValues values = new ContentValues();
         values.put(COLUMN_STATUS, "NORMAL");
         db.update(TABLE_CONTACT, values, COLUMN_MAYDAYID + "=" + "'" + checkedField + "'", null);
+        db.close();
+    }
+
+    public void updateReadingMessage(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_STATUS, "READ");
+        db.update(TABLE_MESSAGE, values, COLUMN_ID + "=" + id, null);
         db.close();
     }
 }

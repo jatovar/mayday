@@ -181,6 +181,7 @@ public class ChatAdapter extends BaseAdapter {
         return holder;
     }
 
+    /** This method updates the GUI to a message sent**/
     public void setMessageToSent(int id) {
         for (ChatMessage chatMessage : chatMessages) {
             if(chatMessage.getId() == id){

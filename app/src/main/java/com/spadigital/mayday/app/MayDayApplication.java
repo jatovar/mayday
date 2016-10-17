@@ -36,7 +36,9 @@ import org.jivesoftware.smackx.receipts.DeliveryReceiptRequest;
 
 
 /**
- * Created by jorge on 12/09/16.
+ * Created by jorge on 12/09/16
+ * This is the the main logic where all listeners are initialized and the connection is created
+ * with the port and host
  */
 public class MayDayApplication extends Application {
 
@@ -129,9 +131,11 @@ public class MayDayApplication extends Application {
             // (not sure if its the right way)
 
             if(resending){
+                //Update the database sending messages to sent
                 DataBaseHelper db = new DataBaseHelper(this);
                 db.updateSendingMessage(message.getId());
                 db.close();
+                //We have to update to sent icon in the ChatActivity
                 if(ChatActivity.getInstance() != null)
                     ChatActivity.getInstance().updateSentIcon(message.getId());
             }

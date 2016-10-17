@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -32,6 +33,7 @@ import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smackx.bytestreams.ibb.packet.Data;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -103,13 +105,13 @@ public class MyMessageListener implements StanzaListener {
 
                     Log.v(log_v, "insertMessageInDb");
 
-                    DataBaseHelper db2 = new DataBaseHelper(context);
-                    db2.getWritableDatabase();
-                    db2.messageAdd(incomingMessage);
-                    db2.close();
-                    setNotificationManager(message, incomingMessage);
+                    db = new DataBaseHelper(context);
+                    db.messageAdd(incomingMessage);
+                    db.close();
+                    setNotificationManager(incomingMessage);
 
                     //if there is a chat activity update it
+
                     if (ChatActivity.getInstance() != null
                             && from.equals(ChatActivity.getInstance().getCurrentConversationId())
                             && ChatActivity.getInstance().hasWindowFocus()) {
@@ -117,6 +119,10 @@ public class MyMessageListener implements StanzaListener {
                         Log.v(log_v, "LOADING due to INCOMING message");
 
                         incomingMessage.setStatus(ChatMessageStatus.READ);
+                        db = new DataBaseHelper(context);
+                        db.updateReadingMessage(incomingMessage.getId());
+                        db.close();
+
                         ChatActivity.getInstance().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -127,7 +133,7 @@ public class MyMessageListener implements StanzaListener {
                     }
 
                     //Add message to conversations fragment
-                    if (ContactsFragment.getInstance() != null) {
+                    if (ConversationsFragment.getInstance() != null) {
                         ConversationsFragment.getInstance().getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -211,17 +217,32 @@ public class MyMessageListener implements StanzaListener {
         }
     }
 
-    private void setNotificationManager(Message message, ChatMessage chatMessage) {
+    private void setNotificationManager(ChatMessage chatMessage) {
+        //ChatActivity.getInstance().finish();
+        //The intent to execute when the expanded status entry is clicked.
+        Intent notificationIntent = new Intent(context, ChatActivity.class);
+        notificationIntent.putExtra("contact_MayDayID", chatMessage.getContactMayDayID());
+        notificationIntent.putExtra("contact_author", chatMessage.getAuthor());
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        stackBuilder.addNextIntent(notificationIntent);
+
+
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        PendingIntent intent = PendingIntent.getActivity(context, 0,
+                notificationIntent, 0);
+
 
         NotificationCompat.Builder mBuilder =
                 (NotificationCompat.Builder) new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.send)
                         .setContentTitle(context.getString(R.string.app_name))
-                        .setContentText(chatMessage.getAuthor()+": "+chatMessage.getMessage())
+                        .setContentText(chatMessage.getAuthor() + ": " + chatMessage.getMessage())
+                        .setContentIntent(intent)
                         .setDefaults(Notification.DEFAULT_SOUND)
                         .setAutoCancel(true);
-
-        int mNotificationId = message.getStanzaId().hashCode();
+        int mNotificationId = chatMessage.getContactMayDayID().hashCode();
         mNotifyMgr.notify(mNotificationId, mBuilder.build());
     }
 }
