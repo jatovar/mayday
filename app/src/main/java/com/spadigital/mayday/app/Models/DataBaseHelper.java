@@ -20,9 +20,12 @@ import java.util.ArrayList;
  */
 public class DataBaseHelper extends SQLiteOpenHelper{
 
-    private String log_v="DataBaseHelper";
+    private String log_v = "DataBaseHelper";
 
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 9;
+    //7 - added contact id primary key
+    //8 - added message expiretime field
+    //9 - added message emergency field
 
     // Database Name
     private static final String DATABASE_NAME = "mayDay";
@@ -33,35 +36,36 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 
     //status can be: NORMAL, UNKNOWN or BLOCKED for TABLE "contact"
     //and: (SENDING or SENT) for outgoing and (UNREAD/READ) for incoming for TABLE "message"
-    private static final String COLUMN_STATUS="status";
+    private static final String COLUMN_STATUS ="status";
 
 
     // Columns from table: "contact"
     private static final String COLUMN_CONTACTID = "contactID";
-    private static final String COLUMN_MAYDAYID = "mayDayID";
-    private static final String COLUMN_NAME = "name";
+    private static final String COLUMN_MAYDAYID  = "mayDayID";
+    private static final String COLUMN_NAME      = "name";
 
 
 
 
     // Columns from table: "message"
-    private static final String COLUMN_ID = "id";
+    private static final String COLUMN_ID               = "id";
     private static final String COLUMN_CONTACT_MAYDAYID = "contact_MayDayID";
-    private static final String COLUMN_MESSAGE = "message";
-    private static final String COLUMN_DATETIME = "datetime";
-    private static final String COLUMN_EXPIRETIME = "expiretime";
+    private static final String COLUMN_MESSAGE          = "message";
+    private static final String COLUMN_DATETIME         = "datetime";
+    private static final String COLUMN_EXPIRETIME       = "expiretime";
+    private static final String COLUMN_EMERGENCY        = "emergency";
 
 
     //direction can be: INCOMING or OUTGOING
     private static final String COLUMN_DIRECTION = "direction";
     //type can be: NORMAL or SELFDESTRUCTIVE
-    private static final String COLUMN_TYPE = "type";
+    private static final String COLUMN_TYPE      = "type";
 
 
     //CREATE STATEMENTS
 
     //Table "contact"
-    private static final String CREATE_TABLE_CONTACT=
+    private static final String CREATE_TABLE_CONTACT =
             "CREATE TABLE " + TABLE_CONTACT + "("
                     + COLUMN_CONTACTID  + " INTEGER PRIMARY KEY,"
                     + COLUMN_MAYDAYID   + " TEXT,"
@@ -71,7 +75,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 
 
     //Table "message"
-    private static final String CREATE_TABLE_MESSAGE=
+    private static final String CREATE_TABLE_MESSAGE =
             "CREATE TABLE " + TABLE_MESSAGE + "("
                     + COLUMN_ID                 + " INTEGER PRIMARY KEY,"
                     + COLUMN_CONTACT_MAYDAYID   + " TEXT," //FK
@@ -80,6 +84,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
                     + COLUMN_STATUS             + " TEXT,"
                     + COLUMN_DIRECTION          + " TEXT,"
                     + COLUMN_EXPIRETIME         + " TEXT,"
+                    + COLUMN_EMERGENCY          + " INTEGER DEFAULT 0,"
                     + COLUMN_TYPE               + " TEXT)";
                     //+ "FOREIGN KEY("+ COLUMN_ID_CONTACT +") REFERENCES "+ TABLE_CONTACT+"(" + COLUMN_ID +")";
 
@@ -102,8 +107,6 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGE);
         onCreate(db);
     }
-
-
 
 
 
@@ -183,14 +186,15 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
+        values.put(COLUMN_EMERGENCY,        chatMessage.getIsEmergency());
         values.put(COLUMN_CONTACT_MAYDAYID, chatMessage.getContactMayDayID());
-        values.put(COLUMN_MESSAGE, chatMessage.getMessage());
-        values.put(COLUMN_DATETIME, chatMessage.getDatetime());
-        values.put(COLUMN_STATUS, chatMessage.getStatus().toString());
-        values.put(COLUMN_DIRECTION, chatMessage.getDirection().toString());
-        values.put(COLUMN_EXPIRETIME, chatMessage.getExpireTime());
-        values.put(COLUMN_TYPE, chatMessage.getType().toString());
-
+        values.put(COLUMN_MESSAGE,          chatMessage.getMessage());
+        values.put(COLUMN_DATETIME,         chatMessage.getDatetime());
+        values.put(COLUMN_STATUS,           chatMessage.getStatus().toString());
+        values.put(COLUMN_DIRECTION,        chatMessage.getDirection().toString());
+        values.put(COLUMN_EXPIRETIME,       chatMessage.getExpireTime());
+        values.put(COLUMN_TYPE,             chatMessage.getType().toString());
+        values.put(COLUMN_EMERGENCY,        chatMessage.getIsEmergency() ? 1 : 0);
 
         try {
             newMessageID = db.insert(TABLE_MESSAGE, null, values);
@@ -199,7 +203,6 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         catch (SQLiteConstraintException e){
             newMessageID = -1;
             Log.v(log_v, "Couldn't insert message exception: "+ e.getMessage());
-
         }
 
         return newMessageID;
@@ -212,7 +215,8 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 
         values.put(COLUMN_STATUS, "READ");
 
-        db.update(TABLE_CONTACT, values, COLUMN_MAYDAYID+"=? AND " + COLUMN_DIRECTION+"= OUTGOING", new String[]{mayDayId});
+        db.update(TABLE_CONTACT, values, COLUMN_MAYDAYID+"=? AND " + COLUMN_DIRECTION +
+                "= OUTGOING", new String[]{mayDayId});
     }
 
     /**This method returns the last message of each conversation leaving author if it exists in
@@ -242,7 +246,8 @@ public class DataBaseHelper extends SQLiteOpenHelper{
             }while (c.moveToNext());
             c.close();
         }
-         //TODO: OPTIMIZATION - This should not be done, maybe a FK necessary message-contact?? Perhaps not because not every message has a contact saved in DB
+         //TODO: OPTIMIZATION - This should not be done, maybe a FK necessary
+        // message-contact?? Perhaps not because not every message has a contact saved in DB
         for (ChatMessage message : chatMessageList){
             for(Contact contact : contacts){
                 if(contact.getMayDayId().equals(message.getContactMayDayID()))
@@ -298,6 +303,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
                 newChatMessage.setDirection(c.getString(c.getColumnIndex(COLUMN_DIRECTION)));
                 newChatMessage.setType(c.getString(c.getColumnIndex(COLUMN_TYPE)));
                 newChatMessage.setExpireTime(c.getString(c.getColumnIndex(COLUMN_EXPIRETIME)));
+                newChatMessage.setIsEmergency(c.getInt(c.getColumnIndex(COLUMN_EMERGENCY)) == 1);
                 chatMessageList.add(newChatMessage);
 
             }while(c.moveToNext());
@@ -327,6 +333,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
                 newChatMessage.setDirection(c.getString(c.getColumnIndex(COLUMN_DIRECTION)));
                 newChatMessage.setType(c.getString(c.getColumnIndex(COLUMN_TYPE)));
                 newChatMessage.setExpireTime(c.getString(c.getColumnIndex(COLUMN_EXPIRETIME)));
+                newChatMessage.setIsEmergency(c.getInt(c.getColumnIndex(COLUMN_EMERGENCY)) == 1);
                 chatMessageList.add(newChatMessage);
 
             }while(c.moveToNext());

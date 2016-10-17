@@ -47,8 +47,11 @@ public class SelfDestructiveReceipt implements ExtensionElement {
     public static class Provider extends EmbeddedExtensionProvider
     {
         @Override
-        protected ExtensionElement createReturnExtension
-                (String currentElement, String currentNamespace, Map attributeMap, List content) {
+        protected ExtensionElement createReturnExtension(String currentElement,
+                                                         String currentNamespace,
+                                                         Map attributeMap,
+                                                         List content) {
+
             return new SelfDestructiveReceipt(attributeMap.get("milliseconds"));
         }
     }

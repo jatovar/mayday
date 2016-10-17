@@ -15,6 +15,7 @@ public class ChatMessage {
     private int id                 = -1;
     private String author          = "";
     private String expireTime      = "";
+    private Boolean isEmergency    = false;
 
     private ChatMessageStatus status;
     private ChatMessageDirection direction;
@@ -107,5 +108,13 @@ public class ChatMessage {
 
     public void setExpireTime(String expireTime) {
         this.expireTime = expireTime;
+    }
+
+    public void setIsEmergency(boolean isEmergency) {
+        this.isEmergency = isEmergency;
+    }
+
+    public Boolean getIsEmergency() {
+        return isEmergency;
     }
 }

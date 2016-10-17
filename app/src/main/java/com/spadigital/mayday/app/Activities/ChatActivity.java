@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -39,7 +41,7 @@ import java.util.Date;
  * Created by jorge on 21/09/16.
  * This is the activity where the user establish a conversation with another user
  */
-public class ChatActivity extends AppCompatActivity{
+public class ChatActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener{
 
     private static final int EDIT_CONTACT_REQUEST = 2;
 
@@ -52,6 +54,7 @@ public class ChatActivity extends AppCompatActivity{
     private ListView messagesContainer;
     private ChatAdapter adapter;
     private static ChatActivity instance;
+    private CheckBox isEmergencyMessage;
 
     public static ChatActivity getInstance(){
         return instance;
@@ -75,12 +78,21 @@ public class ChatActivity extends AppCompatActivity{
 
         //The alarm receiver can be null if the user is only selecting a contact to chat with
         //so we have to ensure there is actually an alarm Receiver
-        if(AlarmReceiver.v != null && AlarmReceiver.v != null){
+        if(AlarmReceiver.v != null && AlarmReceiver.r != null){
             AlarmReceiver.r.stop();
             AlarmReceiver.v.cancel();
         }
 
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(AlarmReceiver.v != null && AlarmReceiver.r != null){
+            AlarmReceiver.r.stop();
+            AlarmReceiver.v.cancel();
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -143,7 +155,7 @@ public class ChatActivity extends AppCompatActivity{
                                     }
                                 }
                                 if (!found){
-                                    Contact newContact = new Contact("" ,
+                                    Contact newContact = new Contact("Unknown" ,
                                             contactMaydayId,
                                             ContactStatus.BLOCKED);
                                     db.contactAdd(newContact);
@@ -199,7 +211,9 @@ public class ChatActivity extends AppCompatActivity{
         etMessage           = (EditText) findViewById(R.id.messageEdit);
         ImageButton btnSend = (ImageButton) findViewById(R.id.chatSendButton);
         Toolbar myToolbar   = (Toolbar) findViewById(R.id.my_toolbar);
+        isEmergencyMessage  = (CheckBox) findViewById(R.id.checkBox_emergency);
 
+        isEmergencyMessage.setOnCheckedChangeListener(this);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setTitle(author);
         myToolbar.setTitleTextColor(Color.WHITE);
@@ -223,13 +237,14 @@ public class ChatActivity extends AppCompatActivity{
                     DataBaseHelper db = new DataBaseHelper(v.getContext());
                     ChatMessage outGoingMessage = new ChatMessage();
                     setOutgoingMessageProp(messageText, outGoingMessage);
-                    MayDayApplication.getInstance().sendMessage(outGoingMessage,false);
+                    MayDayApplication.getInstance().sendMessage(outGoingMessage, false);
                     db.getWritableDatabase();
                     db.messageAdd(outGoingMessage);
                     db.close();
                     etMessage.setText("");
                     displayMessage(outGoingMessage);
                     ConversationsFragment.getInstance().addOutgoingMessage(outGoingMessage);
+                    isEmergencyMessage.setChecked(false);
                 }catch (Exception ex){
                     ex.printStackTrace();
                 }
@@ -251,6 +266,7 @@ public class ChatActivity extends AppCompatActivity{
         chatMessage.setDirection(ChatMessageDirection.OUTGOING);
         chatMessage.setType(ChatMessageType.NORMAL);
         chatMessage.setStatus(ChatMessageStatus.SENDING);
+        chatMessage.setIsEmergency(this.isEmergencyMessage.isChecked());
     }
 
     private void loadChatDbHistory() {
@@ -302,6 +318,32 @@ public class ChatActivity extends AppCompatActivity{
         }
     }
 
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if(isChecked){
+            new AlertDialog.Builder(this)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle("Mensaje de emergencia")
+                    .setMessage("¿Estás seguro que desea activar mensajes de emergencia?\n\n" +
+                            "No se recomienda enviar mensajes de emergencia al menos que" +
+                            " sea necesario")
+                    .setPositiveButton("Sí", new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
 
+                            //finish();
+                        }
 
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
+            //buttonView.setChecked(false);
+        }
+
+    }
+
+    public boolean getIsEmergencyMessage(){
+        return isEmergencyMessage.isChecked();
+    }
 }

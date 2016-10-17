@@ -27,8 +27,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.9">
+                android:layout_height="wrap_content"
+                android:layout_weight="9">
 
                 <ListView
                     android:id="@+id/messagesContainer"
@@ -46,20 +46,26 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/checkBox_emergency"
+                    android:layout_weight=".25" />
+
                 <EditText
                     android:id="@+id/messageEdit"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_weight="7"
-                    android:hint="Input message" />
+                    android:hint="Input message"
+                    android:layout_weight="1.5" />
 
                 <ImageButton
                     android:id="@+id/chatSendButton"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:src="@android:drawable/ic_menu_send"
-                 />
+                    android:layout_weight=".25" />
+
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

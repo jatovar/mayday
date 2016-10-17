@@ -9,6 +9,8 @@ import android.os.PowerManager;
 import android.os.Vibrator;
 import android.support.v4.content.WakefulBroadcastReceiver;
 
+import com.spadigital.mayday.app.Activities.ChatActivity;
+
 /**
  * Created by jorge on 13/10/16.
  */
@@ -17,16 +19,21 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
     public static Ringtone r;
     @Override
     public void onReceive(Context context, Intent intent) {
-        PowerManager powerManager = (PowerManager) context.getSystemService(context.POWER_SERVICE);
-        PowerManager.WakeLock wl = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TRAININGCOUNTDOWN");
-        wl.acquire();
-        Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        r = RingtoneManager.getRingtone(context, uri);
-        r.play();
+        if(ChatActivity.getInstance() != null && !ChatActivity.getInstance().hasWindowFocus()) {
 
-        v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        // Vibrate for 500 milliseconds
-        long[] pattern = {0, 500, 1000};
-        v.vibrate(pattern, 0);
+            ///wake up
+            PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            PowerManager.WakeLock wl  = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TRAININGCOUNTDOWN");
+            wl.acquire();
+            //ringtone
+            Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+            r = RingtoneManager.getRingtone(context, uri);
+            r.play();
+            //vibration
+            v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+            // Vibrate for 500 milliseconds
+            long[] pattern = {0, 500, 1000};
+            v.vibrate(pattern, 0);
+        }
     }
 }

@@ -17,6 +17,7 @@ import com.spadigital.mayday.app.Listeners.MyConnectionListener;
 import com.spadigital.mayday.app.Listeners.MyMessageListener;
 import com.spadigital.mayday.app.Listeners.MyReceiptReceivedListener;
 import com.spadigital.mayday.app.Models.DataBaseHelper;
+import com.spadigital.mayday.app.PacketExtensions.EmergencyMessageReceipt;
 import com.spadigital.mayday.app.PacketExtensions.SelfDestructiveReceipt;
 import com.spadigital.mayday.app.Tasks.AlarmReceiver;
 
@@ -62,7 +63,6 @@ public class MayDayApplication extends Application {
     private NotificationManager notificationMgr;
     private static MayDayApplication instance;
     private AlarmManager alarmManager;
-    private PendingIntent alarmIntent;
 
 
     @Override
@@ -72,8 +72,7 @@ public class MayDayApplication extends Application {
         instance        = this;
         notificationMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         alarmManager    = (AlarmManager) getSystemService(ALARM_SERVICE);
-        Intent intent   = new Intent(getApplicationContext(), AlarmReceiver.class);
-        alarmIntent     = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
+
     }
 
     public static MayDayApplication getInstance() {
@@ -85,7 +84,6 @@ public class MayDayApplication extends Application {
     }
 
     public void setCredentials(String mayDayId, String password){
-
         this.mayDayID = mayDayId;
         this.password = password;
     }
@@ -103,7 +101,7 @@ public class MayDayApplication extends Application {
             Message m = new Message();
             m.setBody(message.getMessage());
 
-            //To ensure user has received the message
+            //To ensure user has received the message (Just in case, not used in this project)
             DeliveryReceiptRequest.addTo(m);
 
             //Autodestructive extension
@@ -114,6 +112,14 @@ public class MayDayApplication extends Application {
             SelfDestructiveReceipt selfDestructiveReceipt =
                     new SelfDestructiveReceipt(milliseconds);
             m.addExtension(selfDestructiveReceipt);
+
+            //Emergency message extension
+            String isEmergencyMessage =
+                    String.valueOf(ChatActivity.getInstance().getIsEmergencyMessage());
+            EmergencyMessageReceipt emergencyMessageReceipt =
+                    new EmergencyMessageReceipt(isEmergencyMessage);
+            m.addExtension(emergencyMessageReceipt);
+
             //Message sent by smack
             chat.sendMessage(m);
             message.setStatus(ChatMessageStatus.SENT);
@@ -143,7 +149,7 @@ public class MayDayApplication extends Application {
 
     public void startListening() {
         if (connection != null) {
-            MyMessageListener listener = new MyMessageListener(this, notificationMgr);
+            MyMessageListener listener = new MyMessageListener(this, notificationMgr, alarmManager);
             this.connection.addAsyncStanzaListener(listener, null);
         }
     }
@@ -179,11 +185,18 @@ public class MayDayApplication extends Application {
                 ReconnectionManager.ReconnectionPolicy.FIXED_DELAY);
         ReconnectionManager.getInstanceFor(connection).setFixedDelay(3);
 
-        //Self destructive extension
+        //Self destructive message extension provider
         ProviderManager.addExtensionProvider(
                 SelfDestructiveReceipt.ELEMENT,
                 SelfDestructiveReceipt.NAMESPACE,
                 new SelfDestructiveReceipt.Provider()
+        );
+
+        //Emergency message extension provider
+        ProviderManager.addExtensionProvider(
+                EmergencyMessageReceipt.ELEMENT,
+                EmergencyMessageReceipt.NAMESPACE,
+                new EmergencyMessageReceipt.Provider()
         );
 
     }

@@ -1,8 +1,11 @@
 package com.spadigital.mayday.app.Listeners;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.NotificationCompat;
 import android.support.v7.preference.PreferenceManager;
@@ -19,8 +22,10 @@ import com.spadigital.mayday.app.Fragments.ConfigFragment;
 import com.spadigital.mayday.app.Fragments.ContactsFragment;
 import com.spadigital.mayday.app.Fragments.ConversationsFragment;
 import com.spadigital.mayday.app.Models.DataBaseHelper;
+import com.spadigital.mayday.app.PacketExtensions.EmergencyMessageReceipt;
 import com.spadigital.mayday.app.PacketExtensions.SelfDestructiveReceipt;
 import com.spadigital.mayday.app.R;
+import com.spadigital.mayday.app.Tasks.AlarmReceiver;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.StanzaListener;
@@ -39,12 +44,14 @@ public class MyMessageListener implements StanzaListener {
 
     private final NotificationManager mNotifyMgr;
     private final Context context;
+    private final AlarmManager alarmManager;
     private String log_v = "MyMessageListener: ";
 
-    public MyMessageListener(Context context, NotificationManager mNotifyMgr){
+    public MyMessageListener(Context context, NotificationManager mNotifyMgr, AlarmManager alarmManager){
 
         this.mNotifyMgr = mNotifyMgr;
         this.context    = context;
+        this.alarmManager = alarmManager;
     }
 
 
@@ -52,9 +59,9 @@ public class MyMessageListener implements StanzaListener {
     public void processPacket(Stanza packet) throws SmackException.NotConnectedException {
 
         try {
-            Message message               = (Message) packet;
-            final ChatMessage chatMessage = new ChatMessage();
-            String body                   = message.getBody();
+            Message message                   = (Message) packet;
+            final ChatMessage incomingMessage = new ChatMessage();
+            String body                       = message.getBody();
 
             if(body == null){
                 //This is a control message like "composing, pause, etc"
@@ -66,21 +73,27 @@ public class MyMessageListener implements StanzaListener {
                 String from = parts[0];
                 Log.d("DEBUGING: ", "FROM: " + from);
                 Log.d("DEBUGING: ", "BODY: " + body);
-                //set messsage properties
-                chatMessage.setContactMayDayId(from);
-                chatMessage.setMessage(body);
-                chatMessage.setDatetime(DateFormat.getDateTimeInstance().format(new Date()));
-                getSelfDestructiveExtension(message, chatMessage);
-                chatMessage.setStatus(ChatMessageStatus.UNREAD);
-                chatMessage.setDirection(ChatMessageDirection.INCOMING);
-                //find contact in db for name
+
+                //set message properties
+                incomingMessage.setContactMayDayId(from);
+                incomingMessage.setMessage(body);
+                incomingMessage.setDatetime(DateFormat.getDateTimeInstance().format(new Date()));
+                incomingMessage.setStatus(ChatMessageStatus.UNREAD);
+                incomingMessage.setDirection(ChatMessageDirection.INCOMING);
+
+                //Get my custom message extensions
+                getSelfDestructiveExtension(message, incomingMessage);
+                getEmergencyMessageExtension(message, incomingMessage);
+
+                //find contact in db for name TODO:OPTIMIZE THIS
                 Contact contact = null;
                 if(ContactsFragment.getInstance() != null)
                     contact = ContactsFragment.getInstance().findContactById(from);
                 if(contact != null)
-                    chatMessage.setAuthor(contact.getName());
+                    incomingMessage.setAuthor(contact.getName());
                 else
-                    chatMessage.setAuthor("UNKNOWN");
+                    incomingMessage.setAuthor("UNKNOWN");
+
                 //a blocked contact will always exist in db
                 DataBaseHelper db    = new DataBaseHelper(this.context);
                 ContactStatus status = db.findContactStatus(from);
@@ -92,43 +105,62 @@ public class MyMessageListener implements StanzaListener {
 
                     DataBaseHelper db2 = new DataBaseHelper(context);
                     db2.getWritableDatabase();
-                    db2.messageAdd(chatMessage);
+                    db2.messageAdd(incomingMessage);
                     db2.close();
-                    setNotificationManager(message, chatMessage);
+                    setNotificationManager(message, incomingMessage);
 
+                    //if there is a chat activity update it
                     if (ChatActivity.getInstance() != null
                             && from.equals(ChatActivity.getInstance().getCurrentConversationId())
-                            && ChatActivity.getInstance().hasWindowFocus())
-                    {
+                            && ChatActivity.getInstance().hasWindowFocus()) {
 
                         Log.v(log_v, "LOADING due to INCOMING message");
 
-                        chatMessage.setStatus(ChatMessageStatus.READ);
+                        incomingMessage.setStatus(ChatMessageStatus.READ);
                         ChatActivity.getInstance().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                ChatActivity.getInstance().displayMessage(chatMessage);
+                                ChatActivity.getInstance().displayMessage(incomingMessage);
 
                             }
                         });
                     }
-                    if (ContactsFragment.getInstance() != null) {
 
+                    //Add message to conversations fragment
+                    if (ContactsFragment.getInstance() != null) {
                         ConversationsFragment.getInstance().getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                ConversationsFragment.getInstance().addIncomingMessage(chatMessage);
+                                ConversationsFragment.getInstance().addIncomingMessage(incomingMessage);
                             }
                         });
                     }
-                    //alarmManager.set(AlarmManager.RTC_WAKEUP,
-                    //        System.currentTimeMillis() + 100,
-                    //       alarmIntent);
+                    //Emergency message wake up
+                    if(incomingMessage.getIsEmergency()) {
+                        PendingIntent alarmIntent;
+                        Intent intent = new Intent(context, AlarmReceiver.class);
+                        alarmIntent   = PendingIntent.getBroadcast(context, 0, intent, 0);
+                        alarmManager.set(AlarmManager.RTC_WAKEUP,
+                                System.currentTimeMillis() + 100,
+                               alarmIntent);
+                    }
                 }
             }
         }
         catch(ClassCastException e) {
             Log.v(log_v, "Exception in startListening: "+ e.getMessage());
+        }
+    }
+
+    private void getEmergencyMessageExtension(Message message, ChatMessage chatMessage) {
+
+        ExtensionElement element = message.getExtension(EmergencyMessageReceipt.NAMESPACE);
+        //if there is no extension set in the packet, such a spark client and whatsoever
+        if (element != null) {
+            String isEmergencyMessage = ((EmergencyMessageReceipt) element).getIsEmergencyMsg();
+            if(isEmergencyMessage.equals("true")){
+                chatMessage.setIsEmergency(true);
+            }
         }
     }
 
@@ -140,13 +172,11 @@ public class MyMessageListener implements StanzaListener {
         if (element != null) {
             String milliseconds = ((SelfDestructiveReceipt) element).getMilliseconds();
             //if the package comes with self destructive time we give it priority
-            if (!milliseconds.equals("0"))
-            {
+            if (!milliseconds.equals("0")) {
                 chatMessage.setType(ChatMessageType.SELFDESTRUCTIVE);
                 chatMessage.setExpireTime(milliseconds);
             }
-            else
-            {
+            else {
                 //extract our preferences
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
                 String millisecondsMine =
@@ -159,9 +189,6 @@ public class MyMessageListener implements StanzaListener {
                     //no autodestruction was configured, the message is normal
                     chatMessage.setType(ChatMessageType.NORMAL);
                 }
-
-
-
             }
 
 
