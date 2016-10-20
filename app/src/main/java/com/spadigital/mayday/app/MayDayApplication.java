@@ -3,8 +3,6 @@ package com.spadigital.mayday.app;
 import android.app.AlarmManager;
 import android.app.Application;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
@@ -19,7 +17,6 @@ import com.spadigital.mayday.app.Listeners.MyReceiptReceivedListener;
 import com.spadigital.mayday.app.Models.DataBaseHelper;
 import com.spadigital.mayday.app.PacketExtensions.EmergencyMessageReceipt;
 import com.spadigital.mayday.app.PacketExtensions.SelfDestructiveReceipt;
-import com.spadigital.mayday.app.Tasks.AlarmReceiver;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
@@ -33,6 +30,7 @@ import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptRequest;
+
 
 
 /**
@@ -50,7 +48,15 @@ public class MayDayApplication extends Application {
     private static final String HOST     = "192.168.168.67";
     private static final int PORT        = 5222;
     private static final String RESOURCE = "Android";
+    //public static final String ACCOUNT_TRANSFERED = null;
+    //public static final String ACCOUNT_;
 
+    /*
+    private static final String DOMAIN   = "debian";
+    private static final String HOST     = "192.168.168.26";
+    private static final int PORT        = 5222;
+    private static final String RESOURCE = "Android";
+    */
     /*
         private static final String DOMAIN   = "mayday";
         private static final String HOST     = "10.10.51.155";
@@ -202,6 +208,12 @@ public class MayDayApplication extends Application {
                 EmergencyMessageReceipt.NAMESPACE,
                 new EmergencyMessageReceipt.Provider()
         );
+
+        //VCard for redirection messages when configured
+       // connection.getUser()
+
+
+
 
     }
 

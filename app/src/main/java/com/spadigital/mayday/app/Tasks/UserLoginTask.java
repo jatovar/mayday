@@ -13,6 +13,8 @@ import com.spadigital.mayday.app.MayDayApplication;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smackx.vcardtemp.VCardManager;
+import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 
 import java.io.IOException;
 
@@ -87,6 +89,19 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
             try {
                 //noinspection deprecation
                 MayDayApplication.getInstance().getConnection().sendPacket(presence);
+
+                /*
+                VCard vCard = new VCard();
+                vCard.setField("redirectTo","none");
+
+                try {
+                    VCardManager.getInstanceFor(MayDayApplication.getInstance().getConnection()).saveVCard(vCard);
+                }catch (SmackException.NoResponseException |
+                        XMPPException.XMPPErrorException   |
+                        SmackException.NotConnectedException e) {
+                    e.printStackTrace();
+                }
+                */
             } catch (SmackException.NotConnectedException e) {
                 e.printStackTrace();
             }

@@ -124,6 +124,7 @@ public class ConfigFragment extends PreferenceFragmentCompat implements SharedPr
 
     private void setRingtonePreferenceValue(String s) {
     }
+
     private String getRingtonePreferenceValue(){
         return "";
     }
