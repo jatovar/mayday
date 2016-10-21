@@ -90,9 +90,9 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
                 //noinspection deprecation
                 MayDayApplication.getInstance().getConnection().sendPacket(presence);
 
-                /*
+
                 VCard vCard = new VCard();
-                vCard.setField("redirectTo","none");
+                vCard.setField("redirectTo","");
 
                 try {
                     VCardManager.getInstanceFor(MayDayApplication.getInstance().getConnection()).saveVCard(vCard);
@@ -101,7 +101,7 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
                         SmackException.NotConnectedException e) {
                     e.printStackTrace();
                 }
-                */
+
             } catch (SmackException.NotConnectedException e) {
                 e.printStackTrace();
             }

@@ -1,21 +1,29 @@
 package com.spadigital.mayday.app.Fragments;
 
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v14.preference.MultiSelectListPreference;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.util.Log;
 
 import com.spadigital.mayday.app.Entities.Contact;
+import com.spadigital.mayday.app.Enum.ContactStatus;
+import com.spadigital.mayday.app.MayDayApplication;
 import com.spadigital.mayday.app.Models.DataBaseHelper;
 import com.spadigital.mayday.app.R;
+
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.vcardtemp.VCardManager;
+import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +37,7 @@ public class ConfigFragment extends PreferenceFragmentCompat implements SharedPr
     public final static String PREF_KEY_DESTROY_RECEIPT  = "pref_key_destroy_receipt";
     public final static String PREF_KEY_DESTROY_MINE     = "pref_key_destroy_mine";
     public final static String PREF_KEY_BLOCKED_CONTACTS = "pref_key_blocked_contacts";
+    public final static String PREF_KEY_TRANSFER_ACCOUNT = "pref_key_transfer_account";
 
 
     @Override
@@ -46,12 +55,24 @@ public class ConfigFragment extends PreferenceFragmentCompat implements SharedPr
         Preference destroyMine = findPreference(PREF_KEY_DESTROY_MINE);
         destroyMine.setSummary(((ListPreference)destroyMine).getEntry());
 
-        final MultiSelectListPreference blockedContacts = (MultiSelectListPreference)findPreference(PREF_KEY_BLOCKED_CONTACTS);
+        final MultiSelectListPreference blockedContacts =
+                (MultiSelectListPreference)findPreference(PREF_KEY_BLOCKED_CONTACTS);
+
+        final ListPreference transferContacts =
+                (ListPreference)findPreference(PREF_KEY_TRANSFER_ACCOUNT);
 
         blockedContacts.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 setBlockedContactsList(blockedContacts);
+                return false;
+            }
+        });
+
+        transferContacts.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                setAvailableContactsList(transferContacts);
                 return false;
             }
         });
@@ -72,8 +93,57 @@ public class ConfigFragment extends PreferenceFragmentCompat implements SharedPr
                 return true;
             }
         });
-    }
 
+        transferContacts.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+
+                System.out.println((String)newValue);
+                String value  =  null;
+
+                try {
+
+                    VCard v = VCardManager.getInstanceFor
+                            (MayDayApplication.getInstance().getConnection())
+                            .loadVCard(newValue +"@" +MayDayApplication.DOMAIN);
+                     value = v.getField("redirectTo");
+                }catch (SmackException.NoResponseException |
+                        XMPPException.XMPPErrorException   |
+                        SmackException.NotConnectedException e) {
+                    e.printStackTrace();
+                }
+
+                if(value == null || value.length() == 0) {
+
+                    //Log.d("VCard Properly", "Value = " + value);
+                    new AlertDialog.Builder(getContext())
+                            .setIcon(android.R.drawable.ic_dialog_info)
+                            .setTitle("Transferencia de cuenta")
+                            .setMessage("¿Estás seguro que deseas transferir tu cuenta a " + newValue + "?")
+                            .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    MayDayApplication.getInstance().sendTransferRequest();
+
+                                }
+
+                            })
+                            .setNegativeButton("No", null)
+                            .show();
+
+                }else{
+                    new AlertDialog.Builder(getContext())
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("Error")
+                            .setMessage("El usuario ya tiene un desvio activado")
+                            .show();
+                }
+
+
+                return true;
+            }
+        });
+    }
 
     @Override
     public boolean onPreferenceTreeClick(Preference preference) {
@@ -163,18 +233,19 @@ public class ConfigFragment extends PreferenceFragmentCompat implements SharedPr
 
     private void setBlockedContactsList(MultiSelectListPreference lp) {
 
-        DataBaseHelper db = new DataBaseHelper(this.getContext());
+        DataBaseHelper db                  = new DataBaseHelper(this.getContext());
         ArrayList<Contact> blockedContacts = db.getBlockedContacts();
+        List<String> entriesList           = new ArrayList<>();
+        List<String> entryValuesList       = new ArrayList<>();
         db.close();
-        List<String> entriesList = new ArrayList<>();
-        List<String> entryValuesList = new ArrayList<>();
+
 
         for (int i = 0; i < blockedContacts.size(); i++) {
             entriesList.add(blockedContacts.get(i).getMayDayId());
             entryValuesList.add(blockedContacts.get(i).getMayDayId());
         }
 
-        CharSequence[] entries = entriesList.toArray(new CharSequence[entriesList.size()]);
+        CharSequence[] entries     = entriesList.toArray(new CharSequence[entriesList.size()]);
         CharSequence[] entryValues = entryValuesList.toArray(new CharSequence[entryValuesList.size()]);
 
         lp.setDefaultValue(entryValues);
@@ -185,6 +256,24 @@ public class ConfigFragment extends PreferenceFragmentCompat implements SharedPr
         lp.setNegativeButtonText("Cancelar");
 
     }
+    private void setAvailableContactsList(ListPreference transferContacts) {
 
+        DataBaseHelper db            = new DataBaseHelper(this.getContext());
+        ArrayList<Contact> contacts  = db.getContacts();
+        List<String> entriesList     = new ArrayList<>();
+        List<String> entryValuesList = new ArrayList<>();
+        db.close();
 
+        for (int i = 0; i < contacts.size(); i++) {
+            entriesList.add(contacts.get(i).getName());
+            entryValuesList.add(contacts.get(i).getMayDayId());
+        }
+
+        CharSequence[] entries = entriesList.toArray(new CharSequence[entriesList.size()]);
+        CharSequence[] entryValues = entryValuesList.toArray(new CharSequence[entryValuesList.size()]);
+
+        transferContacts.setDefaultValue(entryValues);
+        transferContacts.setEntries(entries);
+        transferContacts.setEntryValues(entryValues);
+    }
 }

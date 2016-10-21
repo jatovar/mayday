@@ -52,8 +52,6 @@
         <ListPreference
             android:key="pref_key_transfer_account"
             android:title="Transferir cuenta"
-            android:summary="Selecciona un contacto para hacer la transferencia"
-            android:entries="@array/listentries"
-            android:entryValues="@array/listvalues" />
+            android:summary="Selecciona un contacto para hacer la transferencia" />
     </PreferenceCategory>
 </PreferenceScreen>
