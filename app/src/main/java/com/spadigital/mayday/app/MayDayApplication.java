@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.content.SharedPreferences;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.spadigital.mayday.app.Activities.ChatActivity;
 import com.spadigital.mayday.app.Entities.ChatMessage;
@@ -17,6 +18,7 @@ import com.spadigital.mayday.app.Listeners.MyReceiptReceivedListener;
 import com.spadigital.mayday.app.Models.DataBaseHelper;
 import com.spadigital.mayday.app.PacketExtensions.EmergencyMessageReceipt;
 import com.spadigital.mayday.app.PacketExtensions.SelfDestructiveReceipt;
+import com.spadigital.mayday.app.PacketExtensions.TransferRequest;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
@@ -103,8 +105,51 @@ public class MayDayApplication extends Application {
     }
 
     public void sendTransferRequest(){
-        Message message = new Message();
         //TODO
+        Message message = new Message();
+
+        try {
+
+            //We need to create a new chat with the desired username
+            SharedPreferences sharedPref =
+                    PreferenceManager.getDefaultSharedPreferences(this);
+            String transferUsername =
+                    sharedPref.getString(ConfigFragment.PREF_KEY_TRANSFER_ACCOUNT, "0");
+            createChat(transferUsername + "@" + DOMAIN);
+
+            TransferRequest sendTransferRequestMessage =
+                    new TransferRequest(TransferRequest.TransferStatus.REQUESTING);
+            message.addExtension(sendTransferRequestMessage);
+           // message.setBody("request");
+            chat.sendMessage(message);
+
+        }catch (SmackException.NotConnectedException e) {
+            //CONSTRAINT... USER MUST BE ONLINE.....
+            Toast toast = Toast.makeText(this, "You don't have an active connection",
+                    Toast.LENGTH_SHORT);
+            toast.show();
+        }
+    }
+
+    public void sendResponseRequest(String resendUsername, TransferRequest.TransferStatus status){
+        //TODO
+        Message message = new Message();
+
+        try {
+
+            createChat(resendUsername + "@" + DOMAIN);
+            TransferRequest sendTransferResponseMessage =
+                    new TransferRequest(status);
+            message.addExtension(sendTransferResponseMessage);
+          //  message.setBody("request");
+            chat.sendMessage(message);
+
+        }catch (SmackException.NotConnectedException e) {
+            //CONSTRAINT... USER MUST BE ONLINE.....
+            Toast toast = Toast.makeText(this, "You don't have an active connection",
+                    Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
 
     public void sendMessage(ChatMessage message, boolean resending) {
@@ -117,7 +162,7 @@ public class MayDayApplication extends Application {
             m.setBody(message.getMessage());
 
             //To ensure user has received the message (Just in case, not used in this project)
-            DeliveryReceiptRequest.addTo(m);
+            //DeliveryReceiptRequest.addTo(m);
 
             //Autodestructive extension
             SharedPreferences sharedPref =
@@ -214,6 +259,13 @@ public class MayDayApplication extends Application {
                 EmergencyMessageReceipt.ELEMENT,
                 EmergencyMessageReceipt.NAMESPACE,
                 new EmergencyMessageReceipt.Provider()
+        );
+
+        //Transfer request extension provider
+        ProviderManager.addExtensionProvider(
+                TransferRequest.ELEMENT,
+                TransferRequest.NAMESPACE,
+                new TransferRequest.Provider()
         );
 
         //VCard for redirection messages when configured

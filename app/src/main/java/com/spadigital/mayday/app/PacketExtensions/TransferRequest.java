@@ -1,4 +1,4 @@
-package com.spadigital.mayday.app.Tasks;
+package com.spadigital.mayday.app.PacketExtensions;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.provider.EmbeddedExtensionProvider;
@@ -13,13 +13,17 @@ public class TransferRequest implements ExtensionElement {
 
     public static final String NAMESPACE = "urn:xmpp:transfer";
     public static final String ELEMENT   = "transfer";
-    private String transferringUser = "";
+    public enum TransferStatus { REQUESTING, ACCEPTING, REJECTING }
 
-    public TransferRequest(String transferringUser){
-        this.transferringUser = transferringUser;
+    private TransferStatus status;
+
+
+    public TransferRequest(TransferStatus status){
+        this.status = status;
     }
-    public TransferRequest(Object transferringUser) {
-        this.transferringUser = transferringUser.toString();
+
+    public TransferRequest(Object status) {
+        this.status = TransferStatus.valueOf(status.toString());
     }
 
     @Override
@@ -34,11 +38,11 @@ public class TransferRequest implements ExtensionElement {
 
     @Override
     public CharSequence toXML() {
-        return "<destructive xmlns='" + NAMESPACE + "' transferringUser='" + this.transferringUser + "'/>";
+        return "<transfer xmlns='" + NAMESPACE + "' status='" + String.valueOf(this.status) + "'/>";
     }
 
-    public String getTransferringUser(){
-        return this.transferringUser;
+    public TransferStatus getStatus(){
+        return (this.status);
     }
 
     public static class Provider extends EmbeddedExtensionProvider{
@@ -49,7 +53,7 @@ public class TransferRequest implements ExtensionElement {
                                                          Map attributeMap,
                                                          List content) {
 
-            return new TransferRequest(attributeMap.get("transferringUser"));
+            return new TransferRequest(attributeMap.get("status"));
         }
     }
 }

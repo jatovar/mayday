@@ -1,5 +1,6 @@
 package com.spadigital.mayday.app.Activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -19,6 +20,11 @@ import com.spadigital.mayday.app.R;
 
 public class TaberActivity extends AppCompatActivity {
 
+    private static TaberActivity instance;
+
+    public static TaberActivity getInstance(){
+        return instance;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +34,7 @@ public class TaberActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         setTabSelectorSettings(tabLayout);
         setPagerConfig(tabLayout);
+        instance = this;
     }
 
 

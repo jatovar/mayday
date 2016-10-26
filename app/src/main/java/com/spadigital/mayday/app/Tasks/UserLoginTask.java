@@ -92,7 +92,7 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
 
                 VCard vCard = new VCard();
-                vCard.setField("redirectTo","");
+                vCard.setField("redirectTo","redirect_username");
 
                 try {
                     VCardManager.getInstanceFor(MayDayApplication.getInstance().getConnection()).saveVCard(vCard);

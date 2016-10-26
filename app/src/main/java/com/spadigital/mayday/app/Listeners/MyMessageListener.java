@@ -6,13 +6,19 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatDialog;
 import android.support.v7.app.NotificationCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 
 import com.spadigital.mayday.app.Activities.ChatActivity;
+import com.spadigital.mayday.app.Activities.TaberActivity;
 import com.spadigital.mayday.app.Entities.ChatMessage;
 import com.spadigital.mayday.app.Entities.Contact;
 import com.spadigital.mayday.app.Enum.ChatMessageDirection;
@@ -22,18 +28,22 @@ import com.spadigital.mayday.app.Enum.ContactStatus;
 import com.spadigital.mayday.app.Fragments.ConfigFragment;
 import com.spadigital.mayday.app.Fragments.ContactsFragment;
 import com.spadigital.mayday.app.Fragments.ConversationsFragment;
+import com.spadigital.mayday.app.MayDayApplication;
 import com.spadigital.mayday.app.Models.DataBaseHelper;
 import com.spadigital.mayday.app.PacketExtensions.EmergencyMessageReceipt;
 import com.spadigital.mayday.app.PacketExtensions.SelfDestructiveReceipt;
 import com.spadigital.mayday.app.R;
 import com.spadigital.mayday.app.Tasks.AlarmReceiver;
+import com.spadigital.mayday.app.PacketExtensions.TransferRequest;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.StanzaListener;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smackx.bytestreams.ibb.packet.Data;
+import org.jivesoftware.smackx.vcardtemp.VCardManager;
+import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -67,6 +77,8 @@ public class MyMessageListener implements StanzaListener {
 
             if(body == null){
                 //This is a control message like "composing, pause, etc"
+                //It also handles the transfer account request
+                getTransferRequest(message);
             }
             else
             {
@@ -84,6 +96,7 @@ public class MyMessageListener implements StanzaListener {
                 incomingMessage.setDirection(ChatMessageDirection.INCOMING);
 
                 //Get my custom message extensions
+                //getTransferRequest(message);
                 getSelfDestructiveExtension(message, incomingMessage);
                 getEmergencyMessageExtension(message, incomingMessage);
 
@@ -155,6 +168,73 @@ public class MyMessageListener implements StanzaListener {
         }
         catch(ClassCastException e) {
             Log.v(log_v, "Exception in startListening: "+ e.getMessage());
+        }
+    }
+
+    private void getTransferRequest(final Message message) {
+
+        ExtensionElement element = message.getExtension(TransferRequest.NAMESPACE);
+
+        if(element != null){
+            TransferRequest.TransferStatus status = ((TransferRequest) element).getStatus();
+            if(status == TransferRequest.TransferStatus.REQUESTING){
+                //pop up alert
+                TaberActivity.getInstance().runOnUiThread(
+                        new Runnable() {
+                            @Override
+                            public void run() {
+
+                                new AlertDialog.Builder(TaberActivity.getInstance())
+                                        .setIcon(android.R.drawable.ic_dialog_info)
+                                        .setTitle("Transferencia de cuenta")
+                                        .setMessage("¿Estás seguro que deseas aceptar la cuenta de  "
+                                                + message.getFrom() + "?")
+                                        .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                //send message back with accepting status
+                                                //Maybe we can validate that the user must be in contacts
+                                                MayDayApplication.getInstance().sendResponseRequest(
+                                                        message.getFrom(),
+                                                        TransferRequest.TransferStatus.ACCEPTING);
+                                            }
+
+                                        })
+                                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                //send message back with rejecting status
+                                                MayDayApplication.getInstance().sendResponseRequest(
+                                                        message.getFrom(),
+                                                        TransferRequest.TransferStatus.REJECTING);
+                                            }
+                                        })
+                                        .show();
+                            }
+                        }
+                );
+            }else if(status == TransferRequest.TransferStatus.ACCEPTING){
+
+                //target user accepted transfer request
+                VCard vCard = new VCard();
+                vCard.setField("redirectTo", message.getFrom());
+
+                try {
+                    VCardManager.getInstanceFor(MayDayApplication.getInstance().getConnection()).saveVCard(vCard);
+                }catch (SmackException.NoResponseException |
+                        XMPPException.XMPPErrorException   |
+                        SmackException.NotConnectedException e) {
+                    e.printStackTrace();
+                }
+                //new vCard
+                //logout
+                //start virtual user
+
+
+            }else if(status == TransferRequest.TransferStatus.REJECTING){
+                //TODO: TOAST OPERATION CANCELED
+                //target user did not accept transfer request
+            }
         }
     }
 

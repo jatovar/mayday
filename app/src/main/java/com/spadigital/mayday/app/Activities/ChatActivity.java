@@ -93,7 +93,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
 
         Log.v(log_v, "Start a chat with MayDayId: " + contactMaydayId);
 
-        MayDayApplication.getInstance().createChat(contactMaydayId + "@jorge-latitude-e5440");
+        MayDayApplication.getInstance().createChat(contactMaydayId + "@" + MayDayApplication.DOMAIN);
         initControls();
 
         if(AlarmReceiver.v != null && AlarmReceiver.r != null){
