@@ -8,8 +8,12 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.spadigital.mayday.app.MayDayApplication;
 import com.spadigital.mayday.app.R;
 import com.spadigital.mayday.app.Tasks.UserLoginTask;
+
+import org.jivesoftware.smackx.vcardtemp.VCardManager;
+import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 
 import java.util.concurrent.TimeUnit;
 
@@ -62,6 +66,8 @@ public class LoginActivity extends AppCompatActivity {
                         try {
                             userLoginTask.get(TIMEOUT, TimeUnit.MILLISECONDS);
 
+
+
                         } catch (Exception e) {
                             userLoginTask.cancel(true);
                             LoginActivity.this.runOnUiThread(new Runnable()
@@ -80,6 +86,8 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 };
                 threadTimeout.start();
+
+
 
             }
 

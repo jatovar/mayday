@@ -9,13 +9,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatDialog;
 import android.support.v7.app.NotificationCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.spadigital.mayday.app.Activities.ChatActivity;
 import com.spadigital.mayday.app.Activities.TaberActivity;
@@ -38,7 +36,6 @@ import com.spadigital.mayday.app.PacketExtensions.TransferRequest;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.StanzaListener;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
@@ -78,7 +75,11 @@ public class MyMessageListener implements StanzaListener {
             if(body == null){
                 //This is a control message like "composing, pause, etc"
                 //It also handles the transfer account request
-                getTransferRequest(message);
+                try{
+                    getTransferRequest(message);
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             else
             {
@@ -94,6 +95,8 @@ public class MyMessageListener implements StanzaListener {
                 incomingMessage.setDatetime(DateFormat.getDateTimeInstance().format(new Date()));
                 incomingMessage.setStatus(ChatMessageStatus.UNREAD);
                 incomingMessage.setDirection(ChatMessageDirection.INCOMING);
+                Toast toast = Toast.makeText(context, message.getSubject(), Toast.LENGTH_LONG);
+                toast.show();
 
                 //Get my custom message extensions
                 //getTransferRequest(message);
@@ -171,61 +174,31 @@ public class MyMessageListener implements StanzaListener {
         }
     }
 
-    private void getTransferRequest(final Message message) {
+    private void getTransferRequest(final Message message) throws Exception {
 
+        VCard vCard = VCardManager.getInstanceFor(
+                MayDayApplication.getInstance().getConnection()).loadVCard();
+        if (vCard != null &&  vCard.getField("busy") != null && vCard.getField("busy").equals("true")) {
+            //toast i have a connection
+            return ;
+        }
         ExtensionElement element = message.getExtension(TransferRequest.NAMESPACE);
 
-        if(element != null){
+        if(element != null) {
+
             TransferRequest.TransferStatus status = ((TransferRequest) element).getStatus();
-            if(status == TransferRequest.TransferStatus.REQUESTING){
+
+            if(status == TransferRequest.TransferStatus.REQUESTING)
                 //pop up alert
-                TaberActivity.getInstance().runOnUiThread(
-                        new Runnable() {
-                            @Override
-                            public void run() {
-
-                                new AlertDialog.Builder(TaberActivity.getInstance())
-                                        .setIcon(android.R.drawable.ic_dialog_info)
-                                        .setTitle("Transferencia de cuenta")
-                                        .setMessage("¿Estás seguro que deseas aceptar la cuenta de  "
-                                                + message.getFrom() + "?")
-                                        .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                //send message back with accepting status
-                                                //Maybe we can validate that the user must be in contacts
-                                                MayDayApplication.getInstance().sendResponseRequest(
-                                                        message.getFrom(),
-                                                        TransferRequest.TransferStatus.ACCEPTING);
-                                            }
-
-                                        })
-                                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                //send message back with rejecting status
-                                                MayDayApplication.getInstance().sendResponseRequest(
-                                                        message.getFrom(),
-                                                        TransferRequest.TransferStatus.REJECTING);
-                                            }
-                                        })
-                                        .show();
-                            }
-                        }
-                );
-            }else if(status == TransferRequest.TransferStatus.ACCEPTING){
+                handleRequestingTransfer(message);
+            else if(status == TransferRequest.TransferStatus.ACCEPTING){
 
                 //target user accepted transfer request
-                VCard vCard = new VCard();
+                vCard = new VCard();
                 vCard.setField("redirectTo", message.getFrom());
-
-                try {
-                    VCardManager.getInstanceFor(MayDayApplication.getInstance().getConnection()).saveVCard(vCard);
-                }catch (SmackException.NoResponseException |
-                        XMPPException.XMPPErrorException   |
-                        SmackException.NotConnectedException e) {
-                    e.printStackTrace();
-                }
+                VCardManager.getInstanceFor(MayDayApplication.getInstance().getConnection()).saveVCard(vCard);
+                MayDayApplication.getInstance().getConnection().disconnect();
+                TaberActivity.getInstance().finish();
                 //new vCard
                 //logout
                 //start virtual user
@@ -237,6 +210,51 @@ public class MyMessageListener implements StanzaListener {
             }
         }
     }
+
+    private void handleRequestingTransfer(final Message message) {
+        TaberActivity.getInstance().runOnUiThread(
+            new Runnable() {
+                @Override
+                public void run() {
+                    new AlertDialog.Builder(TaberActivity.getInstance())
+                        .setIcon(android.R.drawable.ic_dialog_info)
+                        .setTitle("Transferencia de cuenta")
+                        .setMessage("¿Estás seguro que deseas aceptar la cuenta de  "
+                                + message.getFrom() + "?")
+                        .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //send message back with accepting status
+                                //Maybe we can validate that the user must be in contacts
+                                //target user accepted transfer request
+                                MayDayApplication.getInstance().sendResponseRequest(
+                                        message.getFrom(),
+                                        TransferRequest.TransferStatus.ACCEPTING);
+
+                                VCard vCard = new VCard();
+                                vCard.setField("busy", "true");
+                                try {
+                                    VCardManager.getInstanceFor(MayDayApplication.getInstance().getConnection()).saveVCard(vCard);
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //send message back with rejecting status
+                                MayDayApplication.getInstance().sendResponseRequest(
+                                        message.getFrom(),
+                                        TransferRequest.TransferStatus.REJECTING);
+                            }
+                        })
+                        .show();
+                }
+            }
+        );
+    }
+
 
     private void getEmergencyMessageExtension(Message message, ChatMessage chatMessage) {
 

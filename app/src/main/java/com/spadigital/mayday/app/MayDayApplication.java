@@ -181,6 +181,7 @@ public class MayDayApplication extends Application {
             m.addExtension(emergencyMessageReceipt);
 
             //Message sent by smack
+            m.setSubject("arriba las aguilas del america");
             chat.sendMessage(m);
             message.setStatus(ChatMessageStatus.SENT);
 
@@ -269,7 +270,7 @@ public class MayDayApplication extends Application {
         );
 
         //VCard for redirection messages when configured
-       // connection.getUser()
+       // connection.getUser()z
 
     }
 

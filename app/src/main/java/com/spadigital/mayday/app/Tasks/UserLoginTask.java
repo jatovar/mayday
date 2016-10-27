@@ -89,25 +89,37 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
             try {
                 //noinspection deprecation
                 MayDayApplication.getInstance().getConnection().sendPacket(presence);
-
-
-                VCard vCard = new VCard();
-                vCard.setField("redirectTo","redirect_username");
-
-                try {
-                    VCardManager.getInstanceFor(MayDayApplication.getInstance().getConnection()).saveVCard(vCard);
-                }catch (SmackException.NoResponseException |
-                        XMPPException.XMPPErrorException   |
-                        SmackException.NotConnectedException e) {
-                    e.printStackTrace();
+                VCard vCard = VCardManager.getInstanceFor(
+                        MayDayApplication.getInstance().getConnection()).loadVCard();
+                if (vCard != null &&  vCard.getField("redirectTo") != null && vCard.getField("redirectTo").length()>0) {
+                    Toast toast = Toast.makeText(context, "Ya tienes tu cuenta transferida", Toast.LENGTH_LONG);
+                    toast.show();
+                }else{
+                    Intent principal = new Intent(context, TaberActivity.class);
+                    principal.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(principal);
                 }
+
+
+                //VCard vCard = new VCard();
+               // vCard.setField("redirectTo","redirect_username");
+
+                //try {
+                //    VCardManager.getInstanceFor(MayDayApplication.getInstance().getConnection()).saveVCard(vCard);
+                //}catch (SmackException.NoResponseException |
+                 //       XMPPException.XMPPErrorException   |
+                 //       SmackException.NotConnectedException e) {
+                 //   e.printStackTrace();
+                //}
 
             } catch (SmackException.NotConnectedException e) {
                 e.printStackTrace();
+            } catch (XMPPException.XMPPErrorException e) {
+                e.printStackTrace();
+            } catch (SmackException.NoResponseException e) {
+                e.printStackTrace();
             }
-            Intent principal = new Intent(context, TaberActivity.class);
-            principal.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(principal);
+
 
         } else {
             Toast toast = Toast.makeText(context, "Credenciales inválidas", Toast.LENGTH_LONG);
