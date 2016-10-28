@@ -22,10 +22,11 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 
     private String log_v = "DataBaseHelper";
 
-    private static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 10;
     //7 - added contact id primary key
     //8 - added message expiretime field
     //9 - added message emergency field
+    //10 - added subject and redirected fields
 
     // Database Name
     private static final String DATABASE_NAME = "mayDay";
@@ -54,6 +55,8 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     private static final String COLUMN_DATETIME         = "datetime";
     private static final String COLUMN_EXPIRETIME       = "expiretime";
     private static final String COLUMN_EMERGENCY        = "emergency";
+    private static final String COLUMN_SUBJECT          = "subject";
+    private static final String COLUMN_REDIRECTED       = "redirected";
 
 
     //direction can be: INCOMING or OUTGOING
@@ -85,6 +88,8 @@ public class DataBaseHelper extends SQLiteOpenHelper{
                     + COLUMN_DIRECTION          + " TEXT,"
                     + COLUMN_EXPIRETIME         + " TEXT,"
                     + COLUMN_EMERGENCY          + " INTEGER DEFAULT 0,"
+                    + COLUMN_SUBJECT            + " TEXT,"
+                    + COLUMN_REDIRECTED         + " INTEGER DEFAULT 0,"
                     + COLUMN_TYPE               + " TEXT)";
                     //+ "FOREIGN KEY("+ COLUMN_ID_CONTACT +") REFERENCES "+ TABLE_CONTACT+"(" + COLUMN_ID +")";
 
@@ -195,6 +200,8 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         values.put(COLUMN_EXPIRETIME,       chatMessage.getExpireTime());
         values.put(COLUMN_TYPE,             chatMessage.getType().toString());
         values.put(COLUMN_EMERGENCY,        chatMessage.getIsEmergency() ? 1 : 0);
+        values.put(COLUMN_SUBJECT,          chatMessage.getSubject());
+        values.put(COLUMN_REDIRECTED,       chatMessage.getRedirected() ? 1 : 0);
 
         try {
             newMessageID = db.insert(TABLE_MESSAGE, null, values);
@@ -227,9 +234,11 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         ArrayList<ChatMessage> chatMessageList  = new ArrayList<>();
         SQLiteDatabase db                       = getReadableDatabase();
 
+      //  String query = "SELECT tbl.* FROM ( SELECT * FROM " + TABLE_MESSAGE + " ORDER BY " + COLUMN_ID +
+      //          " ASC ) AS tbl GROUP BY tbl." + COLUMN_CONTACT_MAYDAYID + " ORDER BY " + COLUMN_ID + " DESC";
         String query = "SELECT tbl.* FROM ( SELECT * FROM " + TABLE_MESSAGE + " ORDER BY " + COLUMN_ID +
-                " ASC ) AS tbl GROUP BY tbl." + COLUMN_CONTACT_MAYDAYID + " ORDER BY " + COLUMN_ID + " DESC";
-
+                " ASC ) AS tbl GROUP BY tbl." + COLUMN_CONTACT_MAYDAYID + ", tbl." + COLUMN_REDIRECTED  +
+                " ORDER BY " + COLUMN_ID + " DESC";
         Cursor c = db.rawQuery(query, null);
 
         if (c != null && c.moveToFirst()){
@@ -242,6 +251,8 @@ public class DataBaseHelper extends SQLiteOpenHelper{
                 msg.setMessage(c.getString(c.getColumnIndex(COLUMN_MESSAGE)));
                 msg.setDatetime(c.getString(c.getColumnIndex(COLUMN_DATETIME)));
                 msg.setDirection(c.getString(c.getColumnIndex(COLUMN_DIRECTION)));
+                msg.setSubject(c.getString(c.getColumnIndex(COLUMN_SUBJECT)));
+                msg.setRedirected(c.getInt(c.getColumnIndex(COLUMN_REDIRECTED)) == 1);
                 chatMessageList.add(msg);
             }while (c.moveToNext());
             c.close();
@@ -304,6 +315,8 @@ public class DataBaseHelper extends SQLiteOpenHelper{
                 newChatMessage.setType(c.getString(c.getColumnIndex(COLUMN_TYPE)));
                 newChatMessage.setExpireTime(c.getString(c.getColumnIndex(COLUMN_EXPIRETIME)));
                 newChatMessage.setIsEmergency(c.getInt(c.getColumnIndex(COLUMN_EMERGENCY)) == 1);
+                newChatMessage.setSubject(c.getString(c.getColumnIndex(COLUMN_SUBJECT)));
+                newChatMessage.setRedirected(c.getInt(c.getColumnIndex(COLUMN_REDIRECTED)) == 1);
                 chatMessageList.add(newChatMessage);
 
             }while(c.moveToNext());
@@ -334,6 +347,8 @@ public class DataBaseHelper extends SQLiteOpenHelper{
                 newChatMessage.setType(c.getString(c.getColumnIndex(COLUMN_TYPE)));
                 newChatMessage.setExpireTime(c.getString(c.getColumnIndex(COLUMN_EXPIRETIME)));
                 newChatMessage.setIsEmergency(c.getInt(c.getColumnIndex(COLUMN_EMERGENCY)) == 1);
+                newChatMessage.setSubject(c.getString(c.getColumnIndex(COLUMN_SUBJECT)));
+                newChatMessage.setRedirected(c.getInt(c.getColumnIndex(COLUMN_REDIRECTED)) == 1);
                 chatMessageList.add(newChatMessage);
 
             }while(c.moveToNext());

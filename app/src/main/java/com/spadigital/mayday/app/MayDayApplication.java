@@ -160,6 +160,9 @@ public class MayDayApplication extends Application {
             //Message instance for setting its properties
             Message m = new Message();
             m.setBody(message.getMessage());
+            if(message.getRedirected()){
+                m.setSubject(message.getSubject());
+            }
 
             //To ensure user has received the message (Just in case, not used in this project)
             //DeliveryReceiptRequest.addTo(m);
@@ -181,7 +184,6 @@ public class MayDayApplication extends Application {
             m.addExtension(emergencyMessageReceipt);
 
             //Message sent by smack
-            m.setSubject("arriba las aguilas del america");
             chat.sendMessage(m);
             message.setStatus(ChatMessageStatus.SENT);
 

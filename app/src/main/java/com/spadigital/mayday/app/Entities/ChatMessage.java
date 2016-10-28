@@ -16,6 +16,8 @@ public class ChatMessage {
     private String author          = "";
     private String expireTime      = "";
     private Boolean isEmergency    = false;
+    private Boolean isRedirected   = false;
+    private String subject         = "";
 
     private ChatMessageStatus status;
     private ChatMessageDirection direction;
@@ -116,5 +118,21 @@ public class ChatMessage {
 
     public Boolean getIsEmergency() {
         return isEmergency;
+    }
+
+    public Boolean getRedirected() {
+        return isRedirected;
+    }
+
+    public void setRedirected(Boolean redirected) {
+        isRedirected = redirected;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 }

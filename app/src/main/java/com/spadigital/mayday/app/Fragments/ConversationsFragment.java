@@ -75,6 +75,8 @@ public class ConversationsFragment extends Fragment {
                     ChatMessage chatMessage = conversationItemAdapter.getItem(position);
                     chatMessage.setStatus(ChatMessageStatus.READ);
                     Intent intent           = new Intent(parentActivity, ChatActivity.class);
+                    intent.putExtra("contact_redirected", chatMessage.getRedirected());
+                    intent.putExtra("contact_subject", chatMessage.getSubject());
                     intent.putExtra("contact_MayDayID", chatMessage.getContactMayDayID());
                     intent.putExtra("contact_author", chatMessage.getAuthor());
                     startActivity(intent);

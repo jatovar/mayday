@@ -68,7 +68,7 @@ public class MyMessageListener implements StanzaListener {
     public void processPacket(Stanza packet) throws SmackException.NotConnectedException {
 
         try {
-            Message message                   = (Message) packet;
+            final Message message                   = (Message) packet;
             final ChatMessage incomingMessage = new ChatMessage();
             String body                       = message.getBody();
 
@@ -95,9 +95,15 @@ public class MyMessageListener implements StanzaListener {
                 incomingMessage.setDatetime(DateFormat.getDateTimeInstance().format(new Date()));
                 incomingMessage.setStatus(ChatMessageStatus.UNREAD);
                 incomingMessage.setDirection(ChatMessageDirection.INCOMING);
-                Toast toast = Toast.makeText(context, message.getSubject(), Toast.LENGTH_LONG);
-                toast.show();
 
+                if(message.getSubject() != null && message.getSubject().length() > 0){
+                    incomingMessage.setSubject(message.getSubject());
+                    incomingMessage.setRedirected(true);
+                }
+                //warning
+                if(message.getSubject() != null && message.getSubject().equals("RX")){
+                    incomingMessage.setRedirected(true);
+                }
                 //Get my custom message extensions
                 //getTransferRequest(message);
                 getSelfDestructiveExtension(message, incomingMessage);
@@ -143,7 +149,6 @@ public class MyMessageListener implements StanzaListener {
                             @Override
                             public void run() {
                                 ChatActivity.getInstance().displayMessage(incomingMessage);
-
                             }
                         });
                     }

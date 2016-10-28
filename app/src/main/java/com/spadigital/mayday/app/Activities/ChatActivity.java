@@ -55,6 +55,8 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
     private ChatAdapter adapter;
     private static ChatActivity instance;
     private CheckBox isEmergencyMessage;
+    private String subject;
+    private Boolean redirected;
 
     public static ChatActivity getInstance(){
         return instance;
@@ -70,6 +72,8 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
 
         contactMaydayId = getIntent().getExtras().getString("contact_MayDayID");
         author = getIntent().getExtras().getString("contact_author");
+        subject = getIntent().getExtras().getString("contact_subject");
+        redirected = getIntent().getExtras().getBoolean("contact_redirected");
 
         Log.v(log_v, "Start a chat with MayDayId: " + contactMaydayId);
 
@@ -224,12 +228,17 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
 
         isEmergencyMessage.setOnCheckedChangeListener(this);
         setSupportActionBar(myToolbar);
-        getSupportActionBar().setTitle(author);
         myToolbar.setTitleTextColor(Color.WHITE);
         myToolbar.setPadding(100, 0,  0, 0);
         myToolbar.setSubtitleTextColor(Color.WHITE);
         myToolbar.setSubtitle(contactMaydayId);
-
+        if(redirected){
+            getSupportActionBar().setTitle(subject+ "(desviado)");
+            myToolbar.setSubtitle(subject);
+        }else{
+            getSupportActionBar().setTitle(author);
+            myToolbar.setSubtitle(contactMaydayId);
+        }
         adapter = new ChatAdapter(ChatActivity.this, new ArrayList<ChatMessage>());
         messagesContainer.setAdapter(adapter);
 
@@ -246,6 +255,10 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
                     DataBaseHelper db = new DataBaseHelper(v.getContext());
                     ChatMessage outGoingMessage = new ChatMessage();
                     setOutgoingMessageProp(messageText, outGoingMessage);
+                    if(redirected){
+                        outGoingMessage.setSubject(subject);
+                        outGoingMessage.setRedirected(true);
+                    }
                     MayDayApplication.getInstance().sendMessage(outGoingMessage, false);
                     db.getWritableDatabase();
                     db.messageAdd(outGoingMessage);
