@@ -101,9 +101,9 @@ public class MyMessageListener implements StanzaListener {
                     incomingMessage.setRedirected(true);
                 }
                 //warning
-                if(message.getSubject() != null && message.getSubject().equals("RX")){
-                    incomingMessage.setRedirected(true);
-                }
+                //if(message.getSubject() != null && message.getSubject().equals("RX")){
+                //    incomingMessage.setRedirected(true);
+                //}
                 //Get my custom message extensions
                 //getTransferRequest(message);
                 getSelfDestructiveExtension(message, incomingMessage);

@@ -75,13 +75,15 @@ public class ConversationItemAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        String contactPlaceholder = chatMessage.getAuthor() + " [" +
-                chatMessage.getContactMayDayID() + "]";
+        String contactPlaceholder = (!chatMessage.getRedirected()) ? chatMessage.getAuthor() + " [" +
+                chatMessage.getContactMayDayID() + "]" : "(Desviado) " + chatMessage.getSubject();
+
 
         holder.tvContactName.setText(contactPlaceholder);
         holder.tvMessageBody.setText(chatMessage.getMessage());
         holder.tvTimestamp.setText(chatMessage.getDatetime());
         setNoReadMessage(holder, chatMessage.getStatus(), chatMessage.getDirection());
+        setTransferedMessage(holder, chatMessage);
 
         DataBaseHelper db = new DataBaseHelper(context);
         ContactStatus status = db.findContactStatus(chatMessage.getContactMayDayID());
@@ -93,6 +95,14 @@ public class ConversationItemAdapter extends BaseAdapter {
         db.close();
 
         return convertView;
+    }
+
+    private void setTransferedMessage(ViewHolder holder, ChatMessage chatMessage) {
+        if(chatMessage.getRedirected())
+            holder.tvMessageBody.setTextColor(Color.BLUE);
+        else
+            holder.tvMessageBody.setTextColor(ContextCompat.getColor(context, R.color.colorBlack));
+
     }
 
     private void setNoReadMessage(ViewHolder holder, ChatMessageStatus status, ChatMessageDirection direction) {
