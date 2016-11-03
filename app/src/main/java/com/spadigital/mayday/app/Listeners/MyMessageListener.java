@@ -136,21 +136,32 @@ public class MyMessageListener implements StanzaListener {
 
                     if (ChatActivity.getInstance() != null
                             && from.equals(ChatActivity.getInstance().getCurrentConversationId())
-                            && ChatActivity.getInstance().hasWindowFocus()) {
+                            && ChatActivity.getInstance().hasWindowFocus() ) {
+                        //it will always update unless redirected  doesn't meets the current
+                        //subject
+                        Boolean updateWhenRedirected = true;
+
+                        if(incomingMessage.getRedirected()){
+                            if(!ChatActivity.getInstance().getCurrentSubjectId().equals(incomingMessage.getSubject())){
+                                updateWhenRedirected = false;
+                            }
+                        }
 
                         Log.v(log_v, "LOADING due to INCOMING message");
 
-                        incomingMessage.setStatus(ChatMessageStatus.READ);
-                        db = new DataBaseHelper(context);
-                        db.updateReadingMessage(incomingMessage.getId());
-                        db.close();
+                        if(updateWhenRedirected) {
+                            incomingMessage.setStatus(ChatMessageStatus.READ);
+                            db = new DataBaseHelper(context);
+                            db.updateReadingMessage(incomingMessage.getId());
+                            db.close();
 
-                        ChatActivity.getInstance().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                ChatActivity.getInstance().displayMessage(incomingMessage);
-                            }
-                        });
+                            ChatActivity.getInstance().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ChatActivity.getInstance().displayMessage(incomingMessage);
+                                }
+                            });
+                        }
                     }
 
                     //Add message to conversations fragment

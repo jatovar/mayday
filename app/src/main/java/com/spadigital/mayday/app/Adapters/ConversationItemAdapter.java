@@ -98,10 +98,8 @@ public class ConversationItemAdapter extends BaseAdapter {
     }
 
     private void setTransferedMessage(ViewHolder holder, ChatMessage chatMessage) {
-        if(chatMessage.getRedirected())
-            holder.tvMessageBody.setTextColor(Color.BLUE);
-        else
-            holder.tvMessageBody.setTextColor(ContextCompat.getColor(context, R.color.colorBlack));
+    //    if(chatMessage.getRedirected())
+    //        holder.tvMessageBody.setTextColor(Color.BLUE);
 
     }
 

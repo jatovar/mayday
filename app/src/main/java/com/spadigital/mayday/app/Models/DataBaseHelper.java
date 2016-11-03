@@ -237,7 +237,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
       //  String query = "SELECT tbl.* FROM ( SELECT * FROM " + TABLE_MESSAGE + " ORDER BY " + COLUMN_ID +
       //          " ASC ) AS tbl GROUP BY tbl." + COLUMN_CONTACT_MAYDAYID + " ORDER BY " + COLUMN_ID + " DESC";
         String query = "SELECT tbl.* FROM ( SELECT * FROM " + TABLE_MESSAGE + " ORDER BY " + COLUMN_ID +
-                " ASC ) AS tbl GROUP BY tbl." + COLUMN_CONTACT_MAYDAYID + ", tbl." + COLUMN_REDIRECTED  +
+                " ASC ) AS tbl GROUP BY tbl." + COLUMN_CONTACT_MAYDAYID + ", tbl." + COLUMN_SUBJECT  +
                 " ORDER BY " + COLUMN_ID + " DESC";
         Cursor c = db.rawQuery(query, null);
 
@@ -290,7 +290,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     /*Returns the last @counter messages where contact_MayDayID=@contact_MayDayID
     Staring from message number @start_index.
     * */
-    public ArrayList<ChatMessage> getMessages(String contact_MayDayID, int start_index, int counter) {
+    public ArrayList<ChatMessage> getMessages(String contact_MayDayID, int start_index, int counter, Boolean redirected, String subject) {
         ArrayList<ChatMessage> chatMessageList = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
         //TODO: OPTIMIZATION  - add logic for start_index
@@ -299,10 +299,18 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         db.update(TABLE_MESSAGE, cv , COLUMN_CONTACT_MAYDAYID + " =? AND "+ COLUMN_DIRECTION + "= 'INCOMING' "
                 , new String[]{contact_MayDayID});
 
-        String query = "SELECT * FROM "
-                + TABLE_MESSAGE + " WHERE " + COLUMN_CONTACT_MAYDAYID + " =?";
+        Cursor c;
+        String query;
+        if(!redirected) {
+            query = "SELECT * FROM "
+                    + TABLE_MESSAGE + " WHERE " + COLUMN_CONTACT_MAYDAYID + " =?";
+            c = db.rawQuery(query, new String[]{contact_MayDayID});
+        }else{
+            query = "SELECT * FROM "
+                    + TABLE_MESSAGE + " WHERE " + COLUMN_CONTACT_MAYDAYID + " =? AND "  + COLUMN_SUBJECT + " =?";
+            c = db.rawQuery(query, new String[]{contact_MayDayID, subject});
+        }
 
-        Cursor c = db.rawQuery(query, new String[]{contact_MayDayID});
         if(c != null && c.moveToFirst()){
             do{
                 ChatMessage newChatMessage = new ChatMessage();

@@ -298,7 +298,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
         try {
             DataBaseHelper db = new DataBaseHelper(this);
             //db.updateRead(contactMaydayId);
-            ArrayList<ChatMessage> chatHistory = db.getMessages(contactMaydayId, 0, 5);
+            ArrayList<ChatMessage> chatHistory = db.getMessages(contactMaydayId, 0, 5, redirected, subject);
             adapter = new ChatAdapter(ChatActivity.this, new ArrayList<ChatMessage>());
             messagesContainer.setAdapter(adapter);
 
@@ -332,7 +332,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
 
 
     public String getCurrentConversationId(){
-        return this.contactMaydayId;
+         return this.contactMaydayId;
     }
 
     public void updateSentIcon(int id){
@@ -368,5 +368,9 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
 
     public boolean getIsEmergencyMessage(){
         return isEmergencyMessage.isChecked();
+    }
+
+    public String getCurrentSubjectId() {
+        return this.subject;
     }
 }
