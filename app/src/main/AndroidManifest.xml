@@ -27,6 +27,7 @@
         <activity android:name="com.spadigital.mayday.app.Activities.ContactAddActivity$ContactInformationActivity"/>
         <activity android:name="com.spadigital.mayday.app.Activities.ChatActivity"/>
         <activity android:name="com.spadigital.mayday.app.Activities.LoginActivity"/>
+        <activity android:name=".Activities.RetrieveTransferActivity"/>
         <activity android:name=".Activities.TaberActivity"></activity>
     </application>
 

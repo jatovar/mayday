@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.spadigital.mayday.app.Activities.RetrieveTransferActivity;
 import com.spadigital.mayday.app.Activities.TaberActivity;
 import com.spadigital.mayday.app.MayDayApplication;
 
@@ -92,8 +93,11 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
                 VCard vCard = VCardManager.getInstanceFor(
                         MayDayApplication.getInstance().getConnection()).loadVCard();
                 if (vCard != null &&  vCard.getField("redirectTo") != null && vCard.getField("redirectTo").length()>0) {
-                    Toast toast = Toast.makeText(context, "Ya tienes tu cuenta transferida", Toast.LENGTH_LONG);
-                    toast.show();
+                    Intent retrieve = new Intent(context, RetrieveTransferActivity.class);
+                    retrieve.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(retrieve);
+                    //Toast toast = Toast.makeText(context, "Ya tienes tu cuenta transferida", Toast.LENGTH_LONG);
+                    //toast.show();
                 }else{
                     Intent principal = new Intent(context, TaberActivity.class);
                     principal.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

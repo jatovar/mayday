@@ -16,11 +16,11 @@
 
     <Button
         android:theme="@style/buttonStyle"
+        android:id="@+id/btn_stop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Dejar de transferir"
         android:textStyle="bold"
-        android:onClick="click_login"
         android:layout_gravity="center"
         android:padding="20dp"
         android:layout_margin="50dp" />
@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="(El usuario al que transfirio su cuenta no podrá recibir mensajes de su cuenta ni responderlos una vez que recupere su cuenta)."
+        android:text="Una vez que recupere su cuenta, el usuario al que transfirio dejará de recibir sus mensajes."
         android:id="@+id/textView3"
         android:layout_gravity="center_horizontal"
         android:textAlignment="center" />
