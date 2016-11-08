@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.design.widget.TabLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.NotificationCompat;
 import android.support.v7.preference.PreferenceManager;
@@ -28,6 +29,7 @@ import com.spadigital.mayday.app.Fragments.ContactsFragment;
 import com.spadigital.mayday.app.Fragments.ConversationsFragment;
 import com.spadigital.mayday.app.MayDayApplication;
 import com.spadigital.mayday.app.Models.DataBaseHelper;
+import com.spadigital.mayday.app.PacketExtensions.CustomMessage;
 import com.spadigital.mayday.app.PacketExtensions.EmergencyMessageReceipt;
 import com.spadigital.mayday.app.PacketExtensions.SelfDestructiveReceipt;
 import com.spadigital.mayday.app.R;
@@ -77,6 +79,7 @@ public class MyMessageListener implements StanzaListener {
                 //It also handles the transfer account request
                 try{
                     getTransferRequest(message);
+                    getCustomMessage(message);
                 }catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -190,12 +193,33 @@ public class MyMessageListener implements StanzaListener {
         }
     }
 
+    private void getCustomMessage(Message message) {
+
+        ExtensionElement element = message.getExtension(CustomMessage.NAMESPACE);
+
+        if(element != null) {
+
+            final String msg = ((CustomMessage) element).getMessage();
+
+            TaberActivity.getInstance().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    new AlertDialog.Builder(TaberActivity.getInstance())
+                            .setTitle("Transferencia de cuenta")
+                            .setMessage(msg)
+                            .show();
+                }
+            });
+
+        }
+    }
+
     private void getTransferRequest(final Message message) throws Exception {
 
         VCard vCard = VCardManager.getInstanceFor(
                 MayDayApplication.getInstance().getConnection()).loadVCard();
         if (vCard != null &&  vCard.getField("busy") != null && vCard.getField("busy").equals("true")) {
-            //toast i have a connection
+            //TODO: toast i have a connection
             return ;
         }
         ExtensionElement element = message.getExtension(TransferRequest.NAMESPACE);

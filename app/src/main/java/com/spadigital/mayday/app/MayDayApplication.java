@@ -16,6 +16,7 @@ import com.spadigital.mayday.app.Listeners.MyConnectionListener;
 import com.spadigital.mayday.app.Listeners.MyMessageListener;
 import com.spadigital.mayday.app.Listeners.MyReceiptReceivedListener;
 import com.spadigital.mayday.app.Models.DataBaseHelper;
+import com.spadigital.mayday.app.PacketExtensions.CustomMessage;
 import com.spadigital.mayday.app.PacketExtensions.EmergencyMessageReceipt;
 import com.spadigital.mayday.app.PacketExtensions.SelfDestructiveReceipt;
 import com.spadigital.mayday.app.PacketExtensions.TransferRequest;
@@ -120,7 +121,6 @@ public class MayDayApplication extends Application {
             TransferRequest sendTransferRequestMessage =
                     new TransferRequest(TransferRequest.TransferStatus.REQUESTING);
             message.addExtension(sendTransferRequestMessage);
-           // message.setBody("request");
             chat.sendMessage(message);
 
         }catch (SmackException.NotConnectedException e) {
@@ -271,10 +271,35 @@ public class MayDayApplication extends Application {
                 new TransferRequest.Provider()
         );
 
-        //VCard for redirection messages when configured
-       // connection.getUser()z
+        //Transfer request extension provider
+        ProviderManager.addExtensionProvider(
+                CustomMessage.ELEMENT,
+                CustomMessage.NAMESPACE,
+                new CustomMessage.Provider()
+        );
+
+
 
     }
 
 
+    public void sendCustomMessage(String to, String message) {
+
+        Message m = new Message();
+
+        try {
+
+            createChat(to);
+            CustomMessage customMessage =
+                    new CustomMessage(message);
+            m.addExtension(customMessage);
+            chat.sendMessage(m);
+
+        }catch (SmackException.NotConnectedException e) {
+            //CONSTRAINT... USER MUST BE ONLINE.....
+            Toast toast = Toast.makeText(this, "You don't have an active connection",
+                    Toast.LENGTH_SHORT);
+            toast.show();
+        }
+    }
 }
