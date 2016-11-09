@@ -39,7 +39,7 @@ public class MyConnectionListener implements ConnectionListener {
         MayDayApplication app = (MayDayApplication) context.getApplicationContext();
         for (ChatMessage message: chatHistory) {
             app.createChat(message.getContactMayDayID() + "@jorge-latitude-e5440"); //hard coded
-            app.sendMessage(message,true);
+            app.sendMessage(message, true);
         }
     }
 
