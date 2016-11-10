@@ -13,6 +13,8 @@
     <string name="pref_summary_destroy_mine">Desactivado</string>
     <string name="pref_title_destroy_mine">Destruir mensajes en éste equipo</string>
     <string name="block_contact">bloquear contacto</string>
+    <string name="facebook_app_id">1867662546800429</string>
+
     <string name="resgistr_te"><u>Resgistráte</u></string>
     <string-array name="listentries">
         <item>Desactivado</item>

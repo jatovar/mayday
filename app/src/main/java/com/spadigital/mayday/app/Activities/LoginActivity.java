@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.facebook.FacebookSdk;
 import com.spadigital.mayday.app.MayDayApplication;
 import com.spadigital.mayday.app.R;
 import com.spadigital.mayday.app.Tasks.UserLoginTask;
@@ -30,6 +31,8 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+
         setContentView(R.layout.activity_login);
         Log.v(log_v, "onCreate");
         mProgressView = findViewById(R.id.login_progress);

@@ -22,6 +22,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+
         <receiver android:name=".Tasks.AlarmReceiver"/>
         <activity android:name="com.spadigital.mayday.app.Activities.ContactAddActivity"/>
         <activity android:name="com.spadigital.mayday.app.Activities.ContactAddActivity$ContactInformationActivity"/>

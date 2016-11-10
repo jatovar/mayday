@@ -81,36 +81,41 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
 
                 <Button
                     android:id="@+id/bt_login"
                     android:theme="@style/buttonStyle"
-                    android:layout_width="wrap_content"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp"
                     android:text="Login"
                     android:textStyle="bold"
                     android:onClick="click_login"
-                    android:layout_weight="5" />
+                    android:layout_weight="1" />
 
                 <Button
                     android:id="@+id/button2"
                     android:theme="@style/buttonStyle"
-                    android:layout_width="wrap_content"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp"
                     android:text="Registrarse"
                     android:textStyle="bold"
                     android:onClick="click_login"
-                    android:layout_weight="5" />
+                    android:layout_weight="1" />
             </LinearLayout>
 
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:gravity="center_vertical">
+                <com.facebook.login.widget.LoginButton
+                    android:id="@+id/login_button"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
 
+                    android:layout_gravity="bottom" />
             </LinearLayout>
 
         </LinearLayout>
