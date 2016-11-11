@@ -47,10 +47,12 @@ public class MayDayApplication extends Application {
     private String log_v = "MayDayApplication: ";
     private String log_e = "MyApplicationERROR: ";
 
+    /*
     public static final String DOMAIN   = "jorge-latitude-e5440";
     private static final String HOST     = "192.168.168.67";
     private static final int PORT        = 5222;
     private static final String RESOURCE = "Android";
+    */
     //public static
     //public static final String ACCOUNT_TRANSFERED = null;
     //public static final String ACCOUNT_;
@@ -61,12 +63,12 @@ public class MayDayApplication extends Application {
     private static final int PORT        = 5222;
     private static final String RESOURCE = "Android";
     */
-    /*
-        private static final String DOMAIN   = "mayday";
-        private static final String HOST     = "10.10.51.155";
-        private static final int PORT        = 5222;
-        private static final String RESOURCE = "Android";
-    */
+
+    public static final String DOMAIN   = "mayday";
+    private static final String HOST     = "189.206.27.33";
+    private static final int PORT        = 5222;
+    private static final String RESOURCE = "Android";
+
 
     private String mayDayID = "";
     private String password = "";
