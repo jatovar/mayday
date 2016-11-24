@@ -92,9 +92,19 @@ public class ContactAdapter extends BaseAdapter implements Filterable{
     /** For new contacts **/
     public void add(Contact contact){
 
+        boolean found = false;
         if(contact.getStatus() != ContactStatus.BLOCKED) {
-            contactList.add(contact);
-            sortContacts();
+            for (Contact c : contactList)
+                if(c.getMayDayId().equals(contact.getMayDayId())){
+                    found = true;
+                    break;
+                }
+            if(!found) {
+                contactList.add(contact);
+                sortContacts();
+            }
+
+
         }
     }
     /** For initializing from db set  **/

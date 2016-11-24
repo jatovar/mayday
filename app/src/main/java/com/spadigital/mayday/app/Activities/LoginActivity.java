@@ -1,5 +1,6 @@
 package com.spadigital.mayday.app.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -38,6 +39,11 @@ public class LoginActivity extends AppCompatActivity {
         mProgressView = findViewById(R.id.login_progress);
     }
 
+    public void click_register(View view){
+        Intent registerNew = new Intent(getApplicationContext(), RegisterActivity.class);
+        startActivity(registerNew);
+        finish();
+    }
     public void click_login(View view){
 
         Log.v(log_v, "even_login");

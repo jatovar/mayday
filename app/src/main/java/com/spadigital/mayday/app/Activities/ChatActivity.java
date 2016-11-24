@@ -44,6 +44,7 @@ import java.util.Date;
 public class ChatActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener{
 
     private static final int EDIT_CONTACT_REQUEST = 2;
+    private static final int ADD_CONTACT_REQUEST = 1;
 
     private String log_v = "ChatActivity: ";
     private String contactMaydayId;
@@ -72,12 +73,14 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
 
         contactMaydayId = getIntent().getExtras().getString("contact_MayDayID");
         author = getIntent().getExtras().getString("contact_author");
+
+        //*Ignore this fields if the client didn't transfer his account**//
         subject = getIntent().getExtras().getString("contact_subject");
         redirected = getIntent().getExtras().getBoolean("contact_redirected");
 
         Log.v(log_v, "Start a chat with MayDayId: " + contactMaydayId);
 
-        MayDayApplication.getInstance().createChat(contactMaydayId + "@jorge-latitude-e5440");
+        MayDayApplication.getInstance().createChat(contactMaydayId + "@" + MayDayApplication.DOMAIN);
         initControls();
 
         //The alarm receiver can be null if the user is only selecting a contact to chat with
@@ -94,6 +97,10 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
         super.onResume();
         contactMaydayId = getIntent().getExtras().getString("contact_MayDayID");
         author = getIntent().getExtras().getString("contact_author");
+
+        //*Ignore this fields if the client didn't transfer his account**//
+        subject = getIntent().getExtras().getString("contact_subject");
+        redirected = getIntent().getExtras().getBoolean("contact_redirected");
 
         Log.v(log_v, "Start a chat with MayDayId: " + contactMaydayId);
 
@@ -120,7 +127,9 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
         switch (item.getItemId()) {
             case R.id.action_add_contact:
                 Log.i("ActionBar", "Add contact!");
-                //TODO: Toast if contact already exists, add contact activity? if it doesn't
+                Log.v(log_v,"clickContactAdd");
+                Intent intentContactAdd = new Intent(getApplicationContext(), ContactAddActivity.class);
+                startActivityForResult(intentContactAdd, ADD_CONTACT_REQUEST);
                 return true;
             case R.id.action_detail_contact:
                 Log.i("ActionBar", "Info!");
@@ -211,6 +220,12 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
                         ConversationsFragment.getInstance().setContactInfoIfExists(data);
                         getSupportActionBar().setTitle(data.getStringExtra("modified_contact_name"));
                     }
+                    break;
+                case ADD_CONTACT_REQUEST:
+                    Log.v(log_v, "ADD_CONTACT_REQUEST");
+                    ContactsFragment.getInstance().addContactToDataSet(data);
+                    if(ConversationsFragment.getInstance() != null)
+                        ConversationsFragment.getInstance().setAuthorIfExists(data);
                     break;
 
             }
@@ -342,7 +357,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+    public void onCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
         if(isChecked){
             new AlertDialog.Builder(this)
                     .setIcon(android.R.drawable.ic_dialog_alert)
@@ -359,9 +374,15 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
                         }
 
                     })
-                    .setNegativeButton("No", null)
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            buttonView.setChecked(false);
+                        }
+                    })
                     .show();
-            //buttonView.setChecked(false);
+
+            //
         }
 
     }

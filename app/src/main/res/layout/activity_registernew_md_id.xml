@@ -39,6 +39,16 @@
                 android:layout_gravity="center"
                 android:src="@drawable/logomayday"
                 android:layout_weight="2" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="BIENVENIDO A MD BEEPER!"
+                android:id="@+id/textView6"
+                android:gravity="center_horizontal"
+                android:paddingBottom="20dp" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -48,77 +58,56 @@
             android:layout_weight="2"
             android:paddingLeft="40dp"
             android:paddingRight="40dp">
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <AutoCompleteTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="jorge_spa"
-                    android:id="@+id/et_MayDayID"
-                    android:hint= "MayDayID"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    />
-            </android.support.design.widget.TextInputLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Tu MayDay ID es : "
+                android:id="@+id/textView5"
+                android:layout_gravity="center_horizontal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="MD313KP"
+                android:id="@+id/textView7"
+                android:layout_gravity="center_horizontal" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="123"
-                    android:id="@+id/et_Password"
-                    android:hint="Password"
-                    android:imeOptions="actionUnspecified"
-                    android:inputType="textPassword"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    />
-            </android.support.design.widget.TextInputLayout>
+                android:layout_height="wrap_content"></android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></android.support.design.widget.TextInputLayout>
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical">
-
-                <Button
-                    android:id="@+id/bt_login"
-                    android:theme="@style/buttonStyle"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Login"
-                    android:textStyle="bold"
-                    android:onClick="click_login"
-                    android:layout_weight="1" />
-
-                <Button
-                    android:id="@+id/button2"
-                    android:theme="@style/buttonStyle"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Registrarse"
-                    android:textStyle="bold"
-                    android:onClick="click_register"
-                    android:layout_weight="1" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical">
-                <com.facebook.login.widget.LoginButton
-                    android:id="@+id/login_button"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                android:gravity="center">
 
-                    android:layout_gravity="bottom" />
+                <Button
+                    android:theme="@style/buttonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Comenzar!"
+                    android:textStyle="bold" />
+
             </LinearLayout>
+
 
         </LinearLayout>
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Recordar Mayday ID"
+            android:id="@+id/checkBox"
+            android:layout_gravity="center_horizontal"
+            android:theme="@style/Preference.CheckBoxPreference.Material" />
 
     </LinearLayout>
 </ScrollView>

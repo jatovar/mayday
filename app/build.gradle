@@ -17,11 +17,21 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
+    testCompile 'org.igniterealtime.smack:smack-android-extensions:4.1.0-alpha6'
+    testCompile 'org.igniterealtime.smack:smack-tcp:4.1.0-alpha6'
+    testCompile 'org.igniterealtime.smack:smack-android:4.1.4'
+    testCompile 'org.igniterealtime.smack:smack-tcp:4.1.4'
+    testCompile 'org.igniterealtime.smack:smack-im:4.1.4'
+    testCompile 'org.igniterealtime.smack:smack-extensions:4.1.4'
+
     compile 'com.android.support:support-compat:25.0.0'
     compile 'com.android.support:appcompat-v7:25.0.0'
     compile 'com.android.support:design:25.0.0'
@@ -38,6 +48,8 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.0.0'
     compile 'com.android.support:preference-v14:25.0.0'
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
+
+
     //We need this for backgroundtasks
     //compile 'com.birbit:android-priority-jobqueue:2.0.0'
 

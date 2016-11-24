@@ -25,15 +25,18 @@ import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ReconnectionManager;
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.chat.Chat;
 import org.jivesoftware.smack.chat.ChatManager;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
+import org.jivesoftware.smackx.iqregister.AccountManager;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptRequest;
 
+import java.io.IOException;
 
 
 /**
@@ -218,6 +221,27 @@ public class MayDayApplication extends Application {
         if (connection != null) {
             MyMessageListener listener = new MyMessageListener(this, notificationMgr, alarmManager);
             this.connection.addAsyncStanzaListener(listener, null);
+        }
+    }
+
+    public void createAnonymousConnection(){
+        XMPPTCPConnectionConfiguration.Builder configBuilder = XMPPTCPConnectionConfiguration.builder();
+        configBuilder.setConnectTimeout(3000);
+        configBuilder.setServiceName(DOMAIN);
+        configBuilder.setHost(HOST);
+        configBuilder.setPort(PORT);
+        configBuilder.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);//
+        configBuilder.setResource(RESOURCE);
+        configBuilder.setDebuggerEnabled(true);//
+        connection = new XMPPTCPConnection(configBuilder.build());
+
+        try {
+            connection.connect();
+            if(AccountManager.getInstance(connection).supportsAccountCreation()){
+
+            }
+        } catch (SmackException | IOException | XMPPException e) {
+            e.printStackTrace();
         }
     }
 

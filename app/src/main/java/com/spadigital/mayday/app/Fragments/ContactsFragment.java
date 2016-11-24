@@ -143,7 +143,6 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
             // Check which request we're responding to
             switch (requestCode){
                 case ADD_CONTACT_REQUEST:
-                    //TODO:We must refresh the Contacts View, the Conversations View adapter
                     Log.v(log_v, "ADD_CONTACT_REQUEST");
                     addContactToDataSet(data);
                     ConversationsFragment.getInstance().setAuthorIfExists(data);
@@ -160,7 +159,7 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
         return null;
     }
 
-    private void addContactToDataSet(Intent data) {
+    public void addContactToDataSet(Intent data) {
 
         Contact contact = new Contact(
                 data.getStringExtra("new_contact_id"),

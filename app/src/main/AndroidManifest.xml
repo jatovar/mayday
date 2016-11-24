@@ -30,6 +30,8 @@
         <activity android:name="com.spadigital.mayday.app.Activities.ChatActivity"/>
         <activity android:name="com.spadigital.mayday.app.Activities.LoginActivity"/>
         <activity android:name=".Activities.RetrieveTransferActivity"/>
+        <activity android:name=".Activities.RegisterActivity"/>
+        <activity android:name=".Activities.GenerateActivity"/>
         <activity android:name=".Activities.TaberActivity"></activity>
     </application>
 
