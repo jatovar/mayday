@@ -237,9 +237,7 @@ public class MayDayApplication extends Application {
 
         try {
             connection.connect();
-            if(AccountManager.getInstance(connection).supportsAccountCreation()){
 
-            }
         } catch (SmackException | IOException | XMPPException e) {
             e.printStackTrace();
         }

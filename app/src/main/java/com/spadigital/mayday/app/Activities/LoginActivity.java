@@ -42,7 +42,6 @@ public class LoginActivity extends AppCompatActivity {
     public void click_register(View view){
         Intent registerNew = new Intent(getApplicationContext(), RegisterActivity.class);
         startActivity(registerNew);
-        finish();
     }
     public void click_login(View view){
 
