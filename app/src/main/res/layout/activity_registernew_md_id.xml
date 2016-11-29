@@ -90,6 +90,7 @@
 
                 <Button
                     android:theme="@style/buttonStyle"
+                    android:id="@+id/btn_start"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Comenzar!"
@@ -104,7 +105,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Recordar Mayday ID"
-            android:id="@+id/checkBox"
+            android:id="@+id/save_login_checkbox"
+            android:checked="true"
             android:layout_gravity="center_horizontal"
             android:theme="@style/Preference.CheckBoxPreference.Material" />
 

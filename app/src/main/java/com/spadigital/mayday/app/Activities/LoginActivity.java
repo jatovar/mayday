@@ -1,6 +1,7 @@
 package com.spadigital.mayday.app.Activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -25,31 +26,55 @@ import java.util.concurrent.TimeUnit;
 public class LoginActivity extends AppCompatActivity {
 
     private String log_v = "Android:";
-    private View mProgressView;
     final long TIMEOUT = 5000;
 
+    private EditText etMayDayId;
+    private EditText etPassword;
+    private View mProgressView;
+
+    private SharedPreferences loginPreferences;
+
+    private String mayDayId;
+    private String password;
+    private Boolean saveLogin;
 
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
-
         setContentView(R.layout.activity_login);
+
         Log.v(log_v, "onCreate");
+
+        etMayDayId    = (EditText) findViewById(R.id.et_MayDayID);
+        etPassword    = (EditText) findViewById(R.id.et_Password);
         mProgressView = findViewById(R.id.login_progress);
+
+        mayDayId = etMayDayId.getText().toString();
+        password = etPassword.getText().toString();
+
+        loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
+
+        saveLogin = loginPreferences.getBoolean("saveLogin", false);
+
+        if (saveLogin == true) {
+            etMayDayId.setText(loginPreferences.getString("username", ""));
+            etPassword.setText(loginPreferences.getString("password", ""));
+            //TODO: saveLoginCheckBox.setChecked(true);
+        }else{
+            etMayDayId.setText("");
+            etPassword.setText("");
+        }
+
     }
 
     public void click_register(View view){
         Intent registerNew = new Intent(getApplicationContext(), RegisterActivity.class);
         startActivity(registerNew);
     }
+
     public void click_login(View view){
 
         Log.v(log_v, "even_login");
-        EditText etMayDayId = (EditText) findViewById(R.id.et_MayDayID);
-        EditText etPassword = (EditText) findViewById(R.id.et_Password);
-        String mayDayId     = etMayDayId.getText().toString();
-        String password     = etPassword.getText().toString();
 
         if(TextUtils.isEmpty(mayDayId)) {
             etMayDayId.setError("escriba su MayDayId");
@@ -94,8 +119,6 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 };
                 threadTimeout.start();
-
-
 
             }
 

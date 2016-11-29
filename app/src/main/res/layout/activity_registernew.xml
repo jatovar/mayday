@@ -108,6 +108,7 @@
 
                 <Button
                     android:theme="@style/buttonStyle"
+                    android:id="@+id/btn_cancel_register"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:text="Cancelar"
