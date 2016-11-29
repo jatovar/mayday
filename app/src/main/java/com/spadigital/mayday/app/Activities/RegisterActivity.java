@@ -31,7 +31,8 @@ public class RegisterActivity extends AppCompatActivity {
     private MayDayApplication myApp;
     private XMPPConnection connection;
     private final static int MAXLENGTH = 8;
-    private static final String ALLOWED_CHARACTERS ="0123456789qwertyuiopasdfghjklzxcvbnm";
+    private static final String ALLOWED_CHARACTERS ="0123456789QWERTYUIOPASDFGHJKLZXCVBNM";
+    private String username = "";
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +68,9 @@ public class RegisterActivity extends AppCompatActivity {
 
                             if(createNewAccount(email, password)) {
                                 pd.dismiss();
+
                                 Intent registerNew = new Intent(getApplicationContext(), GenerateActivity.class);
+                                registerNew.putExtra("newUserName", username);
                                 startActivity(registerNew);
                             }
                             else{
@@ -99,10 +102,12 @@ public class RegisterActivity extends AppCompatActivity {
         Map<String, String> mapAttributes = new HashMap<>();
         mapAttributes.put("email", email);
 
-        String randomUserName = randomUser();
+        username = randomUser();
 
         try {
-            AccountManager.getInstance(connection).createAccount(randomUserName, password, mapAttributes);
+            AccountManager.getInstance(connection).createAccount(username, password, mapAttributes);
+            android.accounts.AccountManager.get(this);
+
 
         } catch (SmackException.NoResponseException |
                 XMPPException.XMPPErrorException |

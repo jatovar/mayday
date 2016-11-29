@@ -105,7 +105,7 @@ public class ConfigFragment extends PreferenceFragmentCompat implements SharedPr
 
                     VCard v = VCardManager.getInstanceFor
                             (MayDayApplication.getInstance().getConnection())
-                            .loadVCard(newValue +"@" +MayDayApplication.DOMAIN);
+                            .loadVCard(newValue + "@" +MayDayApplication.DOMAIN);
                      value = v.getField("redirectTo");
                 }catch (SmackException.NoResponseException |
                         XMPPException.XMPPErrorException   |

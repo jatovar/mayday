@@ -64,7 +64,6 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Tu MayDay ID es : "
-                android:id="@+id/textView5"
                 android:layout_gravity="center_horizontal" />
 
             <TextView
@@ -72,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="MD313KP"
-                android:id="@+id/textView7"
+                android:id="@+id/tv_new_mayday_id"
                 android:layout_gravity="center_horizontal" />
 
             <android.support.design.widget.TextInputLayout
