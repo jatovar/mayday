@@ -54,7 +54,6 @@
                 <AutoCompleteTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="jorge_spa"
                     android:id="@+id/et_MayDayID"
                     android:hint= "MayDayID"
                     android:maxLines="1"
@@ -68,7 +67,6 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="123"
                     android:id="@+id/et_Password"
                     android:hint="Password"
                     android:imeOptions="actionUnspecified"
@@ -110,6 +108,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical">
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Recordar Mayday ID"
+                    android:id="@+id/save_remember_checkbox"
+                    android:checked="true"
+                    android:layout_gravity="center_horizontal"
+                    android:theme="@style/Preference.CheckBoxPreference.Material" />
                 <!---
                 <com.facebook.login.widget.LoginButton
                     android:id="@+id/login_button"

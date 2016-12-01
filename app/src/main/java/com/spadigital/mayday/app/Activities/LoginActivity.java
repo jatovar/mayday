@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -31,11 +32,13 @@ public class LoginActivity extends AppCompatActivity {
     private EditText etMayDayId;
     private EditText etPassword;
     private View mProgressView;
+    private CheckBox saveCred;
 
     private SharedPreferences loginPreferences;
+    private SharedPreferences.Editor loginPrefsEditor;
 
-    private String mayDayId;
-    private String password;
+    private String mayDayId = "";
+    private String password = "";
     private Boolean saveLogin;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,22 +50,28 @@ public class LoginActivity extends AppCompatActivity {
 
         etMayDayId    = (EditText) findViewById(R.id.et_MayDayID);
         etPassword    = (EditText) findViewById(R.id.et_Password);
+        saveCred      = (CheckBox) findViewById(R.id.save_remember_checkbox);
+
         mProgressView = findViewById(R.id.login_progress);
 
-        mayDayId = etMayDayId.getText().toString();
-        password = etPassword.getText().toString();
+
 
         loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
+        loginPrefsEditor = loginPreferences.edit();
+
 
         saveLogin = loginPreferences.getBoolean("saveLogin", false);
 
+
         if (saveLogin == true) {
-            etMayDayId.setText(loginPreferences.getString("username", ""));
-            etPassword.setText(loginPreferences.getString("password", ""));
-            //TODO: saveLoginCheckBox.setChecked(true);
+            mayDayId = loginPreferences.getString("username", "");
+            password = loginPreferences.getString("password", "");
+            etMayDayId.setText(mayDayId);
+            etPassword.setText(password);
+            saveCred.setChecked(true);
         }else{
-            etMayDayId.setText("");
-            etPassword.setText("");
+
+            saveCred.setChecked(false);
         }
 
     }
@@ -75,6 +84,8 @@ public class LoginActivity extends AppCompatActivity {
     public void click_login(View view){
 
         Log.v(log_v, "even_login");
+        mayDayId = etMayDayId.getText().toString();
+        password = etPassword.getText().toString();
 
         if(TextUtils.isEmpty(mayDayId)) {
             etMayDayId.setError("escriba su MayDayId");
@@ -99,8 +110,6 @@ public class LoginActivity extends AppCompatActivity {
                         try {
                             userLoginTask.get(TIMEOUT, TimeUnit.MILLISECONDS);
 
-
-
                         } catch (Exception e) {
                             userLoginTask.cancel(true);
                             LoginActivity.this.runOnUiThread(new Runnable()
@@ -118,7 +127,21 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                 };
+
+                //Start thread in background
                 threadTimeout.start();
+
+                //Save actual credentials
+                if(saveCred.isChecked()){
+                    loginPrefsEditor.putBoolean("saveLogin", true);
+                    loginPrefsEditor.putString("username", mayDayId);
+                    loginPrefsEditor.putString("password", password);
+                    loginPrefsEditor.commit();
+                }else{
+                    loginPrefsEditor.putBoolean("saveLogin", false);
+                    loginPrefsEditor.commit();
+
+                }
 
             }
 

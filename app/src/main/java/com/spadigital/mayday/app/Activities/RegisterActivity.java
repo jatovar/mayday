@@ -35,6 +35,7 @@ public class RegisterActivity extends AppCompatActivity {
 
 
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registernew);
 
@@ -84,7 +85,6 @@ public class RegisterActivity extends AppCompatActivity {
                                 startActivity(registerNew);
                             }
                             else{
-
                                 //TODO:HANDLE THE ERROR
                             }
                         }
@@ -97,15 +97,8 @@ public class RegisterActivity extends AppCompatActivity {
             });
             t.start();
 
-
-
         }
-        /*ProgressDialog pd;
-        pd = ProgressDialog.show(this, "Registrando cuenta",
-                "Por favor espere...", true);
-                */
-        //Intent registerNew = new Intent(getApplicationContext(), GenerateActivity.class);
-        //startActivity(registerNew);
+
     }
 
     private boolean createNewAccount(String email, String password) {
@@ -115,19 +108,17 @@ public class RegisterActivity extends AppCompatActivity {
 
         username = randomUser();
 
-        /*
+
         try {
             AccountManager.getInstance(connection).createAccount(username, password, mapAttributes);
-
         } catch (SmackException.NoResponseException |
                 XMPPException.XMPPErrorException |
                 SmackException.NotConnectedException e) {
             e.printStackTrace();
             return false;
         }
-        */
-        return true;
 
+        return true;
     }
 
     private boolean isValidEmail(CharSequence target) {

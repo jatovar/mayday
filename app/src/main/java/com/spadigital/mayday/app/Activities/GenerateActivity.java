@@ -28,6 +28,7 @@ public class GenerateActivity extends AppCompatActivity implements View.OnClickL
     private SharedPreferences.Editor loginPrefsEditor;
 
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registernew_md_id);
 
@@ -37,7 +38,6 @@ public class GenerateActivity extends AppCompatActivity implements View.OnClickL
         tvMdId             = (TextView)findViewById(R.id.tv_new_mayday_id);
         buttonStart        = (Button)findViewById(R.id.btn_start);
         saveLoginCheckBox  = (CheckBox)findViewById(R.id.save_login_checkbox);
-
 
         loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
         loginPrefsEditor = loginPreferences.edit();
@@ -54,6 +54,7 @@ public class GenerateActivity extends AppCompatActivity implements View.OnClickL
 
         if(view == buttonStart){
             if(saveLoginCheckBox.isChecked()){
+                //save my login credentials in login preferences
                 loginPrefsEditor.putBoolean("saveLogin", true);
                 loginPrefsEditor.putString("username", username);
                 loginPrefsEditor.putString("password", password);
@@ -62,6 +63,7 @@ public class GenerateActivity extends AppCompatActivity implements View.OnClickL
                 loginPrefsEditor.clear();
                 loginPrefsEditor.commit();
             }
+            //clears activity stack until LoginActivity
             resetToLoginScreen();
         }
 
@@ -69,7 +71,7 @@ public class GenerateActivity extends AppCompatActivity implements View.OnClickL
 
     private void resetToLoginScreen() {
         Intent registerNew = new Intent(getApplicationContext(), LoginActivity.class );
-        registerNew.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); //this clears the Register activity
+        registerNew.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(registerNew);
     }
 }
