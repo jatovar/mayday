@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25"
+    buildToolsVersion "25.0.1"
 
     defaultConfig {
         applicationId "com.example.mayday.mayday_03"
@@ -32,9 +32,9 @@ dependencies {
     testCompile 'org.igniterealtime.smack:smack-im:4.1.4'
     testCompile 'org.igniterealtime.smack:smack-extensions:4.1.4'
 
-    compile 'com.android.support:support-compat:25.0.0'
-    compile 'com.android.support:appcompat-v7:25.0.0'
-    compile 'com.android.support:design:25.0.0'
+    compile 'com.android.support:support-compat:25.0.1'
+    compile 'com.android.support:appcompat-v7:25.0.1'
+    compile 'com.android.support:design:25.0.1'
     compile 'org.igniterealtime.smack:smack-android-extensions:4.1.0-alpha6'
     compile 'org.igniterealtime.smack:smack-tcp:4.1.0-alpha6'
     compile 'org.igniterealtime.smack:smack-android:4.1.4'
@@ -44,21 +44,12 @@ dependencies {
     compile 'org.igniterealtime.smack:smack-im:4.1.4'
 // Optional for XMPP extensions support
     compile 'org.igniterealtime.smack:smack-extensions:4.1.4'
-    compile 'com.android.support:preference-v7:25.0.0'
-    compile 'com.android.support:recyclerview-v7:25.0.0'
-    compile 'com.android.support:preference-v14:25.0.0'
+    compile 'com.android.support:preference-v7:25.0.1'
+    compile 'com.android.support:recyclerview-v7:25.0.1'
+    compile 'com.android.support:preference-v14:25.0.1'
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
 
 
-    //We need this for backgroundtasks
-    //compile 'com.birbit:android-priority-jobqueue:2.0.0'
 
-    //compile 'com.takisoft.fix:preference-v7:24.2.1.0'
-
-    /*compile('org.simpleframework:simple-xml:2.7.+'){
-        exclude module: 'stax'
-        exclude module: 'stax-api'
-        exclude module: 'xpp3'
-    }*/
 
 }
