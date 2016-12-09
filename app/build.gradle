@@ -49,7 +49,7 @@ dependencies {
     compile 'com.android.support:preference-v14:25.0.1'
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
 
-
+    compile 'org.jbundle.util.osgi.wrapped:org.jbundle.util.osgi.wrapped.org.apache.http.client:4.1.2'
 
 
 }
