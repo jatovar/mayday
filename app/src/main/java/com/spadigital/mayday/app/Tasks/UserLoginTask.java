@@ -79,6 +79,8 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
         progressView.requestFocus();
     }
 
+
+
     @Override
     protected void onPostExecute(Boolean success){
         progressView.setVisibility(View.GONE);

@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
@@ -33,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText etPassword;
     private View mProgressView;
     private CheckBox saveCred;
+    private TextView etPswForgotten;
 
     private SharedPreferences loginPreferences;
     private SharedPreferences.Editor loginPrefsEditor;
@@ -48,9 +50,20 @@ public class LoginActivity extends AppCompatActivity {
 
         Log.v(log_v, "onCreate");
 
-        etMayDayId    = (EditText) findViewById(R.id.et_MayDayID);
-        etPassword    = (EditText) findViewById(R.id.et_Password);
-        saveCred      = (CheckBox) findViewById(R.id.save_remember_checkbox);
+        etMayDayId     = (EditText) findViewById(R.id.et_MayDayID);
+        etPassword     = (EditText) findViewById(R.id.et_Password);
+        saveCred       = (CheckBox) findViewById(R.id.save_remember_checkbox);
+        etPswForgotten = (TextView) findViewById(R.id.tv_PassForgotten);
+
+        //if user clicks on password forgotten
+        etPswForgotten.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent pswForgottenIntent = new Intent(getApplicationContext(),
+                        PasswordForgottenActivity.class);
+                startActivity(pswForgottenIntent);
+            }
+        });
 
         mProgressView = findViewById(R.id.login_progress);
 

@@ -198,13 +198,13 @@ public class ChatAdapter extends BaseAdapter {
     }
 
     private static class ViewHolder {
-        public TextView txtMessage;
-        public TextView txtInfo;
-        public LinearLayout contentWithBG;
-        public RelativeLayout layoutProgress;
-        public ProgressBar progressBar;
-        public TextView textProgress;
-        public ImageView imgStatus;
+        TextView txtMessage;
+        TextView txtInfo;
+        LinearLayout contentWithBG;
+        RelativeLayout layoutProgress;
+        ProgressBar progressBar;
+        TextView textProgress;
+        ImageView imgStatus;
     }
 
     private class ProgressBarAnimation extends Animation{
@@ -213,7 +213,7 @@ public class ChatAdapter extends BaseAdapter {
         private float from;
         private float to;
 
-        public ProgressBarAnimation(float from, float to, ViewHolder holder) {
+        ProgressBarAnimation(float from, float to, ViewHolder holder) {
             super();
             this.from   = from;
             this.to     = to;
@@ -227,11 +227,7 @@ public class ChatAdapter extends BaseAdapter {
             holder.progressBar.setProgress((int) value);
             holder.textProgress.setText(String.valueOf((int)value));
         }
-
-
     }
-
-
 }
 
 

@@ -16,6 +16,7 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         tools:context=".Activities.RegisterActivity">
 
+        <!-- Login circular_progress_bar -->
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -44,7 +45,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Registro de cuenta"
+                android:text="Recuperación de cuenta"
                 android:id="@+id/textView6"
                 android:gravity="center_horizontal"
                 android:paddingBottom="20dp" />
@@ -53,10 +54,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <AutoCompleteTextView
-                    android:id="@+id/et_email"
+                    android:id="@+id/et_maydayId_recover"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint= "Correo eléctronico"
+                    android:hint= "MayDay ID"
                     android:maxLines="1"
                     android:singleLine="true"
                     />
@@ -66,30 +67,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <EditText
-                    android:id="@+id/et_newpassword"
+                    android:id="@+id/et_email_recover"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Contraseña"
+                    android:hint="Correo eléctronico"
                     android:imeOptions="actionUnspecified"
-                    android:inputType="textPassword"
+                    android:inputType="textEmailAddress"
                     android:maxLines="1"
                     android:singleLine="true"
                     />
             </android.support.design.widget.TextInputLayout>
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                 <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Confirmar Contraseña"
-                    android:imeOptions="actionUnspecified"
-                    android:inputType="textPassword"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:id="@+id/editText"
-                    android:layout_gravity="center_horizontal" />
-            </android.support.design.widget.TextInputLayout>
+
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
@@ -97,11 +85,11 @@
                 android:gravity="center_vertical">
 
                 <Button
+                    android:id="@+id/btn_recover_psw"
                     android:theme="@style/buttonStyle"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:onClick="click_new_account"
-                    android:text="Aceptar"
+                    android:text="Recuperar"
                     android:textStyle="bold"
                     android:layout_weight="1" />
 
