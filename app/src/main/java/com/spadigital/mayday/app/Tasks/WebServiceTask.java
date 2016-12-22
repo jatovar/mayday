@@ -54,7 +54,9 @@ public class WebServiceTask extends AsyncTask <Void, Void, String>{
             HttpResponse response = httpclient.execute(httppost);
             HttpEntity entity = response.getEntity();
             String responseString = EntityUtils.toString(entity, "UTF-8");
-            System.out.println(responseString);
+            if(responseString.contains("EMAIL ERROR")) {
+
+            }
             //TODO: catch response and print it ....
             Header header[]  =  response.getAllHeaders();
             StatusLine st = response.getStatusLine();

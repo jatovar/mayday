@@ -107,7 +107,16 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical">
+                android:gravity="center">
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Recordar Mayday ID"
+                    android:id="@+id/save_remember_checkbox"
+                    android:checked="true"
+                    android:theme="@style/Preference.CheckBoxPreference.Material"
+                    android:layout_gravity="center_horizontal" />
 
                 <TextView
                     android:text="Olvidé mi contraseña"
@@ -119,16 +128,9 @@
                     android:fontFamily="sans-serif"
                     android:textColor="?android:attr/textColorLink"
                     android:phoneNumber="false"
-                    android:password="false" />
-
-                <CheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Recordar Mayday ID"
-                    android:id="@+id/save_remember_checkbox"
-                    android:checked="true"
-                    android:layout_gravity="center_horizontal"
-                    android:theme="@style/Preference.CheckBoxPreference.Material" />
+                    android:password="false"
+                    android:elevation="0dp"
+                    android:layout_marginTop="20dp" />
                 <!---
                 <com.facebook.login.widget.LoginButton
                     android:id="@+id/login_button"
