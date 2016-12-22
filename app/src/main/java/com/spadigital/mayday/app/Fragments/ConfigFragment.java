@@ -12,12 +12,10 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
-import android.util.Log;
 
 import com.spadigital.mayday.app.Entities.Contact;
-import com.spadigital.mayday.app.Enum.ContactStatus;
 import com.spadigital.mayday.app.MayDayApplication;
-import com.spadigital.mayday.app.Models.DataBaseHelper;
+import com.spadigital.mayday.app.Helpers.DataBaseHelper;
 import com.spadigital.mayday.app.R;
 
 import org.jivesoftware.smack.SmackException;

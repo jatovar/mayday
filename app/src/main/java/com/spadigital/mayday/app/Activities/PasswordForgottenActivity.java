@@ -1,11 +1,14 @@
 package com.spadigital.mayday.app.Activities;
 
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.spadigital.mayday.app.Helpers.AlertsHelper;
+import com.spadigital.mayday.app.MayDayApplication;
 import com.spadigital.mayday.app.R;
 import com.spadigital.mayday.app.Tasks.WebServiceTask;
 
@@ -41,7 +44,12 @@ public class PasswordForgottenActivity extends AppCompatActivity implements View
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.btn_recover_psw:
+                if(MayDayApplication.getInstance().isConnected())
                     recoverPasswordService();
+                else {
+                    AlertsHelper.register(this);
+                    AlertsHelper.displayError(this, "No tienes una conexión activa a internet");
+                }
                 break;
         }
     }

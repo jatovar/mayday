@@ -1,7 +1,11 @@
 package com.spadigital.mayday.app.Tasks;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDialog;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -28,46 +32,79 @@ import static android.R.attr.data;
 
 public class WebServiceTask extends AsyncTask <Void, Void, String>{
 
-    private String error;
-    private String data[];
     private Context context;
+    private List<NameValuePair> nameValuePairs = new ArrayList<>(2);
+
 
     public WebServiceTask(Context context, String data[]){
+
         this.context = context;
-        this.data = data;
+
+        nameValuePairs.add(new BasicNameValuePair("type", "status"));
+        nameValuePairs.add(new BasicNameValuePair("username", data[0]));
+        nameValuePairs.add(new BasicNameValuePair("email", data[1]));
     }
 
     @Override
     protected String doInBackground(Void... voids) {
+
+        String responseString;
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost("http://189.206.27.33:9090/plugins/passservice/passservice");
+        HttpPost httppost     = new HttpPost("http://189.206.27.33:9090/plugins/passservice/passservice");
 
         try {
-            //add data
-            List<NameValuePair> nameValuePairs = new ArrayList<>(2);
-            nameValuePairs.add(new BasicNameValuePair("type", "status"));
-            nameValuePairs.add(new BasicNameValuePair("username", data[0]));
-            nameValuePairs.add(new BasicNameValuePair("email", data[1]));
-
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-            //execute http post
             HttpResponse response = httpclient.execute(httppost);
-            HttpEntity entity = response.getEntity();
-            String responseString = EntityUtils.toString(entity, "UTF-8");
-            if(responseString.contains("EMAIL ERROR")) {
-
-            }
-            //TODO: catch response and print it ....
-            Header header[]  =  response.getAllHeaders();
-            StatusLine st = response.getStatusLine();
-            for (Header header1 : header) {
-                System.out.print(header1);
-            }
-
+            HttpEntity entity     = response.getEntity();
+            responseString        = EntityUtils.toString(entity, "UTF-8");
 
         } catch (IOException e) {
-            error = e.getMessage();
+            responseString = e.getMessage();
         }
-        return error;
+
+
+        return responseString;
+    }
+
+    @Override
+    protected void onPostExecute(String responseString) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+        if(responseString.contains("EMAIL ERROR")) {
+            builder.setTitle("Error en el usuario y/o correo eléctronico");
+            builder.setMessage("El usuario y/o correo electronico no concuerdan con nuestros registros");
+            builder.setPositiveButton("OK", null);
+            builder.setIcon(android.R.drawable.ic_dialog_alert);
+
+        }else{
+            if(responseString.contains("SQL ERROR")){
+                builder.setTitle("Error en el servidor");
+                builder.setMessage("Favor de contactar a soporte para recuperar su cuenta.");
+                builder.setPositiveButton("OK", null);
+                builder.setIcon(android.R.drawable.ic_dialog_alert);
+
+            }else{
+                if(responseString.contains("SUCCESS")) {
+                    builder.setTitle("Email de confirmación");
+                    builder.setMessage("La confirmación de reinicio de contraseña ha sido enviada a su correo");
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    ((AppCompatActivity) context).finish();
+                                }
+                            }
+                    );
+                    builder.setIcon(android.R.drawable.ic_dialog_info);
+                }else{
+                    builder.setTitle("Internal Exception");
+                    builder.setMessage(responseString);
+                    builder.setPositiveButton("OK", null);
+                    builder.setIcon(android.R.drawable.ic_dialog_alert);
+                }
+            }
+        }
+
+        builder.show();
     }
 }

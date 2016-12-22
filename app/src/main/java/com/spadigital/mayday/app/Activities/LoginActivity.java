@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
+import com.spadigital.mayday.app.Helpers.AlertsHelper;
 import com.spadigital.mayday.app.MayDayApplication;
 import com.spadigital.mayday.app.R;
 import com.spadigital.mayday.app.Tasks.UserLoginTask;
@@ -109,40 +110,11 @@ public class LoginActivity extends AppCompatActivity {
                 etPassword.requestFocus();
             }
             else{
-                final UserLoginTask userLoginTask =
-                        new UserLoginTask(
-                                mayDayId,
-                                password,
-                                this.getApplicationContext(),
-                                mProgressView);
-
-                userLoginTask.execute();
-
-                Thread threadTimeout = new Thread(){
-                    public void run(){
-                        try {
-                            userLoginTask.get(TIMEOUT, TimeUnit.MILLISECONDS);
-
-                        } catch (Exception e) {
-                            userLoginTask.cancel(true);
-                            LoginActivity.this.runOnUiThread(new Runnable()
-                            {
-                                public void run()
-                                {
-                                    mProgressView.setVisibility(View.GONE);
-                                    Toast.makeText(LoginActivity.this,
-                                            "El servidor no ha respondido correctamente, " +
-                                                    "reintentar la conexión",
-                                            Toast.LENGTH_LONG).show();
-
-                                }
-                            });
-                        }
-                    }
-                };
-
-                //Start thread in background
-                threadTimeout.start();
+                if(MayDayApplication.getInstance().isConnected()){
+                    doLogin();
+                }else{
+                    AlertsHelper.register(this);
+                }
 
                 //Save actual credentials
                 if(saveCred.isChecked()){
@@ -160,6 +132,43 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
+    }
+
+    private void doLogin() {
+        final UserLoginTask userLoginTask =
+                new UserLoginTask(
+                        mayDayId,
+                        password,
+                        this.getApplicationContext(),
+                        mProgressView);
+
+        userLoginTask.execute();
+
+        Thread threadTimeout = new Thread(){
+            public void run(){
+                try {
+                    userLoginTask.get(TIMEOUT, TimeUnit.MILLISECONDS);
+
+                } catch (Exception e) {
+                    userLoginTask.cancel(true);
+                    LoginActivity.this.runOnUiThread(new Runnable()
+                    {
+                        public void run()
+                        {
+                            mProgressView.setVisibility(View.GONE);
+                            Toast.makeText(LoginActivity.this,
+                                    "El servidor no ha respondido correctamente, " +
+                                            "reintentar la conexión",
+                                    Toast.LENGTH_LONG).show();
+
+                        }
+                    });
+                }
+            }
+        };
+
+        //Start thread in background
+        threadTimeout.start();
     }
 
 }

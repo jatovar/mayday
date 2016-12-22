@@ -3,7 +3,7 @@ package com.spadigital.mayday.app.Listeners;
 import android.content.Context;
 
 import com.spadigital.mayday.app.Entities.ChatMessage;
-import com.spadigital.mayday.app.Models.DataBaseHelper;
+import com.spadigital.mayday.app.Helpers.DataBaseHelper;
 import com.spadigital.mayday.app.MayDayApplication;
 
 import org.jivesoftware.smack.ConnectionListener;
@@ -26,7 +26,7 @@ public class MyConnectionListener implements ConnectionListener {
 
     @Override
     public void connected(XMPPConnection connection) {
-
+        //TODO
     }
 
     @Override
@@ -45,12 +45,12 @@ public class MyConnectionListener implements ConnectionListener {
 
     @Override
     public void connectionClosed() {
-
+        //TODO
     }
 
     @Override
     public void connectionClosedOnError(Exception e) {
-
+        //TODO
     }
 
     @Override
@@ -62,18 +62,19 @@ public class MyConnectionListener implements ConnectionListener {
 
         MayDayApplication app = (MayDayApplication) context.getApplicationContext();
         for (ChatMessage message: chatHistory) {
-            app.createChat(message.getContactMayDayID() + "@" + MayDayApplication.DOMAIN); //hard coded
+            app.createChat(message.getContactMayDayID() + "@" + MayDayApplication.DOMAIN);
             app.sendMessage(message,true);
         }
     }
 
     @Override
     public void reconnectingIn(int seconds) {
+        //TODO
 
     }
 
     @Override
     public void reconnectionFailed(Exception e) {
-
+        //TODO
     }
 }

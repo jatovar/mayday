@@ -1,4 +1,4 @@
-package com.spadigital.mayday.app.Models;
+package com.spadigital.mayday.app.Helpers;
 
 import android.content.ContentValues;
 import android.content.Context;

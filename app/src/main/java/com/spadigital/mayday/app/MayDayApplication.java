@@ -4,6 +4,9 @@ import android.app.AlarmManager;
 import android.app.Application;
 import android.app.NotificationManager;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -15,7 +18,7 @@ import com.spadigital.mayday.app.Fragments.ConfigFragment;
 import com.spadigital.mayday.app.Listeners.MyConnectionListener;
 import com.spadigital.mayday.app.Listeners.MyMessageListener;
 import com.spadigital.mayday.app.Listeners.MyReceiptReceivedListener;
-import com.spadigital.mayday.app.Models.DataBaseHelper;
+import com.spadigital.mayday.app.Helpers.DataBaseHelper;
 import com.spadigital.mayday.app.PacketExtensions.CustomMessage;
 import com.spadigital.mayday.app.PacketExtensions.EmergencyMessageReceipt;
 import com.spadigital.mayday.app.PacketExtensions.SelfDestructiveReceipt;
@@ -32,9 +35,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
-import org.jivesoftware.smackx.iqregister.AccountManager;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
-import org.jivesoftware.smackx.receipts.DeliveryReceiptRequest;
 
 import java.io.IOException;
 
@@ -50,6 +51,7 @@ public class MayDayApplication extends Application {
     private String log_v = "MayDayApplication: ";
     private String log_e = "MyApplicationERROR: ";
 
+    public static final String INTENT_DISPLAYERROR = "ERROR DE CONEXION";
 
     public static final String DOMAIN   = "mayday";
     private static final String HOST     = "189.206.27.33";
@@ -309,4 +311,12 @@ public class MayDayApplication extends Application {
             toast.show();
         }
     }
+
+    public boolean isConnected() {
+        ConnectivityManager connMgr = (ConnectivityManager) this.getApplicationContext().getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
+    }
+
+
 }

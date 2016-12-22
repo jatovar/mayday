@@ -12,7 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
-import com.spadigital.mayday.app.Models.DataBaseHelper;
+import com.spadigital.mayday.app.Helpers.DataBaseHelper;
 import com.spadigital.mayday.app.Entities.Contact;
 import com.spadigital.mayday.app.Enum.ContactStatus;
 import com.spadigital.mayday.app.R;

@@ -23,7 +23,7 @@ import com.spadigital.mayday.app.Adapters.ChatAdapter;
 import com.spadigital.mayday.app.Enum.ContactStatus;
 import com.spadigital.mayday.app.Fragments.ContactsFragment;
 import com.spadigital.mayday.app.Fragments.ConversationsFragment;
-import com.spadigital.mayday.app.Models.DataBaseHelper;
+import com.spadigital.mayday.app.Helpers.DataBaseHelper;
 import com.spadigital.mayday.app.Entities.ChatMessage;
 import com.spadigital.mayday.app.Entities.Contact;
 import com.spadigital.mayday.app.Enum.ChatMessageDirection;
