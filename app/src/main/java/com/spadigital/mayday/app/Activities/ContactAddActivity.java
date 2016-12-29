@@ -24,19 +24,34 @@ import com.spadigital.mayday.app.R;
 public class ContactAddActivity extends AppCompatActivity {
 
     private String log_v = "ContactAddActivity:";
-
-
+    private EditText contactName;
+    private EditText mayDayID;
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_add);
         Log.v(log_v, "onCreate");
+
+
+        contactName = (EditText) findViewById(R.id.et_mayDayID);
+        mayDayID = (EditText) findViewById(R.id.et_contactName);
+
+        if(savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            if (extras != null) {
+                contactName.setText(extras.getString("active_chat_contact"));
+                mayDayID.requestFocus();
+            }
+
+        }else {
+            contactName.setText((String) savedInstanceState.getSerializable("active_chat_contact"));
+            mayDayID.requestFocus();
+        }
     }
 
     public void click_ok(View view){
 
-        EditText contactName = (EditText) findViewById(R.id.et_mayDayID);
-        EditText mayDayID    = (EditText) findViewById(R.id.et_contactName);
+
         Contact contact      = new Contact(
                                             mayDayID.getText().toString(),
                                             contactName.getText().toString(),
@@ -46,7 +61,7 @@ public class ContactAddActivity extends AppCompatActivity {
         DataBaseHelper db    = new DataBaseHelper(this);
         db.getWritableDatabase();
 
-        Log.v(log_v, "Adding contact: " + contact.getName() + ", " +contact.getMayDayId());
+        Log.v(log_v, "Adding contact: " + contact.getName() + ", " + contact.getMayDayId());
 
 
         //If mayDayID is already in the DB.

@@ -161,13 +161,15 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
 
     public void addContactToDataSet(Intent data) {
 
-        Contact contact = new Contact(
-                data.getStringExtra("new_contact_id"),
-                data.getStringExtra("new_contact_name"),
-                data.getStringExtra("new_contact_MaydayId"),
-                ContactStatus.NORMAL);
-        contactAdapter.add(contact);
-        contactAdapter.notifyDataSetChanged();
+        if(data.getExtras() != null ) {
+            Contact contact = new Contact(
+                    data.getStringExtra("new_contact_id"),
+                    data.getStringExtra("new_contact_name"),
+                    data.getStringExtra("new_contact_MaydayId"),
+                    ContactStatus.NORMAL);
+            contactAdapter.add(contact);
+            contactAdapter.notifyDataSetChanged();
+        }
     }
 
     public void deleteContactInDataSet(Intent data) {

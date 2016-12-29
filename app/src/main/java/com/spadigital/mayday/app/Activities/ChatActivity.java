@@ -58,6 +58,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
     private CheckBox isEmergencyMessage;
     private String subject;
     private Boolean redirected;
+    Toolbar myToolbar;
 
     public static ChatActivity getInstance(){
         return instance;
@@ -95,17 +96,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
     protected void onResume() {
 
         super.onResume();
-        contactMaydayId = getIntent().getExtras().getString("contact_MayDayID");
-        author = getIntent().getExtras().getString("contact_author");
 
-        //*Ignore this fields if the client didn't transfer his account**//
-        subject = getIntent().getExtras().getString("contact_subject");
-        redirected = getIntent().getExtras().getBoolean("contact_redirected");
-
-        Log.v(log_v, "Start a chat with MayDayId: " + contactMaydayId);
-
-        MayDayApplication.getInstance().createChat(contactMaydayId + "@" + MayDayApplication.DOMAIN);
-        initControls();
 
         if(AlarmReceiver.v != null && AlarmReceiver.r != null){
             AlarmReceiver.r.stop();
@@ -123,12 +114,13 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
+        if(subject != null)
         switch (item.getItemId()) {
             case R.id.action_add_contact:
                 Log.i("ActionBar", "Add contact!");
                 Log.v(log_v,"clickContactAdd");
                 Intent intentContactAdd = new Intent(getApplicationContext(), ContactAddActivity.class);
+                intentContactAdd.putExtra("active_chat_contact", contactMaydayId);
                 startActivityForResult(intentContactAdd, ADD_CONTACT_REQUEST);
                 return true;
             case R.id.action_detail_contact:
@@ -193,6 +185,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
             default:
                 return super.onOptionsItemSelected(item);
         }
+        return false;
     }
 
     @Override
@@ -226,6 +219,11 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
                     ContactsFragment.getInstance().addContactToDataSet(data);
                     if(ConversationsFragment.getInstance() != null)
                         ConversationsFragment.getInstance().setAuthorIfExists(data);
+                    if(data.getExtras()!= null) {
+                        getSupportActionBar().setTitle(data.getStringExtra("new_contact_name"));
+                        contactMaydayId = data.getStringExtra("new_contact_name");
+                        this.invalidateOptionsMenu();
+                    }
                     break;
 
             }
@@ -238,8 +236,8 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
         messagesContainer   = (ListView) findViewById(R.id.messagesContainer);
         etMessage           = (EditText) findViewById(R.id.messageEdit);
         ImageButton btnSend = (ImageButton) findViewById(R.id.chatSendButton);
-        Toolbar myToolbar   = (Toolbar) findViewById(R.id.my_toolbar);
         isEmergencyMessage  = (CheckBox) findViewById(R.id.checkBox_emergency);
+        myToolbar   = (Toolbar) findViewById(R.id.my_toolbar);
 
         isEmergencyMessage.setOnCheckedChangeListener(this);
         setSupportActionBar(myToolbar);
