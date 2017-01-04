@@ -5,7 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -26,7 +30,8 @@ import java.util.ArrayList;
 /**
  * Created by jorge on 23/09/16.
  */
-public class ConversationsFragment extends Fragment {
+public class ConversationsFragment extends Fragment implements View.OnCreateContextMenuListener,
+        MenuItem.OnMenuItemClickListener, AdapterView.OnItemClickListener{
 
     private SwipeRefreshLayout swpMessages;
     private ListView lvMessages;
@@ -64,33 +69,12 @@ public class ConversationsFragment extends Fragment {
         conversationItemAdapter = new ConversationItemAdapter(ConversationsFragment.this,
                 new ArrayList<ChatMessage>());
 
-        conversationItemAdapter.add(this.messageArrayList);
+        conversationItemAdapter.add(messageArrayList);
         lvMessages.setAdapter(conversationItemAdapter);
-        lvMessages.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //if the contact is not bloked
-                if(view.isEnabled())
-                {
-                    ChatMessage chatMessage = conversationItemAdapter.getItem(position);
-                    chatMessage.setStatus(ChatMessageStatus.READ);
-                    Intent intent           = new Intent(parentActivity, ChatActivity.class);
-                    intent.putExtra("contact_redirected", chatMessage.getRedirected());
-                    intent.putExtra("contact_subject", chatMessage.getSubject());
-                    intent.putExtra("contact_MayDayID", chatMessage.getContactMayDayID());
-                    intent.putExtra("contact_author", chatMessage.getAuthor());
-                    startActivity(intent);
-                }else{
+        registerForContextMenu(lvMessages);
 
-
-                    Toast toast = Toast.makeText(ConversationsFragment.this.getContext(),
-                            "Contacto bloqueado, para desbloquear ve al menu configuración",
-                            Toast.LENGTH_SHORT);
-                    toast.show();
-                }
-
-            }
-        });
+        lvMessages.setOnCreateContextMenuListener(this);
+        lvMessages.setOnItemClickListener(this);
 
         swpMessages = (SwipeRefreshLayout) view.findViewById(R.id.swpMessages);
         swpMessages.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
@@ -159,4 +143,57 @@ public class ConversationsFragment extends Fragment {
                 ContactStatus.NORMAL);
         conversationItemAdapter.updateContactInfo(contact);
     }
+
+
+    @Override
+    public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+        MenuItem item = contextMenu.add("Eliminar Conversacion");
+        item.setOnMenuItemClickListener(this);
+    }
+
+
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuItem.getMenuInfo();
+        int position = info.position;
+
+        Log.v("Chat to be erased", "pos: " + position + "id: " + info.id);
+
+        loadConversations();
+
+        if (messageArrayList.size() > 0) {
+            ChatMessage messageToErase = messageArrayList.get(position);
+            DataBaseHelper db = new DataBaseHelper(getContext());
+            if (messageToErase != null) {
+                db.messageTruncate(messageToErase.getContactMayDayID());
+                conversationItemAdapter.removeItem(position);
+            }
+            db.close();
+        }
+        return true;
+
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        if(view.isEnabled()) {
+            ChatMessage chatMessage = conversationItemAdapter.getItem(i);
+            chatMessage.setStatus(ChatMessageStatus.READ);
+            Intent intent = new Intent(parentActivity, ChatActivity.class);
+            intent.putExtra("contact_redirected", chatMessage.getRedirected());
+            intent.putExtra("contact_subject", chatMessage.getSubject());
+            intent.putExtra("contact_MayDayID", chatMessage.getContactMayDayID());
+            intent.putExtra("contact_author", chatMessage.getAuthor());
+            startActivity(intent);
+        }else{
+
+            Toast toast = Toast.makeText(ConversationsFragment.this.getContext(),
+                    "Contacto bloqueado, para desbloquear ve al menu configuración",
+                    Toast.LENGTH_SHORT);
+            toast.show();
+        }
+    }
 }
+
+

@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.spadigital.mayday.app.Enum.ChatMessageDirection;
@@ -179,6 +180,14 @@ public class ConversationItemAdapter extends BaseAdapter implements AdapterView.
 
         Log.v("long clicked","pos: " + i);
         return true;
+    }
+
+    public void removeItem(int position) {
+        if (chatMessages != null) {
+            chatMessages.remove(position);
+            notifyDataSetChanged();
+        }
+
     }
 
 
