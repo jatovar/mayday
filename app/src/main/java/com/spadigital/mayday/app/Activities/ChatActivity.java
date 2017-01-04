@@ -86,9 +86,9 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
 
         //The alarm receiver can be null if the user is only selecting a contact to chat with
         //so we have to ensure there is actually an alarm Receiver
-        if(AlarmReceiver.v != null && AlarmReceiver.r != null){
-            AlarmReceiver.r.stop();
-            AlarmReceiver.v.cancel();
+        if(AlarmReceiver.mVibrator != null && AlarmReceiver.mPlayer != null){
+            AlarmReceiver.mPlayer.stop();
+            AlarmReceiver.mVibrator.cancel();
         }
 
     }
@@ -98,9 +98,9 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
         super.onResume();
 
 
-        if(AlarmReceiver.v != null && AlarmReceiver.r != null){
-            AlarmReceiver.r.stop();
-            AlarmReceiver.v.cancel();
+        if(AlarmReceiver.mVibrator != null && AlarmReceiver.mPlayer != null){
+            AlarmReceiver.mPlayer.stop();
+            AlarmReceiver.mVibrator.cancel();
         }
     }
 
@@ -127,8 +127,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
                 Log.i("ActionBar", "Info!");
 
                 Contact contact;
-                if((contact = ContactsFragment.getInstance().findContactById(contactMaydayId)) != null)
-                {
+                if((contact = ContactsFragment.getInstance().findContactById(contactMaydayId)) != null) {
                     Intent intent = new Intent(getApplicationContext(),
                             ContactAddActivity.ContactInformationActivity.class);
 
@@ -137,9 +136,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
                     intent.putExtra("editing_contact_name",     contact.getName());
                     intent.putExtra("editing_contact_status",   contact.getStatus());
                     startActivityForResult(intent, EDIT_CONTACT_REQUEST);
-                }
-                else
-                {
+                } else {
                     Toast toast = Toast.makeText(
                             this.getApplicationContext(),
                             "Contacto no existe, favor de agregarlo",

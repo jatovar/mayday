@@ -3,21 +3,20 @@ package com.spadigital.mayday.app.Tasks;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
+import android.media.MediaPlayer;
 import android.os.PowerManager;
 import android.os.Vibrator;
 import android.support.v4.content.WakefulBroadcastReceiver;
 
 import com.spadigital.mayday.app.Activities.ChatActivity;
+import com.spadigital.mayday.app.R;
 
 /**
  * Created by jorge on 13/10/16.
  */
 public class AlarmReceiver extends WakefulBroadcastReceiver {
-    public static Vibrator v;
-    public static Ringtone r;
+    public static Vibrator mVibrator;
+    public static MediaPlayer mPlayer;
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -33,13 +32,14 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
             PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
             PowerManager.WakeLock wl  = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TRAININGCOUNTDOWN");
             wl.acquire();
-            //ringtone
-            Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-            r = RingtoneManager.getRingtone(context, uri);
-            r.play();
+            //SOS Tone
+            mPlayer = MediaPlayer.create(context, R.raw.sos);
+            mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mPlayer.setLooping(true);
+            mPlayer.start();
             //vibration
-            v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-            // This example will cause the phone to vibrate "SOS" in Morse Code
+            mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+            // "SOS" in Morse Code
             // In Morse Code, "s" = "dot-dot-dot", "o" = "dash-dash-dash"
             // There are pauses to separate dots/dashes, letters, and words
             // The following numbers represent millisecond lengths
@@ -58,7 +58,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
                     long_gap
             };
 
-            v.vibrate(pattern, 0);
+            mVibrator.vibrate(pattern, 0);
         }
     }
 }

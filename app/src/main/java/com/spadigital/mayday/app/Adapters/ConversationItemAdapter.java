@@ -6,9 +6,11 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,7 +32,7 @@ import java.util.List;
  * This class handles the Cursor adapter to our needs (it gets the position of an unread message
  * is and sets the color of the textView)
  */
-public class ConversationItemAdapter extends BaseAdapter {
+public class ConversationItemAdapter extends BaseAdapter implements AdapterView.OnItemLongClickListener {
 
     private final List<ChatMessage> chatMessages;
     private Activity context;
@@ -172,6 +174,12 @@ public class ConversationItemAdapter extends BaseAdapter {
             }
     }
 
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+        Log.v("long clicked","pos: " + i);
+        return true;
+    }
 
 
     private static class ViewHolder {

@@ -50,21 +50,30 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/checkBox_emergency"
-                    android:layout_weight=".25" />
+                    android:layout_weight=".25"
+                    android:text="SOS"
+                    android:textSize="10sp"
+                    android:fontFamily="sans-serif"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/colorAccent"
+                    android:textStyle="normal|bold"
+                    android:layout_gravity="bottom" />
 
                 <EditText
                     android:id="@+id/messageEdit"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:hint="Input message"
-                    android:layout_weight="1.5" />
+                    android:hint="Escriba su mensaje"
+                    android:layout_weight="1.5"
+                    android:gravity="center_vertical|center" />
 
                 <ImageButton
                     android:id="@+id/chatSendButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@android:drawable/ic_menu_send"
-                    android:layout_weight=".25" />
+                    android:layout_weight=".25"
+                    android:layout_gravity="center" />
 
             </LinearLayout>
         </LinearLayout>

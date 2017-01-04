@@ -51,7 +51,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void click_new_account(View v){
-       // Log.v(log_v, "even_login");
+       // Log.mVibrator(log_v, "even_login");
         EditText newEmail = (EditText) findViewById(R.id.et_email);
         EditText newPassword = (EditText) findViewById(R.id.et_newpassword);
         final String email     = newEmail.getText().toString();
