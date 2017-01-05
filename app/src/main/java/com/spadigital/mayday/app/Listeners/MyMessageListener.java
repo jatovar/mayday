@@ -16,6 +16,7 @@ import android.util.Log;
 
 import com.spadigital.mayday.app.Activities.ChatActivity;
 import com.spadigital.mayday.app.Activities.TaberActivity;
+import com.spadigital.mayday.app.Adapters.ChatAdapter;
 import com.spadigital.mayday.app.Entities.ChatMessage;
 import com.spadigital.mayday.app.Entities.Contact;
 import com.spadigital.mayday.app.Enum.ChatMessageDirection;
@@ -36,6 +37,7 @@ import com.spadigital.mayday.app.PacketExtensions.TransferRequest;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.StanzaListener;
+import org.jivesoftware.smack.chat.Chat;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
@@ -96,6 +98,8 @@ public class MyMessageListener implements StanzaListener {
                 incomingMessage.setDatetime(DateFormat.getDateTimeInstance().format(new Date()));
                 incomingMessage.setStatus(ChatMessageStatus.UNREAD);
                 incomingMessage.setDirection(ChatMessageDirection.INCOMING);
+
+
 
                 if(message.getSubject() != null && message.getSubject().length() > 0){
                     incomingMessage.setSubject(message.getSubject());
@@ -160,6 +164,16 @@ public class MyMessageListener implements StanzaListener {
                                 @Override
                                 public void run() {
                                     ChatActivity.getInstance().displayMessage(incomingMessage);
+                                    //experimental
+                                    if(incomingMessage.getType() == ChatMessageType.SELFDESTRUCTIVE
+                                            && incomingMessage.getDirection() == ChatMessageDirection.INCOMING
+                                            && !incomingMessage.getExpireTime().equals("")) {
+                                        incomingMessage.setTimer();
+
+                                        DataBaseHelper db = new DataBaseHelper(context);
+                                        db.messageRemove(incomingMessage.getId());
+                                        db.close();
+                                    }
                                 }
                             });
                         }

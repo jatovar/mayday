@@ -1,8 +1,15 @@
 package com.spadigital.mayday.app.Entities;
 
+import android.os.CountDownTimer;
+import android.util.Log;
+import android.widget.ProgressBar;
+
+import com.spadigital.mayday.app.Adapters.ChatAdapter;
 import com.spadigital.mayday.app.Enum.ChatMessageDirection;
 import com.spadigital.mayday.app.Enum.ChatMessageStatus;
 import com.spadigital.mayday.app.Enum.ChatMessageType;
+
+import java.util.List;
 
 /**
  * Created by mayday on 13/09/16.
@@ -22,6 +29,9 @@ public class ChatMessage {
     private ChatMessageStatus status;
     private ChatMessageDirection direction;
     private ChatMessageType type;
+    private ProgressBar progressBarr;
+    private List<ChatMessage> adapterCollection;
+    private ChatAdapter chatAdapter;
 
 
     public ChatMessage(){
@@ -134,5 +144,39 @@ public class ChatMessage {
 
     public void setSubject(String subject) {
         this.subject = subject;
+    }
+
+    public void setTimer(){
+        CountDownTimer timer = new CountDownTimer(Integer.parseInt(expireTime), 20) {
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+                if (progressBarr != null)
+                    progressBarr.setProgress((int) millisUntilFinished);
+            }
+
+            @Override
+            public void onFinish() {
+                removeFromCollection();
+            }
+        };
+
+        timer.start();
+    }
+
+    public void setProgressBar(ProgressBar progressBar){
+        this.progressBarr = progressBar;
+    }
+
+    private void removeFromCollection() {
+        if(adapterCollection.contains(this) && chatAdapter!= null) {
+            adapterCollection.remove(this);
+            chatAdapter.notifyDataSetChanged();
+        }
+    }
+
+    public void setAdapterCollection(List<ChatMessage> adapterCollection, ChatAdapter chatAdapter) {
+        this.adapterCollection = adapterCollection;
+        this.chatAdapter = chatAdapter;
     }
 }

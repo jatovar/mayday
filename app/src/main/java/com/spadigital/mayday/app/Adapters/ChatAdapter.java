@@ -2,6 +2,8 @@ package com.spadigital.mayday.app.Adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,6 +81,7 @@ public class ChatAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
+
         setTimerView(holder, chatMessage);
         setSendingStatusIcon(holder, chatMessage);
         holder.txtMessage.setText(chatMessage.getMessage());
@@ -99,6 +102,10 @@ public class ChatAdapter extends BaseAdapter {
     }
 
     private void setTimerView(final ViewHolder holder, final ChatMessage chatMessage) {
+
+        holder.layoutProgress.setVisibility(View.INVISIBLE);
+        holder.textProgress.setVisibility(View.INVISIBLE);
+
         if(chatMessage.getType() == ChatMessageType.SELFDESTRUCTIVE
                 && chatMessage.getDirection() == ChatMessageDirection.INCOMING
                 && !chatMessage.getExpireTime().equals("")){
@@ -110,40 +117,15 @@ public class ChatAdapter extends BaseAdapter {
             holder.textProgress.setVisibility(View.VISIBLE);
 
             holder.textProgress.setText(String.valueOf(seconds));
-            holder.progressBar.setMax(seconds);
+            holder.progressBar.setMax(milliseconds);
+            chatMessage.setProgressBar(holder.progressBar);
 
+            //This
+            chatMessage.setAdapterCollection(chatMessages, this);
 
-            ProgressBarAnimation anim = new ProgressBarAnimation(0, seconds + 1, holder);
-            anim.setDuration(milliseconds);
-            anim.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {/*Empty*/}
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    deleteMessage(chatMessage, holder);
-                }
-                @Override
-                public void onAnimationRepeat(Animation animation) {/*Empty*/}
-            });
-            holder.progressBar.startAnimation(anim);
         }
     }
-    private void deleteMessage(final ChatMessage chatMessage, final ViewHolder holder){
 
-        DataBaseHelper db = new DataBaseHelper(context);
-        db.messageRemove(chatMessage.getId());
-        db.close();
-
-        context.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                holder.layoutProgress.setVisibility(View.GONE);
-                holder.textProgress.setVisibility(View.GONE);
-                chatMessages.remove(chatMessage);
-                notifyDataSetChanged();
-            }
-        });
-    }
 
 
     @Override
