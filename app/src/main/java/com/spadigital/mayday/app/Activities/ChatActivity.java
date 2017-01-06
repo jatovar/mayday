@@ -102,6 +102,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
             AlarmReceiver.mPlayer.stop();
             AlarmReceiver.mVibrator.cancel();
         }
+
     }
 
 
@@ -320,6 +321,13 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
                     System.out.println(message.getDirection().toString() + " : " + message.getMessage());
                     displayMessage(message);
 
+                    if(message.getType() == ChatMessageType.SELFDESTRUCTIVE
+                            && message.getDirection() == ChatMessageDirection.INCOMING
+                            && !message.getExpireTime().equals("")) {
+                        message.setTimer();
+
+
+                    }
                 }
             }
             db.close();

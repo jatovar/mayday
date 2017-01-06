@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MDD Beeper</string>
+    <string name="app_name">MD Beeper</string>
     <string name="some_phone">555-555</string>
     <string name="detalle">Detalle</string>
     <string name="add_contact">agregar contacto</string>

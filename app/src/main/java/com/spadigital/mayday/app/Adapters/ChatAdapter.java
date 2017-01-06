@@ -103,8 +103,7 @@ public class ChatAdapter extends BaseAdapter {
 
     private void setTimerView(final ViewHolder holder, final ChatMessage chatMessage) {
 
-        holder.layoutProgress.setVisibility(View.INVISIBLE);
-        holder.textProgress.setVisibility(View.INVISIBLE);
+
 
         if(chatMessage.getType() == ChatMessageType.SELFDESTRUCTIVE
                 && chatMessage.getDirection() == ChatMessageDirection.INCOMING
@@ -122,6 +121,12 @@ public class ChatAdapter extends BaseAdapter {
 
             //This
             chatMessage.setAdapterCollection(chatMessages, this);
+
+            DataBaseHelper dbc = new DataBaseHelper(context);
+            dbc.messageRemove(chatMessage.getId());
+            dbc.close();
+
+            notifyDataSetChanged();
 
         }
     }

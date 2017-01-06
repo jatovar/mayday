@@ -169,7 +169,7 @@ public class ChatMessage {
     }
 
     private void removeFromCollection() {
-        if(adapterCollection.contains(this) && chatAdapter!= null) {
+        if(adapterCollection != null && adapterCollection.contains(this) && chatAdapter!= null) {
             adapterCollection.remove(this);
             chatAdapter.notifyDataSetChanged();
         }

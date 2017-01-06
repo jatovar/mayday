@@ -170,9 +170,7 @@ public class MyMessageListener implements StanzaListener {
                                             && !incomingMessage.getExpireTime().equals("")) {
                                         incomingMessage.setTimer();
 
-                                        DataBaseHelper db = new DataBaseHelper(context);
-                                        db.messageRemove(incomingMessage.getId());
-                                        db.close();
+
                                     }
                                 }
                             });
