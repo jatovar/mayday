@@ -1,11 +1,12 @@
 <resources>
-    <string name="app_name">MD Beeper</string>
+    <string name="app_name">MvfD Beeper</string>
     <string name="some_phone">555-555</string>
     <string name="detalle">Detalle</string>
     <string name="add_contact">agregar contacto</string>
     <string name="detail_contact">info.</string>
     <string name="hint_search">buscar contacto</string>
     <string name="security_category">Seguridad</string>
+
     <string name="pref_summary_encode">Encriptar mensajes de lado a lado</string>
     <string name="pref_title_encode">Cifrar Mensajes</string>
     <string name="pref_title_destroy_receptor">Destruir mensajes enviados en el receptor</string>

@@ -324,7 +324,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
                     if(message.getType() == ChatMessageType.SELFDESTRUCTIVE
                             && message.getDirection() == ChatMessageDirection.INCOMING
                             && !message.getExpireTime().equals("")) {
-                        message.setTimer();
+                        message.getTimerUpdater().startTimer();
 
 
                     }

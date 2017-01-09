@@ -2,13 +2,9 @@ package com.spadigital.mayday.app.Adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.Transformation;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -33,7 +29,7 @@ import java.util.List;
  */
 public class ChatAdapter extends BaseAdapter {
 
-    private final List<ChatMessage> chatMessages;
+    public List<ChatMessage> chatMessages;
     private Activity context;
 
     public ChatAdapter(Activity context, ArrayList<ChatMessage> chatMessageList){
@@ -117,10 +113,10 @@ public class ChatAdapter extends BaseAdapter {
 
             holder.textProgress.setText(String.valueOf(seconds));
             holder.progressBar.setMax(milliseconds);
-            chatMessage.setProgressBar(holder.progressBar);
 
-            //This
-            chatMessage.setAdapterCollection(chatMessages, this);
+            ChatMessage.TimerUpdater timerUpdater = chatMessage.getTimerUpdater();
+            timerUpdater.setAttributes(holder.progressBar, this);
+
 
             DataBaseHelper dbc = new DataBaseHelper(context);
             dbc.messageRemove(chatMessage.getId());
@@ -192,27 +188,7 @@ public class ChatAdapter extends BaseAdapter {
         ImageView imgStatus;
     }
 
-    private class ProgressBarAnimation extends Animation{
 
-        private  ViewHolder holder;
-        private float from;
-        private float to;
-
-        ProgressBarAnimation(float from, float to, ViewHolder holder) {
-            super();
-            this.from   = from;
-            this.to     = to;
-            this.holder = holder;
-        }
-
-        @Override
-        protected void applyTransformation(float interpolatedTime, Transformation t) {
-            super.applyTransformation(interpolatedTime, t);
-            float value = to + (from - to) * interpolatedTime;
-            holder.progressBar.setProgress((int) value);
-            holder.textProgress.setText(String.valueOf((int)value));
-        }
-    }
 }
 
 

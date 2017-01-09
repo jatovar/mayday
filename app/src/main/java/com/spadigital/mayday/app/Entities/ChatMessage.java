@@ -1,7 +1,6 @@
 package com.spadigital.mayday.app.Entities;
 
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.widget.ProgressBar;
 
 import com.spadigital.mayday.app.Adapters.ChatAdapter;
@@ -29,13 +28,12 @@ public class ChatMessage {
     private ChatMessageStatus status;
     private ChatMessageDirection direction;
     private ChatMessageType type;
-    private ProgressBar progressBarr;
-    private List<ChatMessage> adapterCollection;
-    private ChatAdapter chatAdapter;
+
+    private TimerUpdater timerUpdater;
 
 
     public ChatMessage(){
-
+        timerUpdater = new TimerUpdater();
     }
 
     public void setId(int id){
@@ -146,37 +144,88 @@ public class ChatMessage {
         this.subject = subject;
     }
 
-    public void setTimer(){
-        CountDownTimer timer = new CountDownTimer(Integer.parseInt(expireTime), 20) {
-
-            @Override
-            public void onTick(long millisUntilFinished) {
-                if (progressBarr != null)
-                    progressBarr.setProgress((int) millisUntilFinished);
-            }
-
-            @Override
-            public void onFinish() {
-                removeFromCollection();
-            }
-        };
-
-        timer.start();
+    /**
+     * @see TimerUpdater
+     * @return Timer helper class
+     */
+    public TimerUpdater getTimerUpdater() {
+        return timerUpdater;
     }
 
-    public void setProgressBar(ProgressBar progressBar){
-        this.progressBarr = progressBar;
-    }
+    /**
+     * This class handles the Timer graphics, we need to set the reference
+     * in ChatAdapter.setTimerView, then the method startTimer() is called
+     * in MyMessageListener.processPacket and ChatActivity.loadChatDbHistory
+     * to render our progressBar properly
+     *
+     * @see ChatAdapter
+     * @see com.spadigital.mayday.app.Listeners.MyMessageListener
+     * @see com.spadigital.mayday.app.Activities.ChatActivity
+     */
+    public class TimerUpdater {
 
-    private void removeFromCollection() {
-        if(adapterCollection != null && adapterCollection.contains(this) && chatAdapter!= null) {
-            adapterCollection.remove(this);
-            chatAdapter.notifyDataSetChanged();
+        private final int REFRESH_MILLISECONDS = 20;
+
+        private ProgressBar progressBarr;
+        private List<ChatMessage> adapterCollection;
+        private ChatAdapter chatAdapter;
+
+
+        /**
+         * This method starts the TimerView ticking in our ChatAdapter by using a CountdownTimer
+         * it Refreshes every REFRESH_MILLISECONDS and sets the progress until expireTime goes off.
+         */
+        public void startTimer(){
+
+            CountDownTimer timer = new CountDownTimer(Integer.parseInt(ChatMessage.this.expireTime),
+                    REFRESH_MILLISECONDS) {
+
+                /**
+                 * It ticks every REFRESH_MILLISECONDS and calculates how many milliseconds needs
+                 * for the CountDownTimer to finish
+                 * @param millisUntilFinished milliseconds until animation finishes.
+                 */
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    if (progressBarr != null)
+                        progressBarr.setProgress((int) millisUntilFinished);
+                }
+
+
+                /**
+                 * When the countDownTimer ends, we need the adapter to know that the item is not there
+                 * anymore so we remove the chatMessage and notify the adapter to refresh our graphics
+                 */
+                @Override
+                public void onFinish() {
+                    removeFromCollection();
+                }
+            };
+
+            timer.start();
         }
-    }
 
-    public void setAdapterCollection(List<ChatMessage> adapterCollection, ChatAdapter chatAdapter) {
-        this.adapterCollection = adapterCollection;
-        this.chatAdapter = chatAdapter;
+
+        /**
+         * Removes the item from our list and notifies the adapter to update
+         */
+        private void removeFromCollection() {
+            if(adapterCollection != null && adapterCollection.contains(ChatMessage.this) && chatAdapter!= null) {
+                adapterCollection.remove(ChatMessage.this);
+                chatAdapter.notifyDataSetChanged();
+            }
+        }
+
+
+        /**
+         *
+         * @param progressBar the progress bar asset to be shown
+         * @param chatAdapter the adapter so we can call notifyDataSetChanged() and get the collection
+         */
+        public void setAttributes(ProgressBar progressBar,  ChatAdapter chatAdapter) {
+            this.progressBarr = progressBar;
+            this.adapterCollection = chatAdapter.chatMessages;
+            this.chatAdapter = chatAdapter;
+        }
     }
 }

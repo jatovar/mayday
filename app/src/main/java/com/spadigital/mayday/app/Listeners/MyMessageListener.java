@@ -16,7 +16,6 @@ import android.util.Log;
 
 import com.spadigital.mayday.app.Activities.ChatActivity;
 import com.spadigital.mayday.app.Activities.TaberActivity;
-import com.spadigital.mayday.app.Adapters.ChatAdapter;
 import com.spadigital.mayday.app.Entities.ChatMessage;
 import com.spadigital.mayday.app.Entities.Contact;
 import com.spadigital.mayday.app.Enum.ChatMessageDirection;
@@ -37,7 +36,6 @@ import com.spadigital.mayday.app.PacketExtensions.TransferRequest;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.StanzaListener;
-import org.jivesoftware.smack.chat.Chat;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
@@ -168,7 +166,7 @@ public class MyMessageListener implements StanzaListener {
                                     if(incomingMessage.getType() == ChatMessageType.SELFDESTRUCTIVE
                                             && incomingMessage.getDirection() == ChatMessageDirection.INCOMING
                                             && !incomingMessage.getExpireTime().equals("")) {
-                                        incomingMessage.setTimer();
+                                        incomingMessage.getTimerUpdater().startTimer();
 
 
                                     }
