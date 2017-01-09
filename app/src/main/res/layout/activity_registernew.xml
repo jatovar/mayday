@@ -100,7 +100,7 @@
                     android:theme="@style/buttonStyle"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:onClick="click_new_account"
+                    android:id="@+id/btn_register_new"
                     android:text="Aceptar"
                     android:textStyle="bold"
                     android:layout_weight="1" />

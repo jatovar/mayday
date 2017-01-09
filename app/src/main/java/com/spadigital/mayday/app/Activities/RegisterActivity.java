@@ -24,7 +24,7 @@ import java.util.Random;
 /**
  * Created by jorge on 24/11/16.
  */
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity implements View.OnClickListener{
 
 
     private MayDayApplication myApp;
@@ -40,17 +40,16 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_registernew);
 
         myApp = MayDayApplication.getInstance();
-        Button button = (Button) findViewById(R.id.btn_cancel_register);
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        Button buttonCancel = (Button) findViewById(R.id.btn_cancel_register);
+        buttonCancel.setOnClickListener(this);
+
+        Button buttonRegister = (Button) findViewById(R.id.btn_register_new);
+        buttonRegister.setOnClickListener(this);
+
     }
 
-    public void click_new_account(View v){
+    public void clickNewAccount(){
        // Log.mVibrator(log_v, "even_login");
         EditText newEmail = (EditText) findViewById(R.id.et_email);
         EditText newPassword = (EditText) findViewById(R.id.et_newpassword);
@@ -135,4 +134,16 @@ public class RegisterActivity extends AppCompatActivity {
         return sb.toString();
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.btn_register_new:
+                clickNewAccount();
+                break;
+            case R.id.btn_cancel_register:
+                finish();
+                break;
+
+        }
+    }
 }

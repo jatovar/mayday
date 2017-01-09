@@ -1,6 +1,7 @@
 package com.spadigital.mayday.app.Entities;
 
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.widget.ProgressBar;
 
 import com.spadigital.mayday.app.Adapters.ChatAdapter;
@@ -164,6 +165,9 @@ public class ChatMessage {
      */
     public class TimerUpdater {
 
+        /**
+         * The progressbar will update every milliseconds in this variable
+         */
         private final int REFRESH_MILLISECONDS = 20;
 
         private ProgressBar progressBarr;
@@ -210,10 +214,16 @@ public class ChatMessage {
          * Removes the item from our list and notifies the adapter to update
          */
         private void removeFromCollection() {
-            if(adapterCollection != null && adapterCollection.contains(ChatMessage.this) && chatAdapter!= null) {
-                adapterCollection.remove(ChatMessage.this);
-                chatAdapter.notifyDataSetChanged();
+            try{
+                if(adapterCollection != null && adapterCollection.contains(ChatMessage.this) && chatAdapter!= null) {
+                    adapterCollection.remove(ChatMessage.this);
+                    chatAdapter.notifyDataSetChanged();
+                }
+            }catch (NullPointerException e){
+                Log.v("collection error", e.getMessage());
+                e.printStackTrace();
             }
+
         }
 
 

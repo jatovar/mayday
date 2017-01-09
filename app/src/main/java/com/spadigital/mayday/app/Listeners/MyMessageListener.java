@@ -119,7 +119,7 @@ public class MyMessageListener implements StanzaListener {
                 if(contact != null)
                     incomingMessage.setAuthor(contact.getName());
                 else
-                    incomingMessage.setAuthor("UNKNOWN");
+                    incomingMessage.setAuthor("Desconocido");
 
                 //a blocked contact will always exist in db
                 DataBaseHelper db    = new DataBaseHelper(this.context);
@@ -303,7 +303,11 @@ public class MyMessageListener implements StanzaListener {
         );
     }
 
-
+    /**
+     * This method checks if the message is self destructive or not
+     * @param message The stanza packet
+     * @param chatMessage Instance so we can set the MessageType according to packet contents
+     */
     private void getEmergencyMessageExtension(Message message, ChatMessage chatMessage) {
 
         ExtensionElement element = message.getExtension(EmergencyMessageReceipt.NAMESPACE);
@@ -316,6 +320,11 @@ public class MyMessageListener implements StanzaListener {
         }
     }
 
+    /**
+     * This method checks if the message is self destructive or not
+     * @param message The stanza packet
+     * @param chatMessage Instance so we can set the MessageType according to packet contents
+     */
     private void getSelfDestructiveExtension(Message message, ChatMessage chatMessage) {
 
         ExtensionElement element = message.getExtension(SelfDestructiveReceipt.NAMESPACE);
@@ -363,8 +372,13 @@ public class MyMessageListener implements StanzaListener {
         }
     }
 
+    /**
+     * This method adds a notification to notification stack and sets a reference to the ChatActivity
+     * so the user can click the notification and get redirected to the chat.
+     *
+     * @param chatMessage The message received
+     */
     private void setNotificationManager(ChatMessage chatMessage) {
-        //ChatActivity.getInstance().finish();
         //The intent to execute when the expanded status entry is clicked.
         Intent notificationIntent = new Intent(context, ChatActivity.class);
         notificationIntent.putExtra("contact_MayDayID", chatMessage.getContactMayDayID());
