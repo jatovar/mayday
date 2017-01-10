@@ -53,7 +53,7 @@ public class MayDayApplication extends Application {
 
     public static final String INTENT_DISPLAY_ERROR = "ERROR DE CONEXION";
 
-    public static final String DOMAIN   = "mayday";
+    public static final String DOMAIN    = "mayday";
     private static final String HOST     = "189.206.27.33";
     private static final int PORT        = 5222;
     private static final String RESOURCE = "Android";
