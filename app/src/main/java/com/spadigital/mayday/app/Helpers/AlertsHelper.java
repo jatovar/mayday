@@ -28,7 +28,7 @@ public class AlertsHelper {
 
         static void register(Activity activity) {
             AlertReceiver receiver = new AlertReceiver(activity);
-            activity.registerReceiver(receiver, new IntentFilter(MayDayApplication.INTENT_DISPLAYERROR));
+            activity.registerReceiver(receiver, new IntentFilter(MayDayApplication.INTENT_DISPLAY_ERROR));
             registrations.put(activity, receiver);
         }
 
@@ -61,7 +61,8 @@ public class AlertsHelper {
     }
 
     public static void displayError(Context context, String msg) {
-        Intent intent = new Intent(MayDayApplication.INTENT_DISPLAYERROR);
+        Intent intent = new Intent(MayDayApplication.INTENT_DISPLAY_ERROR);
+
         intent.putExtra(Intent.EXTRA_TEXT, msg);
         context.sendOrderedBroadcast(intent, null);
     }

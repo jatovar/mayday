@@ -192,10 +192,10 @@ public class ConversationItemAdapter extends BaseAdapter implements AdapterView.
 
 
     private static class ViewHolder {
-        public TextView tvContactName;
-        public TextView tvMessageBody;
-        public TextView tvTimestamp;
-        public ImageView imgRead;
+        TextView tvContactName;
+        TextView tvMessageBody;
+        TextView tvTimestamp;
+        ImageView imgRead;
     }
 
 }

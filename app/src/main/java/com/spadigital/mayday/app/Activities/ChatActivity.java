@@ -68,16 +68,14 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
     protected void onCreate(Bundle savedInstanceState){
 
         super.onCreate(savedInstanceState);
-
-        instance = this;
         setContentView(R.layout.activity_chat_conversation);
 
+        instance        = this;
         contactMaydayId = getIntent().getExtras().getString("contact_MayDayID");
-        author = getIntent().getExtras().getString("contact_author");
-
-        //*Ignore this fields if the client didn't transfer his account**//
-        subject = getIntent().getExtras().getString("contact_subject");
-        redirected = getIntent().getExtras().getBoolean("contact_redirected");
+        author          = getIntent().getExtras().getString("contact_author");
+        //Ignore this fields if the client didn't transfer his account
+        subject         = getIntent().getExtras().getString("contact_subject");
+        redirected      = getIntent().getExtras().getBoolean("contact_redirected");
 
         Log.v(log_v, "Start a chat with MayDayId: " + contactMaydayId);
 
@@ -96,8 +94,6 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
     protected void onResume() {
 
         super.onResume();
-
-
         if(AlarmReceiver.mVibrator != null && AlarmReceiver.mPlayer != null){
             AlarmReceiver.mPlayer.stop();
             AlarmReceiver.mVibrator.cancel();
@@ -117,13 +113,17 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
     public boolean onOptionsItemSelected(MenuItem item) {
         if(subject != null)
         switch (item.getItemId()) {
+
             case R.id.action_add_contact:
                 Log.i("ActionBar", "Add contact!");
                 Log.v(log_v,"clickContactAdd");
+
                 Intent intentContactAdd = new Intent(getApplicationContext(), ContactAddActivity.class);
                 intentContactAdd.putExtra("active_chat_contact", contactMaydayId);
                 startActivityForResult(intentContactAdd, ADD_CONTACT_REQUEST);
+
                 return true;
+
             case R.id.action_detail_contact:
                 Log.i("ActionBar", "Info!");
 
@@ -146,6 +146,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
                 }
 
                 return true;
+
             case R.id.action_block_contact:
                 new AlertDialog.Builder(this)
                         .setIcon(android.R.drawable.ic_delete)
@@ -179,7 +180,9 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
                         })
                         .setNegativeButton("No", null)
                         .show();
+
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -200,8 +203,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
                     // the Conversations Fragment, and the ChatActivity menu title
                     Log.v(log_v, "EDIT_CONTACT_REQUEST");
                     //This refreshes the contacts fragments...
-                    if(data.getBooleanExtra("is_deleting", false))
-                    {
+                    if(data.getBooleanExtra("is_deleting", false)) {
                         ContactsFragment.getInstance().deleteContactInDataSet(data);
                         ConversationsFragment.getInstance().setToUnknownContactIfExists(data);
                         getSupportActionBar().setTitle("Unknown");
@@ -213,10 +215,14 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
                     }
                     break;
                 case ADD_CONTACT_REQUEST:
+
                     Log.v(log_v, "ADD_CONTACT_REQUEST");
+
                     ContactsFragment.getInstance().addContactToDataSet(data);
+
                     if(ConversationsFragment.getInstance() != null)
                         ConversationsFragment.getInstance().setAuthorIfExists(data);
+
                     if(data.getExtras()!= null) {
                         getSupportActionBar().setTitle(data.getStringExtra("new_contact_name"));
                         contactMaydayId = data.getStringExtra("new_contact_name");
@@ -235,7 +241,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
         etMessage           = (EditText) findViewById(R.id.messageEdit);
         ImageButton btnSend = (ImageButton) findViewById(R.id.chatSendButton);
         isEmergencyMessage  = (CheckBox) findViewById(R.id.checkBox_emergency);
-        myToolbar   = (Toolbar) findViewById(R.id.my_toolbar);
+        myToolbar           = (Toolbar) findViewById(R.id.my_toolbar);
 
         isEmergencyMessage.setOnCheckedChangeListener(this);
         setSupportActionBar(myToolbar);
@@ -243,6 +249,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
         myToolbar.setPadding(100, 0,  0, 0);
         myToolbar.setSubtitleTextColor(Color.WHITE);
         myToolbar.setSubtitle(contactMaydayId);
+
         if(redirected){
             getSupportActionBar().setTitle(subject+ "(desviado)");
             myToolbar.setSubtitle(subject);
@@ -250,26 +257,30 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
             getSupportActionBar().setTitle(author);
             myToolbar.setSubtitle(contactMaydayId);
         }
+
         adapter = new ChatAdapter(ChatActivity.this, new ArrayList<ChatMessage>());
         messagesContainer.setAdapter(adapter);
-
         loadChatDbHistory();
 
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)  {
+
                 String messageText = etMessage.getText().toString();
-                if(TextUtils.isEmpty(messageText)){
+
+                if(TextUtils.isEmpty(messageText))
                     return;
-                }
+
                 try{
-                    DataBaseHelper db = new DataBaseHelper(v.getContext());
+                    DataBaseHelper db           = new DataBaseHelper(v.getContext());
                     ChatMessage outGoingMessage = new ChatMessage();
                     setOutgoingMessageProp(messageText, outGoingMessage);
+
                     if(redirected){
                         outGoingMessage.setSubject(subject);
                         outGoingMessage.setRedirected(true);
                     }
+
                     MayDayApplication.getInstance().sendMessage(outGoingMessage, false);
                     db.getWritableDatabase();
                     db.messageAdd(outGoingMessage);
@@ -294,8 +305,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
         chatMessage.setContactMayDayId(contactMaydayId);
         chatMessage.setAuthor(author);
         chatMessage.setMessage(messageText);
-        chatMessage.setDatetime(DateFormat.getDateTimeInstance()
-                .format(new Date()));
+        chatMessage.setDatetime(DateFormat.getDateTimeInstance().format(new Date()));
         chatMessage.setDirection(ChatMessageDirection.OUTGOING);
         chatMessage.setType(ChatMessageType.NORMAL);
         chatMessage.setStatus(ChatMessageStatus.SENDING);
@@ -307,10 +317,10 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
         Log.v(log_v, "Loading conversation history... \n");
 
         try {
-            DataBaseHelper db = new DataBaseHelper(this);
-            //db.updateRead(contactMaydayId);
+            DataBaseHelper db                  = new DataBaseHelper(this);
             ArrayList<ChatMessage> chatHistory = db.getMessages(contactMaydayId, 0, 5, redirected, subject);
-            adapter = new ChatAdapter(ChatActivity.this, new ArrayList<ChatMessage>());
+            adapter                            = new ChatAdapter(ChatActivity.this, new ArrayList<ChatMessage>());
+
             messagesContainer.setAdapter(adapter);
 
             if(chatHistory.isEmpty()) {
@@ -320,13 +330,11 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
                 for(ChatMessage message : chatHistory) {
                     System.out.println(message.getDirection().toString() + " : " + message.getMessage());
                     displayMessage(message);
-
+                    //experimental
                     if(message.getType() == ChatMessageType.SELFDESTRUCTIVE
                             && message.getDirection() == ChatMessageDirection.INCOMING
                             && !message.getExpireTime().equals("")) {
                         message.getTimerUpdater().startTimer();
-
-
                     }
                 }
             }

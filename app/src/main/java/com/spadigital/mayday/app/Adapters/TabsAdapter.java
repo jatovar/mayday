@@ -26,15 +26,12 @@ public class TabsAdapter extends FragmentStatePagerAdapter {
         switch (position) {
             case 0:
                 ContactsFragment tab1 = new ContactsFragment();
-                System.out.println("T0");
                 return tab1;
             case 1:
                 ConversationsFragment tab2 = new ConversationsFragment();
-                System.out.println("T1");
                 return tab2;
             case 2:
                 ConfigFragment tab3 = new ConfigFragment();
-                System.out.println("T2");
                 return tab3;
             default:
                 return null;

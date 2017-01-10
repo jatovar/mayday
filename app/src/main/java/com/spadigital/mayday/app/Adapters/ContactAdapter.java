@@ -65,10 +65,12 @@ public class ContactAdapter extends BaseAdapter implements Filterable{
 
         LayoutInflater vi = (LayoutInflater) context.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
+
         if(convertView == null){
             convertView = vi.inflate(R.layout.item_contact, null);
             holder      = createViewHolder(convertView);
             convertView.setTag(holder);
+
         }else{
             holder = (ViewHolder) convertView.getTag();
         }
@@ -179,9 +181,9 @@ public class ContactAdapter extends BaseAdapter implements Filterable{
      * This is a  helper class to optimize the findViewById, so we only initialize them once
      */
     private static class ViewHolder {
-        public TextView tvMayDayId;
-        public TextView tvName;
-        public TextView tvStatus;
+        TextView tvMayDayId;
+        TextView tvName;
+        TextView tvStatus;
     }
 
     /**
@@ -198,8 +200,8 @@ public class ContactAdapter extends BaseAdapter implements Filterable{
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
 
-                FilterResults results = new FilterResults();
                 ArrayList<Contact> FilteredArrayNames = new ArrayList<>();
+                FilterResults results                 = new FilterResults();
 
                 if (filterOriginalContacts == null) {
                     // saves the original data in filterOriginalContacts
@@ -208,17 +210,21 @@ public class ContactAdapter extends BaseAdapter implements Filterable{
 
                 if (constraint == null || constraint.length() == 0) {
                     // set the Original result to return
-                    results.count = filterOriginalContacts.size();
+                    results.count  = filterOriginalContacts.size();
                     results.values = filterOriginalContacts;
+
                 }else {
+
                     constraint = constraint.toString().toLowerCase();
+
                     for (int i = 0; i < filterOriginalContacts.size(); i++) {
                         Contact data = filterOriginalContacts.get(i);
                         if (data.getName().toLowerCase().startsWith(constraint.toString())) {
                             FilteredArrayNames.add(data);
                         }
                     }
-                    results.count = FilteredArrayNames.size();
+
+                    results.count  = FilteredArrayNames.size();
                     results.values = FilteredArrayNames;
                 }
 

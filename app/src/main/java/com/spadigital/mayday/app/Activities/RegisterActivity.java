@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.spadigital.mayday.app.Helpers.AlertsHelper;
 import com.spadigital.mayday.app.MayDayApplication;
 import com.spadigital.mayday.app.R;
 
@@ -138,7 +139,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.btn_register_new:
-                clickNewAccount();
+                if(myApp.isConnected())
+                    clickNewAccount();
+                else{
+                    AlertsHelper.register(this);
+                    AlertsHelper.displayError(this, "No tienes una conexión activa a internet");
+                }
                 break;
             case R.id.btn_cancel_register:
                 finish();

@@ -34,7 +34,7 @@ public class ContactAddActivity extends AppCompatActivity {
 
 
         contactName = (EditText) findViewById(R.id.et_mayDayID);
-        mayDayID = (EditText) findViewById(R.id.et_contactName);
+        mayDayID    = (EditText) findViewById(R.id.et_contactName);
 
         if(savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
@@ -52,26 +52,24 @@ public class ContactAddActivity extends AppCompatActivity {
     public void click_ok(View view){
 
 
-        Contact contact      = new Contact(
-                                            mayDayID.getText().toString(),
-                                            contactName.getText().toString(),
-                                            ContactStatus.NORMAL
-                                            );
+        Contact contact = new Contact(
+                                    mayDayID.getText().toString(),
+                                    contactName.getText().toString(),
+                                    ContactStatus.NORMAL);
 
-        DataBaseHelper db    = new DataBaseHelper(this);
+        DataBaseHelper db = new DataBaseHelper(this);
         db.getWritableDatabase();
 
         Log.v(log_v, "Adding contact: " + contact.getName() + ", " + contact.getMayDayId());
-
 
         //If mayDayID is already in the DB.
         long contactId = db.contactAdd(contact);
         db.close();
 
         if(contactId == -1){
-            Context context = getApplicationContext();
+            Context context   = getApplicationContext();
             CharSequence text = "MayDayID in use";
-            int duration = Toast.LENGTH_SHORT;
+            int duration      = Toast.LENGTH_SHORT;
 
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
@@ -219,7 +217,7 @@ public class ContactAddActivity extends AppCompatActivity {
         }
 
         public void clickRemoveContactButton(View view){
-            /*TODO : We need a confirmation message to warn the user if he really wants to remove the contact with xxxxx name before this code is executed */
+            //TODO : We need a confirmation message to warn the user if he really wants to remove the contact with xxxxx name before this code is executed
             Log.v(log_v, "clickRemoveContactButton");
             try{
 
@@ -234,6 +232,7 @@ public class ContactAddActivity extends AppCompatActivity {
                 db.getWritableDatabase();
                 db.contactTruncate(deletedContact.getIdAsString());
                 db.close();
+
                 Log.v(log_v,  "Removing contact: " + deletedContact.getName()
                         + ", " + deletedContact.getMayDayId());
 

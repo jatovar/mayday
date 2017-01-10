@@ -174,7 +174,6 @@ public class ChatMessage {
         private List<ChatMessage> adapterCollection;
         private ChatAdapter chatAdapter;
 
-
         /**
          * This method starts the TimerView ticking in our ChatAdapter by using a CountdownTimer
          * it Refreshes every REFRESH_MILLISECONDS and sets the progress until expireTime goes off.
@@ -195,7 +194,6 @@ public class ChatMessage {
                         progressBarr.setProgress((int) millisUntilFinished);
                 }
 
-
                 /**
                  * When the countDownTimer ends, we need the adapter to know that the item is not there
                  * anymore so we remove the chatMessage and notify the adapter to refresh our graphics
@@ -208,7 +206,6 @@ public class ChatMessage {
 
             timer.start();
         }
-
 
         /**
          * Removes the item from our list and notifies the adapter to update
@@ -228,7 +225,8 @@ public class ChatMessage {
 
 
         /**
-         *
+         * This method helps to point the message ProgressBar to the View so we can control the progress
+         * each for the time given
          * @param progressBar the progress bar asset to be shown
          * @param chatAdapter the adapter so we can call notifyDataSetChanged() and get the collection
          */

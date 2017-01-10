@@ -4,6 +4,7 @@ import org.jivesoftware.smack.packet.PacketExtension;
 
 /**
  * Created by jorge on 25/10/16.
+ * TODO: LUL
  */
 public class TransferCredentials implements PacketExtension {
 

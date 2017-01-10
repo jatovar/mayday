@@ -51,7 +51,7 @@ public class MayDayApplication extends Application {
     private String log_v = "MayDayApplication: ";
     private String log_e = "MyApplicationERROR: ";
 
-    public static final String INTENT_DISPLAYERROR = "ERROR DE CONEXION";
+    public static final String INTENT_DISPLAY_ERROR = "ERROR DE CONEXION";
 
     public static final String DOMAIN   = "mayday";
     private static final String HOST     = "189.206.27.33";
@@ -92,7 +92,7 @@ public class MayDayApplication extends Application {
 
     public void createChat(String contactString){
         ChatManager chatManager = ChatManager.getInstanceFor(connection);
-        chat        = chatManager.createChat(contactString);
+        chat                    = chatManager.createChat(contactString);
     }
 
     public void sendTransferRequest(){
@@ -243,6 +243,8 @@ public class MayDayApplication extends Application {
         configBuilder.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);//
         configBuilder.setResource(RESOURCE);
         configBuilder.setDebuggerEnabled(true);//
+
+        //Set configBuilder to the actual connection
         connection = new XMPPTCPConnection(configBuilder.build());
 
         //Connection Listener
@@ -299,8 +301,7 @@ public class MayDayApplication extends Application {
         try {
 
             createChat(to);
-            CustomMessage customMessage =
-                    new CustomMessage(message);
+            CustomMessage customMessage = new CustomMessage(message);
             m.addExtension(customMessage);
             chat.sendMessage(m);
 
@@ -314,7 +315,8 @@ public class MayDayApplication extends Application {
 
     public boolean isConnected() {
         ConnectivityManager connMgr = (ConnectivityManager) this.getApplicationContext().getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        NetworkInfo networkInfo     = connMgr.getActiveNetworkInfo();
+
         return networkInfo != null && networkInfo.isConnected();
     }
 

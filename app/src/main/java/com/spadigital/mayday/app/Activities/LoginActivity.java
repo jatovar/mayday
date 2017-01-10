@@ -35,14 +35,11 @@ public class LoginActivity extends AppCompatActivity {
     private EditText etPassword;
     private View mProgressView;
     private CheckBox saveCred;
-    private TextView etPswForgotten;
 
-    private SharedPreferences loginPreferences;
     private SharedPreferences.Editor loginPrefsEditor;
 
     private String mayDayId = "";
     private String password = "";
-    private Boolean saveLogin;
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -54,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
         etMayDayId     = (EditText) findViewById(R.id.et_MayDayID);
         etPassword     = (EditText) findViewById(R.id.et_Password);
         saveCred       = (CheckBox) findViewById(R.id.save_remember_checkbox);
-        etPswForgotten = (TextView) findViewById(R.id.tv_PassForgotten);
+        TextView etPswForgotten = (TextView) findViewById(R.id.tv_PassForgotten);
 
         //if user clicks on password forgotten
         etPswForgotten.setOnClickListener(new View.OnClickListener() {
@@ -69,15 +66,14 @@ public class LoginActivity extends AppCompatActivity {
         mProgressView = findViewById(R.id.login_progress);
 
 
-
-        loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
+        SharedPreferences loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
         loginPrefsEditor = loginPreferences.edit();
 
 
-        saveLogin = loginPreferences.getBoolean("saveLogin", false);
+        Boolean saveLogin = loginPreferences.getBoolean("saveLogin", false);
 
 
-        if (saveLogin == true) {
+        if (saveLogin) {
             mayDayId = loginPreferences.getString("username", "");
             password = loginPreferences.getString("password", "");
             etMayDayId.setText(mayDayId);
@@ -110,10 +106,11 @@ public class LoginActivity extends AppCompatActivity {
                 etPassword.requestFocus();
             }
             else{
-                if(MayDayApplication.getInstance().isConnected()){
+                if(MayDayApplication.getInstance().isConnected())
                     doLogin();
-                }else{
+                else{
                     AlertsHelper.register(this);
+                    AlertsHelper.displayError(this, "No tienes una conexión activa a internet");
                 }
 
                 //Save actual credentials

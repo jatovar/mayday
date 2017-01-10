@@ -37,7 +37,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 
     //status can be: NORMAL, UNKNOWN or BLOCKED for TABLE "contact"
     //and: (SENDING or SENT) for outgoing and (UNREAD/READ) for incoming for TABLE "message"
-    private static final String COLUMN_STATUS ="status";
+    private static final String COLUMN_STATUS = "status";
 
 
     // Columns from table: "contact"
@@ -101,6 +101,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase db){
         Log.d(log_v, "onCreate");
+
         db.execSQL(CREATE_TABLE_CONTACT);
         db.execSQL(CREATE_TABLE_MESSAGE);
     }
@@ -108,6 +109,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
         Log.d(log_v, "onUpgrade");
+
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACT);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGE);
         onCreate(db);
@@ -142,10 +144,9 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 
 
     public void contactEdit(Contact contact){
-
-        SQLiteDatabase db = this.getWritableDatabase();
-
+        SQLiteDatabase db    = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+
         values.put(COLUMN_NAME, contact.getName());
         values.put(COLUMN_STATUS, contact.getStatus().toString());
         values.put(COLUMN_MAYDAYID, contact.getMayDayId());
@@ -157,8 +158,8 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     public ArrayList<Contact> getContacts() {
         Log.v(log_v, "getContacts");
         ArrayList<Contact> contactList = new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_CONTACT;
+        SQLiteDatabase db              = getReadableDatabase();
+        String query                   = "SELECT * FROM " + TABLE_CONTACT;
 
         Cursor c = db.rawQuery(query, null);
 
@@ -166,14 +167,11 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 
             do{
                 Contact newContact = new Contact();
-
                 newContact.setIdAsString(c.getString(c.getColumnIndex(COLUMN_CONTACTID)));
                 newContact.setMayDayId(c.getString(c.getColumnIndex(COLUMN_MAYDAYID)));
                 newContact.setName(c.getString(c.getColumnIndex(COLUMN_NAME)));
                 newContact.setStatus(c.getString(c.getColumnIndex(COLUMN_STATUS)));
-
                 contactList.add(newContact);
-
 
             }while(c.moveToNext());
             c.close();
@@ -234,8 +232,6 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         ArrayList<ChatMessage> chatMessageList  = new ArrayList<>();
         SQLiteDatabase db                       = getReadableDatabase();
 
-      //  String query = "SELECT tbl.* FROM ( SELECT * FROM " + TABLE_MESSAGE + " ORDER BY " + COLUMN_ID +
-      //          " ASC ) AS tbl GROUP BY tbl." + COLUMN_CONTACT_MAYDAYID + " ORDER BY " + COLUMN_ID + " DESC";
         String query = "SELECT tbl.* FROM ( SELECT * FROM " + TABLE_MESSAGE + " ORDER BY " + COLUMN_ID +
                 " ASC ) AS tbl GROUP BY tbl." + COLUMN_CONTACT_MAYDAYID + ", tbl." + COLUMN_SUBJECT  +
                 " ORDER BY " + COLUMN_ID + " DESC";
@@ -406,10 +402,12 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 
     public ArrayList<Contact> getBlockedContacts() {
         Log.v(log_v, "getBlockedContacts");
-        ArrayList<Contact> contactList = new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_CONTACT + " WHERE " + COLUMN_STATUS+ " = 'BLOCKED' ";
 
+        ArrayList<Contact> contactList = new ArrayList<>();
+        SQLiteDatabase db              = getReadableDatabase();
+
+
+        String query = "SELECT * FROM " + TABLE_CONTACT + " WHERE " + COLUMN_STATUS+ " = 'BLOCKED' ";
         Cursor c = db.rawQuery(query, null);
 
         if(c != null && c.moveToFirst()){

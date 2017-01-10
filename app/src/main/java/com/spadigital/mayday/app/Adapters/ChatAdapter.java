@@ -153,12 +153,15 @@ public class ChatAdapter extends BaseAdapter {
     private ViewHolder createViewHolder(View v) {
         ViewHolder holder     = new ViewHolder();
         holder.txtMessage     = (TextView) v.findViewById(R.id.txtMessage);
-        holder.txtInfo        = (TextView)v.findViewById(R.id.txtInfo);
+        holder.txtInfo        = (TextView) v.findViewById(R.id.txtInfo);
+        holder.textProgress   = (TextView) v.findViewById(R.id.textViewProgressBar);
+
         holder.contentWithBG  = (LinearLayout) v.findViewById(R.id.contentWithBackground);
-        holder.layoutProgress = (RelativeLayout)v.findViewById(R.id.layoutProgressBar);
-        holder.progressBar    = (ProgressBar)v.findViewById(R.id.progressBarDestroy);
-        holder.textProgress   = (TextView)v.findViewById(R.id.textViewProgressBar);
-        holder.imgStatus      = (ImageView)v.findViewById(R.id.imgStatus);
+        holder.layoutProgress = (RelativeLayout) v.findViewById(R.id.layoutProgressBar);
+
+        holder.progressBar    = (ProgressBar) v.findViewById(R.id.progressBarDestroy);
+        holder.imgStatus      = (ImageView) v.findViewById(R.id.imgStatus);
+
         return holder;
     }
 
