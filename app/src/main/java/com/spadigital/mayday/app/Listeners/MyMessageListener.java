@@ -138,8 +138,7 @@ public class MyMessageListener implements StanzaListener {
                     //if there is a chat activity update it
 
                     if (ChatActivity.getInstance() != null
-                            && from.equals(ChatActivity.getInstance().getCurrentConversationId())
-                            && ChatActivity.getInstance().hasWindowFocus() ) {
+                            && from.equals(ChatActivity.getInstance().getCurrentConversationId())) {
                         //it will always update unless redirected  doesn't meets the current
                         //subject
                         Boolean updateWhenRedirected = true;
