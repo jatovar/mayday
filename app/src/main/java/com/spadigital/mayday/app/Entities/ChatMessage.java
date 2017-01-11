@@ -154,10 +154,9 @@ public class ChatMessage {
     }
 
     /**
-     * This class handles the Timer graphics, we need to set the reference
-     * in ChatAdapter.setTimerView, then the method startTimer() is called
+     * This class handles the progressbar rendering, we need to set its reference
+     * in ChatAdapter.setTimerView... then the method startTimer() is called
      * in MyMessageListener.processPacket and ChatActivity.loadChatDbHistory
-     * to render our progressBar properly
      *
      * @see ChatAdapter
      * @see com.spadigital.mayday.app.Listeners.MyMessageListener
@@ -166,7 +165,7 @@ public class ChatMessage {
     public class TimerUpdater {
 
         /**
-         * The progressbar will update every milliseconds in this variable
+         * The progressbar will update every milliseconds set in this variable
          */
         private final int REFRESH_MILLISECONDS = 20;
 
