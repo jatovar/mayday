@@ -71,15 +71,15 @@ public class TaberActivity extends AppCompatActivity {
     private void setTabSelectorSettings(TabLayout tabLayout) {
 
         View view1 = getLayoutInflater().inflate(R.layout.item_tab, null);
-        view1.findViewById(R.id.icon).setBackgroundResource(R.drawable.user);
+        view1.findViewById(R.id.icon).setBackgroundResource(R.drawable.user_96x96_px_03);
         tabLayout.addTab(tabLayout.newTab().setCustomView(view1));
 
         View view2 = getLayoutInflater().inflate(R.layout.item_tab, null);
-        view2.findViewById(R.id.icon).setBackgroundResource(R.drawable.chat);
+        view2.findViewById(R.id.icon).setBackgroundResource(R.drawable.chat_96x96_px_01);
         tabLayout.addTab(tabLayout.newTab().setCustomView(view2));
 
         View view3 = getLayoutInflater().inflate(R.layout.item_tab, null);
-        view3.findViewById(R.id.icon).setBackgroundResource(R.drawable.config);
+        view3.findViewById(R.id.icon).setBackgroundResource(R.drawable.conf_96x96_px_02);
         tabLayout.addTab(tabLayout.newTab().setCustomView(view3));
 
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);

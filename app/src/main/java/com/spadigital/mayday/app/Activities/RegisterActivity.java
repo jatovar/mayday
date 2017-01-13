@@ -31,7 +31,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private MayDayApplication myApp;
     private XMPPConnection connection;
     private final static int MAX_LENGTH = 8;
-    private static final String ALLOWED_CHARACTERS ="0123456789QWERTYUIOPASDFGHJKLZXCVBNM";
+    private static final String ALLOWED_CHARACTERS ="QWERTYUIOPASDFGHJKLZXCVBNM";
+    private static final String ALLOWED_NUMBERS = "0123456789";
     private String username = "";
 
 
@@ -128,10 +129,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private String randomUser() {
 
         final Random random    = new Random();
-        final StringBuilder sb = new StringBuilder(MAX_LENGTH - 2);
+        final StringBuilder sb = new StringBuilder(MAX_LENGTH);
         sb.append("MD");
-        for(int i = 0; i < MAX_LENGTH - 2; ++i)
+        for(int i = 0; i < 3; ++i)
             sb.append(ALLOWED_CHARACTERS.charAt(random.nextInt(ALLOWED_CHARACTERS.length())));
+
+        for(int i = 0; i < 3; ++i)
+            sb.append(ALLOWED_NUMBERS.charAt(random.nextInt(ALLOWED_NUMBERS.length())));
         return sb.toString();
     }
 

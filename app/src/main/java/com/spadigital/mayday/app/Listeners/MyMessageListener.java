@@ -68,7 +68,7 @@ public class MyMessageListener implements StanzaListener {
     public void processPacket(Stanza packet) throws SmackException.NotConnectedException {
 
         try {
-            final Message message                   = (Message) packet;
+            final Message message             = (Message) packet;
             final ChatMessage incomingMessage = new ChatMessage();
             String body                       = message.getBody();
 
