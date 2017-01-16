@@ -71,7 +71,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
         setContentView(R.layout.activity_chat_conversation);
 
         instance        = this;
-        contactMaydayId = getIntent().getExtras().getString("contact_MayDayID");
+        contactMaydayId = getIntent().getExtras().getString("contact_MayDayID").toLowerCase();
         author          = getIntent().getExtras().getString("contact_author");
         //Ignore this fields if the client didn't transfer his account
         subject         = getIntent().getExtras().getString("contact_subject");
