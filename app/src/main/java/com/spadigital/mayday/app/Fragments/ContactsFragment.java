@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.spadigital.mayday.app.Activities.ChatActivity;
@@ -21,6 +22,7 @@ import com.spadigital.mayday.app.Adapters.ContactAdapter;
 import com.spadigital.mayday.app.Activities.ContactAddActivity;
 import com.spadigital.mayday.app.Enum.ContactStatus;
 import com.spadigital.mayday.app.Helpers.DataBaseHelper;
+import com.spadigital.mayday.app.MayDayApplication;
 import com.spadigital.mayday.app.R;
 
 import java.util.ArrayList;
@@ -55,6 +57,12 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
         currentView                  = view;
         SearchView searchViewContact = (SearchView) view.findViewById(R.id.search_contact);
         this.parentActivity          = getActivity();
+
+        TextView tvWelcome = (TextView) view.findViewById(R.id.tvWelcome);
+        String shortUser = MayDayApplication.getInstance().getConnection().getUser();
+        shortUser = shortUser.split("@")[0];
+        tvWelcome.setText("¡Bienvenido a MD Beeper "+ shortUser + "!");
+
 
         loadContacts(view);
         setClickAddContactListener(view);

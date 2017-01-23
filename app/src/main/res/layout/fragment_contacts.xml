@@ -23,6 +23,22 @@
         android:textStyle="bold" />
 
 
+    <TextView
+        android:text="Bienvenido a MD Beeper jorge_spa"
+        android:textStyle="bold"
+        android:background="#d7d7d7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvWelcome"
+        android:gravity="center"
+        android:textColor="@color/colorBlack"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        />
+
     <android.widget.SearchView
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -68,6 +84,8 @@
         android:id="@+id/lv_contactList"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/search_contact" />
+        android:layout_below="@+id/search_contact"
+        android:layout_marginBottom="20dp"
+        />
 
 </RelativeLayout>
