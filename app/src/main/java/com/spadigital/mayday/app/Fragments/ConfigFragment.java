@@ -48,10 +48,16 @@ public class ConfigFragment extends PreferenceFragmentCompat implements SharedPr
         super.onCreate(savedInstanceState);
 
         Preference destroyReceipt = findPreference(PREF_KEY_DESTROY_RECEIPT);
-        destroyReceipt.setSummary(((ListPreference)destroyReceipt).getEntry());
+        if(((ListPreference) destroyReceipt).getEntry() != null )
+            destroyReceipt.setSummary(((ListPreference)destroyReceipt).getEntry());
+        else
+            destroyReceipt.setSummary("Desactivado");
 
         Preference destroyMine = findPreference(PREF_KEY_DESTROY_MINE);
-        destroyMine.setSummary(((ListPreference)destroyMine).getEntry());
+        if(((ListPreference) destroyMine).getEntry() != null )
+            destroyMine.setSummary(((ListPreference)destroyMine).getEntry());
+        else
+            destroyMine.setSummary("Desactivado");
 
         final MultiSelectListPreference blockedContacts =
                 (MultiSelectListPreference)findPreference(PREF_KEY_BLOCKED_CONTACTS);
@@ -143,59 +149,7 @@ public class ConfigFragment extends PreferenceFragmentCompat implements SharedPr
         });
     }
 
-    @Override
-    public boolean onPreferenceTreeClick(Preference preference) {
 
-        if (preference.getKey().equals("KEY_RINGTONE_PREFERENCE")) {
-
-            Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, true);
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI, Settings.System.DEFAULT_NOTIFICATION_URI);
-
-            String existingValue = getRingtonePreferenceValue(); // TODO
-            if (existingValue != null) {
-                if (existingValue.length() == 0) {
-                    // Select "Silent"
-                    intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, (Uri) null);
-                } else {
-                    intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, Uri.parse(existingValue));
-                }
-            } else {
-                // No ringtone has been selected, set to the default
-                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, Settings.System.DEFAULT_NOTIFICATION_URI);
-            }
-
-            startActivityForResult(intent, 333);
-            return true;
-        } else {
-            return super.onPreferenceTreeClick(preference);
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (requestCode == 333 && data != null) {
-            Uri ringtone = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
-            if (ringtone != null) {
-                setRingtonePreferenceValue(ringtone.toString()); // TODO
-            }else{
-                // "Silent" was selected
-                setRingtonePreferenceValue(""); // TODO
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
-    private void setRingtonePreferenceValue(String s) {
-    }
-
-    private String getRingtonePreferenceValue(){
-        return "";
-    }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -252,6 +206,9 @@ public class ConfigFragment extends PreferenceFragmentCompat implements SharedPr
         lp.setDialogTitle("Selecciona el contacto que deseas desbloquear");
         lp.setPositiveButtonText("Ok");
         lp.setNegativeButtonText("Cancelar");
+        if(blockedContacts.isEmpty()){
+            lp.setDialogMessage("Aun no tienes contactos bloqueados");
+        }
 
     }
     private void setAvailableContactsList(ListPreference transferContacts) {
@@ -273,5 +230,9 @@ public class ConfigFragment extends PreferenceFragmentCompat implements SharedPr
         transferContacts.setDefaultValue(entryValues);
         transferContacts.setEntries(entries);
         transferContacts.setEntryValues(entryValues);
+        if(contacts.isEmpty()){
+            transferContacts.setDialogMessage("Aún no tienes contactos agregados para poder transferir");
+
+        }
     }
 }

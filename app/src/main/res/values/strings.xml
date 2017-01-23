@@ -2,8 +2,8 @@
     <string name="app_name">MD Beeper</string>
     <string name="some_phone">555-555</string>
     <string name="detalle">Detalle</string>
-    <string name="add_contact">agregar contacto</string>
-    <string name="detail_contact">info.</string>
+    <string name="add_contact">Agregar contacto</string>
+    <string name="detail_contact">Informacion de contacto</string>
     <string name="hint_search">buscar contacto</string>
     <string name="security_category">Seguridad</string>
 
@@ -13,23 +13,22 @@
     <string name="pref_summary_destroy_receptor">Desactivado</string>
     <string name="pref_summary_destroy_mine">Desactivado</string>
     <string name="pref_title_destroy_mine">Destruir mensajes entrantes</string>
-    <string name="block_contact">bloquear contacto</string>
+    <string name="block_contact">Bloquear contacto</string>
     <string name="facebook_app_id">1867662546800429</string>
 
     <string name="resgistr_te"><u>Resgistráte</u></string>
     <string-array name="listentries">
         <item>Desactivado</item>
-        <item>5 segundos</item>
-        <item>15 segundos</item>
         <item>30 segundos</item>
         <item>1 minuto</item>
+        <item>1.5 minutos</item>
+        <item>2 minutos</item>
     </string-array>
     <string-array name="listvalues">
         <item>0</item>
         <item>30000</item>
         <item>60000</item>
         <item>90000</item>
-
         <item>120000</item>
     </string-array>
 </resources>

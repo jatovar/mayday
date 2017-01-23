@@ -24,15 +24,6 @@
     <PreferenceCategory
         android:title="Sonidos y notificaciones"
         android:key="pref_key_sounds_settings">
-        <Preference
-            android:showDefault="true"
-            android:showSilent="true"
-            android:title="Sonido de notificacion"
-            android:ringtoneType="ringtone|notification|alarm|all"
-            android:key="KEY_RINGTONE_PREFERENCE"
-            android:summary="Captain's log"
-            android:persistent="false">
-        </Preference>
         <CheckBoxPreference
             android:key="pref_key_sounds_vibration"
             android:summary="Vibrar al recibir un mensaje"
