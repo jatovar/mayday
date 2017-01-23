@@ -50,7 +50,10 @@
             android:paddingRight="40dp">
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                >
                 <AutoCompleteTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -92,15 +95,7 @@
                     android:onClick="click_login"
                     android:layout_weight="1" />
 
-                <Button
-                    android:id="@+id/button2"
-                    android:theme="@style/buttonStyle"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Registrarse"
-                    android:textStyle="bold"
-                    android:onClick="click_register"
-                    android:layout_weight="1" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -117,7 +112,19 @@
                     android:checked="true"
                     android:theme="@style/Preference.CheckBoxPreference.Material"
                     android:layout_gravity="center_horizontal" />
-
+                <TextView
+                    android:text="Registrarme"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_register"
+                    android:textAppearance="@style/TextAppearance.AppCompat"
+                    android:textAlignment="center"
+                    android:fontFamily="sans-serif"
+                    android:textColor="?android:attr/textColorLink"
+                    android:phoneNumber="false"
+                    android:password="false"
+                    android:elevation="0dp"
+                    android:layout_marginTop="20dp" />
                 <TextView
                     android:text="Olvidé mi contraseña"
                     android:layout_width="match_parent"

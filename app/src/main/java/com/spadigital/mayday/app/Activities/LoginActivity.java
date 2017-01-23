@@ -1,5 +1,6 @@
 package com.spadigital.mayday.app.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -48,10 +50,13 @@ public class LoginActivity extends AppCompatActivity {
 
         Log.v(log_v, "onCreate");
 
+
+
         etMayDayId     = (EditText) findViewById(R.id.et_MayDayID);
         etPassword     = (EditText) findViewById(R.id.et_Password);
         saveCred       = (CheckBox) findViewById(R.id.save_remember_checkbox);
         TextView etPswForgotten = (TextView) findViewById(R.id.tv_PassForgotten);
+        TextView etRegisterNew  = (TextView) findViewById(R.id.tv_register);
 
         //if user clicks on password forgotten
         etPswForgotten.setOnClickListener(new View.OnClickListener() {
@@ -62,6 +67,19 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(pswForgottenIntent);
             }
         });
+
+        etRegisterNew.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                click_register(v);
+            }
+        });
+
+        final InputMethodManager imm = (InputMethodManager)getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+
+        imm.hideSoftInputFromWindow(etMayDayId.getWindowToken(), 0);
+
 
         mProgressView = findViewById(R.id.login_progress);
 

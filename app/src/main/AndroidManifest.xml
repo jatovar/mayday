@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme"
 
         android:name=".MayDayApplication">
-        <activity android:name=".Activities.CoverActivity">
+        <activity android:name=".Activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -29,7 +29,6 @@
         <activity android:name=".Activities.ContactAddActivity"/>
         <activity android:name=".Activities.ContactAddActivity$ContactInformationActivity"/>
         <activity android:name=".Activities.ChatActivity"/>
-        <activity android:name=".Activities.LoginActivity"/>
         <activity android:name=".Activities.RetrieveTransferActivity"/>
         <activity android:name=".Activities.RegisterActivity"/>
         <activity android:name=".Activities.GenerateActivity"/>
