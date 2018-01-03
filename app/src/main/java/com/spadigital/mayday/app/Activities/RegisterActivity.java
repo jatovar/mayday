@@ -21,6 +21,7 @@ import org.jivesoftware.smackx.iqregister.AccountManager;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.logging.Logger;
 
 /**
  * Created by jorge on 24/11/16.
@@ -86,6 +87,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                 startActivity(registerNew);
                             }
                             else{
+
                                 //TODO:HANDLE THE ERROR
                             }
                         }
@@ -111,7 +113,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
 
         try {
-            AccountManager.getInstance(connection).createAccount(username, password, mapAttributes);
+            AccountManager accountManager =  AccountManager.getInstance(connection);
+            accountManager.sensitiveOperationOverInsecureConnection(true);
+            accountManager.createAccount(username, password, mapAttributes);
         } catch (SmackException.NoResponseException |
                 XMPPException.XMPPErrorException |
                 SmackException.NotConnectedException e) {

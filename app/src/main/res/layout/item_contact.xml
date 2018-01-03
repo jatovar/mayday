@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Tap to send message"
-            android:textColor="@color/colorPrimaryMayday"
+            android:textColor="@color/colorSecondary"
             android:id="@+id/textView"
             android:paddingRight="10dp" />
 

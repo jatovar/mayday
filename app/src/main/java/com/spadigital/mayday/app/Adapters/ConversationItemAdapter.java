@@ -112,7 +112,7 @@ public class ConversationItemAdapter extends BaseAdapter implements AdapterView.
 
             holder.imgRead.setColorFilter(Color.RED);
             holder.tvMessageBody.setTextAppearance(context, android.R.style.TextAppearance_DeviceDefault_Small);
-            holder.tvMessageBody.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryMayday));
+            holder.tvMessageBody.setTextColor(ContextCompat.getColor(context, R.color.colorSecondary));
             holder.tvMessageBody.setTypeface(null, Typeface.BOLD);
             holder.tvContactName.setTypeface(null, Typeface.BOLD);
         }else{

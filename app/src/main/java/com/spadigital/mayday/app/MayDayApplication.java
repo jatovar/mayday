@@ -27,12 +27,16 @@ import com.spadigital.mayday.app.PacketExtensions.TransferRequest;
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ReconnectionManager;
+import org.jivesoftware.smack.SASLAuthentication;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.chat.Chat;
 import org.jivesoftware.smack.chat.ChatManager;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.provider.ProviderManager;
+import org.jivesoftware.smack.sasl.SASLAnonymous;
+import org.jivesoftware.smack.sasl.SASLMechanism;
+import org.jivesoftware.smack.sasl.provided.SASLPlainMechanism;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
@@ -53,12 +57,16 @@ public class MayDayApplication extends Application {
 
     public static final String INTENT_DISPLAY_ERROR = "ERROR DE CONEXION";
 
+    /*
     public static final String DOMAIN    = "mayday";
     private static final String HOST     = "189.206.27.33";
     private static final int PORT        = 5222;
     private static final String RESOURCE = "Android";
-
-
+    */
+    public static final String DOMAIN    = "mayday";
+    private static final String HOST     = "10.0.2.2";
+    private static final int PORT        = 5222;
+    private static final String RESOURCE = "Android";
     private String mayDayID = "";
     private String password = "";
     private AbstractXMPPConnection connection;
@@ -212,12 +220,14 @@ public class MayDayApplication extends Application {
     public void createAnonymousConnection(){
         XMPPTCPConnectionConfiguration.Builder configBuilder = XMPPTCPConnectionConfiguration.builder();
         configBuilder.setConnectTimeout(3000);
+        configBuilder.setSendPresence(false);
         configBuilder.setServiceName(DOMAIN);
         configBuilder.setHost(HOST);
         configBuilder.setPort(PORT);
         configBuilder.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);//
         configBuilder.setResource(RESOURCE);
         configBuilder.setDebuggerEnabled(true);//
+        //SASLAuthentication.registerSASLMechanism(new SASLPlainMechanism());
         connection = new XMPPTCPConnection(configBuilder.build());
 
         try {

@@ -25,10 +25,10 @@ public class TabsAdapter extends FragmentStatePagerAdapter {
 
         switch (position) {
             case 0:
-                ContactsFragment tab1 = new ContactsFragment();
+                ConversationsFragment tab1 = new ConversationsFragment();
                 return tab1;
             case 1:
-                ConversationsFragment tab2 = new ConversationsFragment();
+                ContactsFragment tab2 = new ContactsFragment();
                 return tab2;
             case 2:
                 ConfigFragment tab3 = new ConfigFragment();

@@ -40,8 +40,6 @@ public class AccountRegistrationTest {
             new AndroidSmackInitializer().initialize();
             connection.connect();
 
-           // connection.connect();
-
             Assert.assertTrue(AccountManager.getInstance(connection).supportsAccountCreation());
 
         } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException | SmackException.NotConnectedException e) {

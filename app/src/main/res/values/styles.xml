@@ -3,22 +3,26 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimaryMayday</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDarkMayday</item>
+
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
         <item name="preferenceTheme">@style/SettingsTheme</item>
 
     </style>
     <style name="SettingsTheme" parent="Theme.AppCompat.Light">
-        <item name="colorPrimary">@color/colorPrimaryMayday</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDarkMayday</item>
+
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
 
     </style>
 
     <style name="buttonStyle" parent="Theme.AppCompat.Light">
-        <item name="colorButtonNormal">#FF0000</item>
+        <item name="colorButtonNormal">@color/colorSecondary</item>
         <item name="colorControlHighlight">#FFFFFF</item>
         <item name="android:textColor">#FFFFFF</item>
     </style>

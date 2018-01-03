@@ -3,9 +3,12 @@ package com.spadigital.mayday.app.Fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +47,6 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
     private ArrayList<Contact> dbContacts;
     private static ContactsFragment instance;
     private View currentView;
-
     public static ContactsFragment getInstance(){
         return instance;
     }
@@ -57,6 +59,15 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
         currentView                  = view;
         SearchView searchViewContact = (SearchView) view.findViewById(R.id.search_contact);
         this.parentActivity          = getActivity();
+/*        this.myToolbar               = (Toolbar)  ((AppCompatActivity)getActivity()).findViewById(R.id.my_toolbar);
+
+        ((AppCompatActivity)getActivity()).setSupportActionBar(myToolbar);
+
+        myToolbar.setPadding(100, 0,  0, 0);
+
+        myToolbar.setTitleTextColor(Color.WHITE);
+        myToolbar.setTitle("Contactos");
+*/
 
         TextView tvWelcome = (TextView) view.findViewById(R.id.tvWelcome);
         String shortUser = MayDayApplication.getInstance().getConnection().getUser();

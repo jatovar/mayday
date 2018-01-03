@@ -6,9 +6,9 @@
         android:layout_width="fill_parent"
         android:layout_height="?attr/actionBarSize"
         android:text="Configuración"
-        android:textColor="@color/colorPrimaryMayday"
+        android:textColor="@color/colorWhite"
         android:textSize="30dp"
-        android:background="#d7d7d7"
+        android:background="@color/colorPrimary"
         android:gravity="center"
         android:height="80dp"
         android:textStyle="bold" />
